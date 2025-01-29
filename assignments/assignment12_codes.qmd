@@ -1,0 +1,245 @@
+---
+title: "Text Mining - Bigrams"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+
+## Datasets
+
+[Dataset](amazon_reviews.csv)
+
+- In this notebook, we will use the pairs of adjacent words to analyze a text dataset.  The dataset contains reviews from Amazon. 
+
+- We only study the reviews for the item with most number of reviews. First, import the dataset and find out the item with the most number of reviews. 
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('amazon_reviews.csv')
+
+df %>% 
+  group_by(name) %>% 
+  count(sort = TRUE)
+```
+
+We then filter the dataset so that it contains only this item. 
+
+```{r}
+df = df %>% 
+  select(name, reviews.text) %>% 
+  filter(name=='Fire Tablet, 7 Display, Wi-Fi, 8 GB - Includes Special Offers, Magenta') %>% 
+  rename(texts = reviews.text)
+```
+
+## Create a list of pairs of words
+
+```{r}
+df_bigrams <- df %>%
+  unnest_tokens(input = texts, output = bigram, token = "ngrams", n = 2) %>% 
+  filter(!is.na(bigram))
+
+df_bigrams %>%
+  count(bigram, sort = TRUE)
+```
+
+- Top Most Frequent Paris
+
+```{r}
+df_bigrams %>%
+  count(bigram, sort = TRUE) %>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(bigram, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+```
+
+
+## Remove the stop words
+
+- Notice that there are many stopwords (for, to, a, an, the and so on) are in the pair of words. We will remove these words so that the pairs do not contain stopwords. 
+
+```{r}
+
+stop_words2 = tibble(word = c(letters, LETTERS, "oh", 'just', "XXXXX", "XXXX", "XX", "xxxx", "xxxxx", "xx"))
+
+bigrams_separated <- df_bigrams %>%
+    separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word1 %in% stop_words2$word) %>%
+    filter(!word2 %in% stop_words2$word)
+
+# new bigram counts:
+bigram_counts <- bigrams_filtered %>% 
+    count(word1, word2, sort = TRUE)
+bigram_counts
+```
+
+- Top Most Frequent Pairs
+
+```{r}
+bigram_counts$pairs = paste0(bigram_counts$word1, " ", bigram_counts$word2)
+
+bigram_counts %>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(pairs, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+```
+
+
+## Visualize the bigrams
+
+```{r}
+library(igraph)
+bigram_graph <- bigram_counts %>%
+  filter(n > 50) %>%
+  graph_from_data_frame()
+
+library(ggraph)
+set.seed(2024)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+
+```{r}
+## create a wordcloud
+library(wordcloud) 
+bigram_counts %>% 
+  with(wordcloud(pairs, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+
+```
+
+## 3-grams
+
+```{r}
+
+df_trigrams <- df %>%
+  unnest_tokens(input = texts, output = trigram, token = "ngrams", n = 3) %>% 
+  filter(!is.na(word))
+
+df_separated <- df_trigrams %>%
+    separate(trigram, c("word1", "word2", "word3"), sep = " ")
+
+df_filtered <- df_separated %>%
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word2 %in% stop_words$word) %>% 
+    filter(!word3 %in% stop_words$word)
+
+trigram_count <- df_filtered %>% 
+  count(word1, word2, word3, sort = TRUE) %>% 
+  unite(word, word1, word2, word3, sep = " ")
+
+## plot the frequency
+trigram_count %>% 
+  filter(n > 10) %>% 
+  mutate(word = reorder(word, n)) %>% 
+  ggplot(aes(word, n)) + 
+  geom_col() + 
+  xlab(NULL) + 
+  coord_flip()
+
+
+trigram_count %>% 
+  with(wordcloud(word, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+```
+
+
+
+## Context Sentiment Analysis
+
+### Words preceded by NOT
+
+```{r}
+bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+AFINN <- get_sentiments("afinn")
+
+not_words <- bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(AFINN, by = c(word2 = "word")) %>%
+  count(word2, value, sort = TRUE)
+
+not_words
+
+library(ggplot2)
+
+not_words %>%
+  mutate(contribution = n * value) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(n * value, word2, fill = n * value > 0)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = "Sentiment value * number of occurrences. These sentiment should be reversed",
+       y = "Words preceded by \"not\"")
+```
+
+
+
+- There are issues with the sentiment analysis approach that only counts the appearance of positive or negative words. One of the issues is that a word’s the sentiment may be reverse with word such as `NOT`. 
+
+- For example, the words sentence `I am not happy` does not have a positive sentiment, but the word `happy` will indicate a positive sentiment. 
+
+- We will address this issue using the pairs of words. We will first identify all the words that connect with `not`, `no`, `never`, `without` then reverse the sentiment values of the these words.
+
+```{r}
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+AFINN <- get_sentiments("afinn")
+
+sentiment1 = df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  count(value)
+
+sentiment1 %>% 
+  ggplot(aes(x = value, y = n))+
+  geom_col()+  
+  labs(title = 'Non-context Sentiment Analysis')
+
+negation_words <- c("not", "no", "never", "without")
+
+sentiment2 = bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(AFINN, by = c(word2 = "word")) %>%
+  count(word1, word2, value, sort = TRUE) %>% 
+  select(value, n) %>% 
+  group_by(value) %>% 
+  summarise(n = sum(n)) %>% 
+  arrange(value)
+
+
+ggplot()+
+  geom_col(data = sentiment1, aes(x =value, y = n))+
+  geom_col(data = sentiment2, aes(x =value, y = n), fill = 'red')+
+  labs(title = 'Context Sentiment Analysis',
+       caption = "Red bars present the reversed sentiment.")
+
+```

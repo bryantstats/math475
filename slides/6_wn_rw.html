@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>White Noise and Random Walk</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Son Nguyen " />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# White Noise and Random Walk
+]
+.author[
+### <font size="5"> Son Nguyen </font>
+]
+
+---
+
+
+&lt;style&gt;
+
+.remark-slide-content {
+  background-color: #FFFFFF;
+  border-top: 80px solid #F9C389;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.5;
+  padding: 1em 2em 1em 2em
+}
+
+.inverse {
+  background-color: #696767;
+  border-top: 80px solid #696767;
+  text-shadow: none;
+  background-image: url(https://github.com/goodekat/presentations/blob/master/2019-isugg-gganimate-spooky/figures/spider.png?raw=true);
+	background-position: 50% 75%;
+  background-size: 150px;
+}
+
+.your-turn{
+  background-color: #8C7E95;
+  border-top: 80px solid #F9C389;
+  text-shadow: none;
+  background-image: url(https://github.com/goodekat/presentations/blob/master/2019-isugg-gganimate-spooky/figures/spider.png?raw=true);
+	background-position: 95% 90%;
+  background-size: 75px;
+}
+
+.title-slide {
+  background-color: #F9C389;
+  border-top: 80px solid #F9C389;
+  background-image: none;
+}
+
+.title-slide &gt; h1  {
+  color: #111111;
+  font-size: 40px;
+  text-shadow: none;
+  font-weight: 400;
+  text-align: left;
+  margin-left: 15px;
+  padding-top: 80px;
+}
+.title-slide &gt; h2  {
+  margin-top: -25px;
+  padding-bottom: -20px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 300;
+  font-size: 35px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide &gt; h3  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 300;
+  font-size: 25px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -30px;
+}
+
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+.left-code {
+  color: #777;
+  width: 48%;
+  height: 92%;
+  float: left;
+}
+.right-plot {
+  width: 51%;
+  float: right;
+  padding-left: 1%;
+}
+&lt;/style&gt;
+
+
+
+---
+# White Noise
+
+-   `\(y_t\)` is a white-noise process (series) if `\(y_1\)`, `\(y_2\)`,..., `\(y_t\)` are independent identical distributed (iid) zero mean random variables from a certain distribution (usually normal)
+
+---
+# Example
+
+
+```r
+set.seed(30)
+y &lt;- ts(rnorm(100))
+library(ggfortify)
+autoplot(y) + ggtitle("White noise of Standard Normal Distribution")
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+---
+# Example
+
+
+```r
+set.seed(30)
+
+y = sample(c(-1, 1), 100, replace = TRUE)
+
+y &lt;- ts(y)
+library(ggfortify)
+autoplot(y) + ggtitle("White noise of Tossing a Coin")
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+---
+# Correlogram
+
+- Autocorrelation lag with lag k is the the correlation between the time series `\(y_t\)` and `\(y_{t-k}\)`
+
+![](images/acf.png)
+
+- Autocorrelation lag with lag 0 is always 1
+
+- The Correlogram is the plot of the autocorrelations for values of lag k = 0, 1, 2,...
+
+---
+# Correlogram a white noise
+
+- Correlogram of a white noise
+
+
+```r
+# create a white-noise time series
+y = ts(rnorm(100))
+
+# plot its ACF or correlogram 
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Correlogram a white noise
+
+
+```r
+set.seed(30)
+y = sample(c(-1, 1), 100, replace = TRUE)
+
+y &lt;- ts(y)
+
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Correlogram a time series with trend
+
+- Usually a trend in the data will show in the correlogram as a slow decay in the autocorrelation
+
+
+```r
+y = ts(c(1:100))
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# The Correlogram - Example
+
+
+```r
+y = ts(cos(c(1:100))+rnorm(100))
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# ACF of a time series with seasonality
+
+
+```r
+set.seed(30)
+y = cos(1:100)
+y &lt;- ts(y)
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Random Walk
+
+-   A time series `\(y_t\)` is called a random walk if
+
+    `$$y_{t} =  y_{t-1} +  \epsilon_t,$$`
+
+    where `\(\epsilon_t\)` is a white-noise
+
+-   A random walk can be written as
+
+$$
+y_t = y_0 + \epsilon_1 + \epsilon_2 +...+\epsilon_t
+$$
+
+---
+# Example
+
+
+```r
+set.seed(1)
+n &lt;- 5
+ct = sample(c(-1, 1), n, TRUE)
+x &lt;- cumsum(c(0,ct))
+plot(ts(x))
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Example
+
+
+```r
+set.seed(1)
+n &lt;- 1000
+ct = c(0, sample(c(-1, 1), n, TRUE))
+x &lt;- cumsum(ct)
+plot(ts(x))
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Example
+
+
+```r
+set.seed(3000)
+n = 100
+c &lt;- rnorm(n)
+y_0 = 0
+y = c(y_0, 2:n)
+for (i in 2:n)
+{
+  y[i] = y[i-1]+c[i]
+}
+y = ts(y)
+plot(y) 
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Random Walk with drift
+
+-   A time series `\(y_t\)` is called a random walk if
+
+    `$$y_{t} =  y_{t-1} +  d + \epsilon_t,$$`
+
+    where `\(\epsilon_t\)` is a white-noise
+
+-   A random walk can be written as
+
+$$
+y_t = y_0 + dt + \epsilon_1 + \epsilon_2 +...+\epsilon_t
+$$
+
+---
+# Example
+
+.left-code[
+
+```r
+set.seed(30)
+n = 1000
+c &lt;- rnorm(n, sd = 20)
+y_0 = 0
+drift = 5
+
+y = c(y_0, 2:n)
+
+for (i in 2:n)
+{
+  y[i] = drift  + y[i-1]+c[i]
+}
+
+library(ggfortify)
+library(latex2exp)
+
+plot(ts(y)) 
+title(paste0("A random walk with drift ", drift))
+```
+]
+.right-plot[
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# The ACF of Random Walks
+
+
+```r
+n = 100
+error_mean = 0
+c &lt;- rnorm(n, mean = error_mean, sd = 30)
+y_0 = 0
+y = c(y_0, 2:n)
+
+for (i in 2:n)
+{
+  y[i] = y[i-1]+c[i]
+}
+
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Differencing Time Series
+
+
+.left-code[
+
+```r
+n = 100
+error_mean = 0
+drift = 100
+c &lt;- rnorm(n, mean = error_mean, sd = 30)
+y_0 = 0
+y = c(y_0, 2:n)
+
+for (i in 2:n)
+{
+  y[i] = drift+ y[i-1]+c[i]
+}
+
+y = ts(y)
+
+plot(y)
+```
+]
+.right-plot[
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+
+
+---
+
+
+```r
+plot(diff(y))
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+acf(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+acf(diff(y))
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Random Walks and Stocks
+
+
+```r
+library(quantmod)
+getSymbols('MSFT', src='yahoo')
+```
+
+```
+## [1] "MSFT"
+```
+
+```r
+y = Ad(MSFT[index(MSFT)&gt;"2023-01-01",])
+
+plot(y)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+
+```r
+plot(diff(y))
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-18-2.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+acf(diff(y), na.action = na.pass)
+```
+
+&lt;img src="6_wn_rw_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+- The differencing series could be a white noise
+
+- It is very reasonable to assume that the stock follows the random walk model. 
+
+
+
+
+&lt;!---
+---
+#
+
+
+```r
+n = 100
+error_mean = 0
+drift = 40
+c &lt;- rnorm(n, mean = error_mean, sd = 30)
+y_0 = 0
+y = c(y_0, 2:n)
+
+for (i in 2:n)
+{
+  y[i] = drift+ y[i-1]+c[i]
+}
+
+y = ts(y)
+```
+
+---
+# Estimate the random walk model
+
+For a given time series y we can fit the random walk model with a drift by 
+
+- first differencing the data, 
+
+- then fitting the white noise (WN) model to the differenced data using the arima() command with the order = c(0, 0, 0)) argument.
+
+- The arima() command displays information or output about the fitted model. Under the Coefficients: heading is the estimated drift variable, named the intercept. Its approximate standard error (or s.e.) is provided directly below it. The variance of the WN part of the model is also estimated under the label sigma^2.
+
+---
+#
+
+
+```r
+library(quantmod)
+getSymbols('MSFT', src='yahoo')
+```
+
+```
+## [1] "MSFT"
+```
+
+```r
+y = Ad(MSFT[index(MSFT)&gt;"2023-01-01",])
+
+dy = diff(y)
+
+arima(dy, order = c(0,0,0))
+```
+
+```
+## 
+## Call:
+## arima(x = dy, order = c(0, 0, 0))
+## 
+## Coefficients:
+##       intercept
+##          0.5857
+## s.e.     0.2806
+## 
+## sigma^2 estimated as 22.28:  log likelihood = -840.7,  aic = 1685.41
+```
+
+
+---
+# Forecasting with Random Walks
+
+Suppose that we know `\(y_0, y_1, ..., y_T\)` and we want to forecast `\(y_{T+l}\)` for some fixed `\(l&gt;0\)`
+
+-   Point forecast: the estimated `\(l\)` step-ahead is
+
+$$
+\hat{y}_{T+l} = y_T + l\hat{\mu}_{c},
+$$ where `\(\hat{\mu}_{c}\)` is the estimated mean of the white-noise. `\(\hat{\mu}_{c}\)` can be `\(\bar{c}\)`
+
+`$$\bar{c} = \frac{\epsilon_1 + \epsilon_2 + ...+\epsilon_T}{T}$$`
+
+-   The standard error of the forecast is `\(s_c\sqrt{l}\)`, where `\(s_c\)` is the estimated standard deviation of `\(\sigma_c\)`,
+
+$$
+s^2_c = \frac{1}{n-1}\sum_{i=1}^{T} \big(\epsilon_i - \bar{c}\big)^2
+$$
+
+# 
+
+---
+### Example
+
+You are given:
+
+i)  The random walk model
+
+$$
+y_t =  y_0 + \epsilon_1 + \epsilon_2 + \epsilon_3 +...+\epsilon_t,
+$$
+
+where `\(\epsilon_i, (i = 1, 2,..., t)\)` denote observations from a white noise process.
+
+ii) The following ten observed values of `\(\epsilon_t\)`:
+
+| t     | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|:------|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| `\(y_t\)` | 2   | 5   | 10  | 13  | 18  | 20  | 24  | 25  | 27  | 30  |
+
+iii) `\(y_0 = 0\)`
+
+Calculate the 9 step-ahead forecast, `\(\hat{y}_{19}\)`.
+
+# 
+
+# 
+
+---
+### Example
+
+You are given:
+
+i)  The random walk model
+
+$$
+y_t =  y_0 + \epsilon_1 + \epsilon_2 + \epsilon_3 +...+\epsilon_t,
+$$
+
+where `\(\epsilon_i, (i = 1, 2,..., t)\)` denote observations from a white noise process.
+
+ii) The following ten observed values of `\(\epsilon_t\)`:
+
+| t     | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|:------|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| `\(y_t\)` | 2   | 5   | 10  | 13  | 18  | 20  | 24  | 25  | 27  | 30  |
+
+iii) `\(y_0 = 0\)`
+
+Calculate the standard error of the 9 step-ahead forecast, `\(\hat{y}_{19}\)`.
+
+# 
+
+We have `\(\epsilon_t = y_t -y_{t-1} \implies \epsilon_1, \epsilon_2, ..., \epsilon_{10} = 2,3,5,3,5, 2, 4,1, 2,3\)`
+
+$$ \implies \bar{c} = \frac{\epsilon_1 + \epsilon_2 + ...+\epsilon_{10}}{10} = 3$$
+
+$$
+\implies s^2_c = \frac{1}{9}\sum_{i=1}^{10} \big(\epsilon_i - 3\big)^2 = 16/9
+$$ Hence, the standard error is `\(s_c\sqrt{l} = \frac{4}{3}\sqrt{9} = 4\)`
+
+
+your comment goes here
+and here
+--&gt;
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">\n  <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">\n  </div>\n</div>`"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

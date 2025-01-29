@@ -1,0 +1,127 @@
+---
+title: "Classification Model using Text Data"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+In this notebook, we will demonstrate can use text data to build a classification model. We will work with the Netflix dataset.  Suppose we want to build a classification model to predict if a descriptions belongs to TV Show or a movie.  That is, given a description of a TV Show or a Movie, the model will predict it is the description of a TV or a Show. 
+
+[Dataset](netflix_titles.csv)
+
+### Convert text variable to numeric variables
+
+- To use text data to build a classification model, we first need to convert the text data into numeric data. A common way is to convert the text data into document term matrix with tf-idf weights. The codes to do this are as follows. 
+
+```{r}
+library(caret)
+library(themis)
+library(textrecipes)
+library(tidyverse)
+library(ranger)
+
+df = read_csv('netflix_titles.csv')
+
+df <- df %>% 
+  select(type, description) %>% 
+  rename(target = type,
+         texts = description) %>% 
+  drop_na()
+
+# Convert text data to numeric variables
+a <- recipe(target ~.,
+       data = df) %>% 
+  step_tokenize(texts) %>% 
+  step_tokenfilter(texts, max_tokens = 100) %>% 
+  step_tfidf(texts) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_smote(target) %>% 
+  prep()
+df <- juice(a)
+df
+```
+
+- We can see that the text data from the `description` variable is now convert to 100 numeric variables (with the parameter `max_tokens = 100`). Each of these 100 variables present a token. 
+
+### Training a model
+
+- We then split the dataset into a training dataset (70%) and testing dataset (30%). We will use the `Random Forest` model to train on this data. 
+
+```{r}
+# Using Caret for modeling
+set.seed(2021)
+splitIndex <- createDataPartition(df$target, p = .7, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+model <- ranger(target ~ ., data = df_train)
+```
+### Testing the model
+
+```{r}
+pred <- predict(model, df_test)$predictions
+
+cm <- confusionMatrix(data = pred, reference = df_test$target)
+cm$overall[1]
+
+d = data.frame(pred = pred, obs = df_test$target)
+library(yardstick)
+d %>% conf_mat(pred, obs) %>% autoplot
+```
+
+
+### Improving the model
+
+- Notice that here we only use the `description` to build the model.  We can easily add more variables from the original dataset to improve the accuracy of the model
+
+```{r}
+df = read_csv('netflix_titles.csv')
+
+df <- df %>% 
+  select(type, description, country, release_year) %>% 
+  rename(target = type,
+         texts = description) %>% 
+  drop_na()
+
+# Convert text data to numeric variables
+a <- recipe(target ~.,
+       data = df) %>% 
+  step_tokenize(texts) %>% 
+  step_tokenfilter(texts, max_tokens = 100) %>% 
+  step_tfidf(texts) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_smote(target) %>% 
+  prep()
+df <- juice(a)
+
+set.seed(2021)
+splitIndex <- createDataPartition(df$target, p = .7, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+model <- ranger(target ~ ., data = df_train)
+
+pred <- predict(model, df_test)$predictions
+
+cm <- confusionMatrix(data = pred, reference = df_test$target)
+cm$overall[1]
+
+d = data.frame(pred = pred, obs = df_test$target)
+library(yardstick)
+d %>% conf_mat(pred, obs) %>% autoplot
+
+```
+- We notice that adding two more variables (`Country` and `release_year`) improves the accuracy of the model from 80% to 85%. 
+
+---

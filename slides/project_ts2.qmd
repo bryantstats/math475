@@ -1,0 +1,245 @@
+---
+title: "Time Series Project: Forecasting with ARIMA "
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+- Choose time series without seasonality.  ARIMA models can handle time series with trend but not good with seasonality.  Seasonal ARIMA or SARIMA works better with series that have seasonality. 
+
+- If your series has seasonality, deseasonlize the series before applying the ARIMA models. 
+
+------------------------------------------------------------------------
+
+Data
+
+- Non Seasonal Data:
+
+- Seasonal Data: Holt-Winter
+
+1. Exploration
+
+1. Visualization
+
+- Smoothing Techniques
+
+- Plot the series
+
+- Plot the ACF, PACF
+
+2. Model Diagnosis
+
+How to use arima? 
+
+3. Model Fitting
+
+4. Forecasting
+
+
+
+## Modelling
+
+### Train - Split
+
+```{r}
+Amtrak.data <- read.csv("Amtrak data.csv")
+ridership.ts <- ts(Amtrak.data$Ridership, start = c(1991,1), end = c(2004, 3), freq = 12)
+plot(ridership.ts, xlab = "Time", ylab = "Ridership", ylim = c(1300, 2300), bty = "l")
+
+# data partition
+nValid <- 36
+nTrain <- length(ridership.ts) - nValid
+train.ts <- window(ridership.ts, start = c(1991, 1), end = c(1991, nTrain))
+valid.ts <- window(ridership.ts, start = c(1991, nTrain + 1), end = c(1991, nTrain + nValid))
+
+# Modeling
+
+#basic models
+
+# average method: forecast by the average of the training series
+forecast4 = meanf(train.ts, h = nValid, level = 0)
+
+# naive: forecast by the last observation of the series
+forecast5 = naive(train.ts, h = nValid, level = 0)
+
+# seasonal naive: forecast by the last season
+forecast6 = snaive(train.ts, h = nValid, level = 0)
+
+# drift: drawing the line from the first to the last observation
+forecast7 = rwf(train.ts, h = nValid, level = 0, drift = TRUE)
+
+
+
+# more advanced model
+model1 <- tslm(train.ts ~ trend + I(trend^2) + season)
+model2 = auto.arima(train.ts)
+model3 = HoltWinters(train.ts, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+
+
+# forecasting
+forecast1 = forecast(model1, h = nValid, level = 0)
+forecast2 = forecast(model2, h = nValid, level = 0)
+forecast3 = forecast(model3, h = nValid, level = 0)
+
+
+# plotting forecast
+plot(forecast1)
+lines(valid.ts, col = 'red')
+plot(forecast2)
+lines(valid.ts, col = 'red')
+
+plot(forecast3)
+lines(valid.ts, col = 'red')
+
+
+# accuracy
+accuracy(forecast1$mean, valid.ts)
+accuracy(forecast2$mean, valid.ts)
+accuracy(forecast3$mean, valid.ts)
+```
+
+# Residual Plots
+
+Make sure the residual looks like white-noise
+The residuals should have no autocorrelation.
+The residuals should have a mean zero
+The residuals should have constant variance
+The residuals should be normally distributed
+
+
+```{r}
+checkresiduals(model1)
+checkresiduals(model2)
+checkresiduals(model3)
+```
+
+# Sample Project
+
+https://github.com/Maximus41/SP500-Time-Series-Analysis/blob/master/s-p500_analysis.md
+
+
+## ARIMA
+
+```{r}
+global_economy |>
+  filter(Code == "CAF") |>
+  autoplot(Exports) +
+  labs(title="Central African Republic exports",
+       y="% of GDP")
+
+y = global_economy %>% 
+  filter(Code == "CAF") %>% select(Exports)
+
+y = ts(y$Exports, start = c(1960), frequency = 1)
+auto_arima = auto.arima(y)
+forecasts <- forecast(auto_arima, 6)
+forecasts
+autoplot(forecasts)
+```
+
+## Train - Test Split
+
+```{r}
+recent_production <- aus_production |>
+  filter(year(Quarter) >= 1992)
+beer_train <- recent_production |>
+  filter(year(Quarter) <= 2007)
+
+beer_fit <- beer_train |>
+  model(
+    Mean = MEAN(Beer),
+    `Naïve` = NAIVE(Beer),
+    `Seasonal naïve` = SNAIVE(Beer),
+    Drift = RW(Beer ~ drift())
+  )
+
+beer_fc <- beer_fit |>
+  forecast(h = 10)
+
+beer_fc |>
+  autoplot(
+    aus_production |> filter(year(Quarter) >= 1992),
+    level = NULL
+  ) +
+  labs(
+    y = "Megalitres",
+    title = "Forecasts for quarterly beer production"
+  ) +
+  guides(colour = guide_legend(title = "Forecast"))
+
+accuracy(beer_fc, recent_production)
+
+
+```
+
+```{r}
+
+google_jan_2016 <- google_stock |>
+  filter(yearmonth(Date) == yearmonth("2016 Jan"))
+
+
+google_stock <- gafa_stock |>
+  filter(Symbol == "GOOG", year(Date) >= 2015) |>
+  mutate(day = row_number()) |>
+  update_tsibble(index = day, regular = TRUE)
+
+google_2015 <- google_stock |> filter(year(Date) == 2015)
+
+google_fit <- google_2015 |>
+  model(
+    Mean = MEAN(Close),
+    `Naïve` = NAIVE(Close),
+    Drift = RW(Close ~ drift()),
+    arima = ARIMA(Close)
+  )
+
+google_fc <- google_fit |>
+  forecast(google_jan_2016)
+
+google_fc |>
+  autoplot(bind_rows(google_2015, google_jan_2016),
+    level = NULL) +
+  labs(y = "$US",
+       title = "Google closing stock prices from Jan 2015") +
+  guides(colour = guide_legend(title = "Forecast"))
+
+accuracy(google_fc, google_stock)
+```
+
+
+
+```{r}
+library(fpp3)
+global_economy |>
+  filter(Code == "EGY") |>
+  autoplot(Exports) +
+  labs(y = "% of GDP", title = "Egyptian exports")
+
+fit <- global_economy |>
+  filter(Code == "EGY") |>
+  model(ARIMA(Exports))
+report(fit)
+
+fit |> forecast(h=10) |>
+  autoplot(global_economy) +
+  labs(y = "% of GDP", title = "Egyptian exports")
+
+global_economy |>
+  filter(Code == "EGY") |>
+  ACF(Exports) |>
+  autoplot()
+
+fit2 <- global_economy |>
+  filter(Code == "EGY") |>
+  model(ARIMA(Exports ~ pdq(4,0,0)))
+report(fit2)
+
+```
+

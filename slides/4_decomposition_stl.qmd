@@ -1,0 +1,178 @@
+---
+title: "Time Series Decomposition"
+format: 
+  beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Time Series Patterns
+
+A time series may consist of
+
+-   trend,
+
+-   seasonality and
+
+-   cycles
+
+# Trend
+
+-   A trend is a long-term increase or decrease in the data.
+
+-   Trend does not have to be linear.
+
+-   Sometimes we will refer to a trend as “changing direction”, when it might go from an increasing trend to a decreasing trend.
+
+# Examples
+
+![](images/ts6.png)
+
+-   The US treasury bill contracts show results from the Chicago market for 100 consecutive trading days in 1981. There is a downward trend
+
+# Examples
+
+![](images/ts7.png)
+
+-   There is no apparent trend in the data over this period
+
+# Cycle and Seasonal
+
+-   cycle: repeated events over time that are not equally spaced
+
+-   seasonal: repeated events over time that are equally spaced
+
+# Examples
+
+![](images/ts7.png)
+
+-   The monthly housing sales show strong seasonality within each year, as well as some strong cyclic behaviour with a period of about 6–10 years
+
+# Examples
+
+![](images/ts8.png)
+
+The Australian quarterly electricity production shows a strong increasing trend, with strong seasonality. There is no evidence of any cyclic behavior here
+
+# 
+
+![](images/ts9.png)
+
+-   No trend, seasonality or cyclic behaviour. There are random fluctuations which do not appear to be very predictable, and no strong patterns that would help with developing a forecasting model.
+
+# Time series decomposition
+
+-   When we decompose a time series into components, we usually combine the trend and cycle into a single trend-cycle component (sometimes called the trend for simplicity).
+
+-   Three components: a trend-cycle component, a seasonal component, and a remainder component (containing anything else in the time series).
+
+# Two decompositions
+
+-   Additive Decomposition
+
+$$
+y_t = S_t + T_t + R_t
+$$
+
+-   Multiplicative decomposition
+
+$$
+y_t = S_t\times T_t \times R_t
+$$
+
+# Relationship
+
+-   The log transformation will turn a multiplicative model to additive model.
+
+# Central MA vs. MA
+
+[Link](https://tjeld.uia.no/shiny/valeriz/centered-vs-right/#:~:text=The%20turning%20point%20in%20a,the%20greater%20the%20lag%20time).
+
+# Classical Decomposition
+
+-   Trend Estimate: Smooth the data using centred moving average (CMA) of the order equal to the periodicity of the data
+
+-   Detrend the data: calculate the detrended series by subtracting/dividing the trend estimate
+
+-   Seasonal Estimate: Average value for each period is calculated based on the de-trended series.
+
+-   Random/Remainder: subtract from the series the trend and seasonal component estimations
+
+# 
+
+```{r}
+data("AirPassengers")
+plot(AirPassengers)
+```
+
+# 
+
+```{r}
+ourDecomposition <- decompose(AirPassengers, type="additive")
+plot(ourDecomposition)
+```
+
+# 
+
+```{r}
+ourDecomposition <- decompose(AirPassengers, type="multiplicative")
+plot(ourDecomposition)
+```
+
+# 
+
+```{r, echo=TRUE}
+y <- ts(c(1:100) + 
+          50*cos(seq(0,16*pi,length.out=100)) + 
+          rnorm(100,0,10),frequency=12)
+```
+
+# 
+
+```{r}
+y <- ts(c(1:100) + 50*cos(seq(0,16*pi,length.out=100)) + rnorm(100,0,10),frequency=12)
+ourDecomposition <- decompose(y, type="additive")
+plot(ourDecomposition)
+```
+
+# STL Decomposition
+
+-   Classical Decomposition uses Central Moving Average to estimate the trend
+
+-   STL uses LOESS (locally estimated scatterplot smoothing) to estimate the trend
+
+-   [Link](https://www.wessa.net/download/stl.pdf)
+
+-   The seasonal component is estimated using moving averages of the de-trend series
+
+# 
+
+-   STL is a versatile and robust method for decomposing time series
+
+-   STL can be implemented using `stl` function
+
+# 
+
+```{r, eval=FALSE, echo=TRUE}
+data("AirPassengers")
+stl_Decomposition <- stl(AirPassengers, 
+                        s.window = "periodic")
+plot(stl_Decomposition)
+```
+
+# 
+
+```{r, echo=FALSE}
+data("AirPassengers")
+ourDecomposition <- stl(AirPassengers, s.window = "periodic")
+plot(ourDecomposition)
+```
+
+# Other Decomposition Methods
+
+-   X-11 decomposition: originated in the US Census Bureau and Statistics Canada
+
+-   SEATS decomposition: developed at the Bank of Spain, and is now widely used by government agencies around the world

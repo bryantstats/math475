@@ -1,0 +1,232 @@
+
+---
+title: "Autoregressive model - AR(p)"
+author: <font size="5"> Son Nguyen </font>
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>`
+---
+
+<style>
+
+.remark-slide-content {
+  background-color: #FFFFFF;
+  border-top: 80px solid #F9C389;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.5;
+  padding: 1em 2em 1em 2em
+}
+
+.inverse {
+  background-color: #696767;
+  border-top: 80px solid #696767;
+  text-shadow: none;
+  background-image: url(https://github.com/goodekat/presentations/blob/master/2019-isugg-gganimate-spooky/figures/spider.png?raw=true);
+	background-position: 50% 75%;
+  background-size: 150px;
+}
+
+.your-turn{
+  background-color: #8C7E95;
+  border-top: 80px solid #F9C389;
+  text-shadow: none;
+  background-image: url(https://github.com/goodekat/presentations/blob/master/2019-isugg-gganimate-spooky/figures/spider.png?raw=true);
+	background-position: 95% 90%;
+  background-size: 75px;
+}
+
+.title-slide {
+  background-color: #F9C389;
+  border-top: 80px solid #F9C389;
+  background-image: none;
+}
+
+.title-slide > h1  {
+  color: #111111;
+  font-size: 40px;
+  text-shadow: none;
+  font-weight: 400;
+  text-align: left;
+  margin-left: 15px;
+  padding-top: 80px;
+}
+.title-slide > h2  {
+  margin-top: -25px;
+  padding-bottom: -20px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 300;
+  font-size: 35px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide > h3  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 300;
+  font-size: 25px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -30px;
+}
+
+</style>
+
+```{css, echo=FALSE}
+.left-code {
+  color: #777;
+  width: 48%;
+  height: 92%;
+  float: left;
+}
+.right-plot {
+  width: 51%;
+  float: right;
+  padding-left: 1%;
+}
+```
+
+```{r setup, include = FALSE}
+
+# R markdown options
+knitr::opts_chunk$set(echo = TRUE, 
+                      
+                      fig.width = 10,
+                      fig.height = 5,
+                      fig.align = "center", 
+                      message = FALSE,
+                      warning = FALSE)
+
+# Load packages
+library(tidyverse)
+library(forecast)
+```
+
+# AR(p)
+
+$$y_t = \beta_0 + \beta_1y_{t-1}+ \beta_2y_{t-2} +....+ \beta_py_{t-p} + \epsilon$$
+
+---
+# Partial Autocorrelation
+
+If $X$, $Y$ and $Z$ are random variables then the partial autocorrelation between $X$ and $Y$ given $Z$ is the correlation between $X$ and $Y$ with the linear effect of $Z$ removed from both $X$ and $Y$. 
+
+- Regress $X$ on $Z$ to obtain $\hat{X}$, the linear effect of $Z$ in $X$, 
+- $X -\hat{X}$ is $X$ with the linear effect of $Z$ removed 
+- Regress $Y$ on $Z$ to obtain $\hat{Y}$, the linear effect of $Z$ in $Y$, 
+- $Y -\hat{Y}$ is $Y$ with the linear effect of $Z$ removed 
+
+$$
+p_{XY|Z} = corr(X-\hat{X}, Y- \hat{Y})
+$$
+
+---
+# PACF
+
+- Let $p_1$ be the correlation between $y_t$ and itself, thus $p_1 =  1$
+
+- $p_2$ be the partial autocorrelation between $y_t$ and $y_{t-2}$ given $y_{t-1}$ (removing the effect of $y_t-1$)
+
+- $p_3$ be the partial autocorrelation between $y_t$ and $y_{t-3}$ given $y_{t-1}, y_{t-2}$ (removing the effect of $y_{t-1}, y_{t-2}$)
+
+- And so on
+
+---
+# PACF of AR(p)
+
+Consider an AR(2) model
+
+$$y_t = \beta_0 + \beta_1y_{t-1}+ \beta_2y_{t-2} + \epsilon$$
+- Then
+
+$$PACF(3) =  PACF(4) = ...= 0$$
+
+---
+# Example
+
+```{r}
+yt <- arima.sim(list(order=c(3,0,0), ar=c(.1, .65, .2)), n=10000)
+b0 = 10
+yt <- yt + b0
+pacf(yt)
+```
+
+---
+# Example
+
+```{r}
+library(quantmod)
+library(forecast)
+getSymbols("MSFT")
+yt = MSFT$MSFT.Open
+yt <- yt[index(yt) > "2023-01-01"]
+pacf(yt)
+```
+
+---
+# Example
+
+```{r}
+# estimate the series using AR(1) model
+yt_ar  = arima(yt, order = c(1,0,0))
+
+# plot the estimated series and the original series
+yt_predicted <- yt - yt_ar$residuals
+
+plot(yt)
+points(yt_predicted, type = "l", 
+       col = "red", lty = 2)
+```
+
+---
+# Example
+
+```{r}
+yt_forecasts <- forecast(yt_ar, h=5)
+plot(yt_forecasts)
+```
+
+
+---
+# Example
+
+```{r}
+d = read.csv('earthquakes.csv')   
+yt = ts(d$Quakes, frequency = 1, start = 1916)
+pacf(yt)
+```
+
+---
+# Example
+
+```{r}
+# estimate the series using AR(1) model
+yt_ar  = arima(yt, order = c(3,0,0))
+
+# plot the estimated series and the original series
+yt_predicted <- yt - yt_ar$residuals
+
+plot(yt)
+points(yt_predicted, type = "l", 
+       col = "red", lty = 2)
+```
+
+---
+# Example
+
+```{r}
+yt_forecasts <- forecast(yt_ar, h=5)
+plot(yt_forecasts)
+```
+

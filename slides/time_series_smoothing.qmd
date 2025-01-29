@@ -1,0 +1,426 @@
+---
+title: "Time Series"
+format: 
+  beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Cross Sectional vs. Time Series Data
+
+-   Cross Sectional Data: Multiple objects observed at a particular point of time
+
+# Cross Sectional vs. Time Series Data
+
+-   Cross Sectional Data: Multiple objects observed at a particular point of time
+
+-   Examples: customers' behavioral data at today's update,companies' account balances at the end of the last year,patients' medical records at the end of the current month.
+
+# Cross Sectional vs. Time Series Data
+
+-   Time Series Data: One single object (product, country, sensor, ..) observed over multiple equally-spaced time periods
+
+# Cross Sectional vs. Time Series Data
+
+-   Time Series Data: One single object (product, country, sensor, ..) observed over multiple equally-spaced time periods
+
+-   Examples: quarterly Italian GDP of the last 10 years, weekly supermarket sales of the previous year, yesterday's hourly temperature measurements.
+
+# Examples
+
+![](images/ts1.png)
+
+# Examples
+
+![](images/ts2.png)
+
+# Examples
+
+![](images/ts3.png)
+
+# Examples
+
+![](images/ts4.png)
+
+# Examples
+
+![](images/ts5.png)
+
+# Examples
+
+```{r}
+# define data
+library(ggfortify)
+library(tidyverse)
+library(xts)
+library(fpp2)
+library(TTR)
+sales=BJsales
+earnings=JohnsonJohnson
+nile=Nile
+url="http://www.cru.uea.ac.uk/cru/data/temperature/CRUTEM3v-gl.dat"
+f=read.table(url,fill=TRUE)
+ny=nrow(f)/2;x=c(t(f[2*1:ny-1,2:13]))
+temperature=ts(x,start=2019,frequency=12,end=c(2020,1))
+autoplot(temperature)+ ggtitle("World Temperature")
+```
+
+# What to do with time series?
+
+-   Understanding of specific series features or pattern
+
+-   Forecasting
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Smoothing
+\end{center}
+```
+# Smoothing
+
+-   Smoothing is usually done to reveal the series patterns and trends.
+
+# Simple Moving Average Smoothing
+
+-   Moving Average (MA) creates a new series by averaging the most recent observations from the original series.
+
+-   MA(k) creates $s_t$ as follows.
+
+$$
+s_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+$$
+
+-   Larger $k$ will smooth the series more strongly
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Medical Component of the CPI"))
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 4
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 16
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 32
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 1
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Original Series"))
+```
+
+# 
+
+```{r}
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 2
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+k = 5
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+k = 12
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# Forecasting
+
+-   We can use smoothing for forecasting
+
+-   We have \begin{align*}
+    \hat{s}_t &= \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}\\
+    &=\frac{y_t + y_{t-1} +...+ y_{t-k+1}+y_{t-k}-y_{t-k}}{k}\\
+    &=\frac{y_t + \bigg(y_{t-1} +...+ y_{t-k+1}+y_{t-k}\bigg)-y_{t-k}}{k}\\
+    &= \frac{y_t + k\hat{s}_{t-1}-y_{t-k}}{k}\\
+    &= \hat{s}_{t-1} + \frac{y_t-y_{t-k}}{k}
+    \end{align*}
+
+# Forecasting
+
+-   If there is no trend in $y_t$ the second term $(y_t-y_{t-k})/k$ can be ignored
+-   Forecasting $l$ lead time into future by
+
+$$
+\hat{y}_{T+l} = \hat{s}_T
+$$
+
+-   If there is a linear trend in a series, we can use the double moving average to estimate the trend (slope)
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Double MA
+\end{center}
+```
+# 7. Double MA
+
+-   Linear trend time series: $$
+    y_t = \beta_0 + \beta_1t +\epsilon_t
+    $$
+
+-   Step 1: Smooth the series $$
+    \hat{s}^{(1)}_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+    $$
+
+-   Step 2: Smooth the smoothed series $$
+    \hat{s}^{(2)}_{t} = \frac{\hat{s}^{(1)}_t + \hat{s}^{(1)}_{t-1} +...+ \hat{s}^{(1)}_{t-k+1}}{k}
+    $$
+
+-   Step 3: Calculate the trend $$
+    b_1 = \hat{\beta_1} =  \frac{2}{k-1}\bigg(\hat{s}_T^{(1)}-\hat{s}_T^{(2)}\bigg)
+    $$
+
+# Forecasting
+
+-   Forecasting $l$ lead time into future by $$
+    \hat{y}_{T+l} = \hat{s}_T + b_1 \cdot l
+    $$
+
+# 
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+-   Forecasting $y_{7}$ using simple moving average with $k = 2$
+
+-   Forecasting $y_{7}$ using double moving average with $k = 2$
+
+# 
+
+# Example
+
+-   We simulate 100 data points ($T=100$) of $$
+    y_t = 1 +3t + \epsilon, 
+    $$ where, $\epsilon \sim N(0, 5^2)$.
+
+# 
+
+```{r}
+set.seed(2022)
+n = 100
+y = rep(0, n)
+
+y[1] = 0
+b0 = 1
+b1 = 3
+
+e = rnorm(n, sd = 5)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*t+e[t]
+}
+
+k = 12 
+s1 = SMA(y, n = k)
+s2 = SMA(s1, n = k)
+
+
+b1_hat = 2*(s1[n]-s2[n])/(k-1)
+
+autoplot(ts(y)) + ggtitle("Original Series")
+```
+
+# 
+
+```{r}
+autoplot(ts(s1)) + ggtitle(paste0("MA Series with k = ",k))
+```
+
+# 
+
+```{r}
+autoplot(ts(s2)) + ggtitle(paste0("Double MA Series with k = ",k))
+```
+
+# 
+
+-   Using the above steps, the estimated trend is $b_1 = 2.92$
+
+-   The forecast for the next points from $y_{100}$ is
+
+$$
+    \hat{y}_{100+l} = \hat{s}_{100}+ b_1\cdot l = \hat{s}_{100}+ 2.92\cdot l
+$$
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Exponential Smoothing
+\end{center}
+```
+# Exponential Smoothing
+
+-   MA distributes the weight equally to the recent observations
+
+-   Exponential Smoothing controls the weights of the recent observations by $w$
+
+$$
+\hat{s}_{t} = \frac{y_t + wy_{t-1} + w^2y_{t-2} + ... + w^ty_0}{1/(1-w)}
+$$
+
+-   Smaller $w$ ($w \to 0$) gives higher weights to the more recent observations
+
+-   Smaller $w$ smooths the series more lightly.
+
+# Exponential Smoothing
+
+-   We have \begin{align*}
+    \hat{s}_{t} &= \hat{s}_{t-1} + (1-w)(y_t-\hat{s}_{t-1})\\
+    & = (1-w)y_t + w\hat{s}_{t-1}
+    \end{align*}
+
+-   When $w \to 0$, $\hat{s}_{t} \to y_t$, or little smoothing has taken
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .9
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .5
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .1
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Double Exponential Smoothing
+\end{center}
+```
+# Double Exponential Smoothing
+
+We can use double smoothing to identify the trend and forecast linear trend time series as follows.
+
+-   Step 1: Create a smoothed series: $\hat{s}^{(1)}_{t} = (1-w)y_t + w\hat{s}^{(1)}_{t-1}$
+
+-   Step 2: Create a double smoothed series: $\hat{s}^{(2)}_{t} = (1-w)\hat{s}^{(1)}_{t} + w\hat{s}^{(2)}_{t-1}$
+
+-   Step 3: Estimate the trend: $$
+    b_1 = \frac{1-w}{w}(\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T})
+    $$
+
+-   Step 4: Forecast
+
+$$
+\hat{y}_{T+l} = 2\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T}+b_1\cdot l
+$$
+
+# Example
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+-   Forecasting $y_{7}$ using exponential smoothing with $w = .8$
+
+-   Forecasting $y_{7}$ using double exponential smoothing with $w = .8$
+
+# Citation
+
+-   Photos are taken from KNIME Hub

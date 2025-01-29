@@ -1,0 +1,41 @@
+---
+title: "Assignment 3: Time Series Decomposition"
+format: html
+editor: visual
+---
+
+------------------------------------------------------------------------
+
+***Submission***: Submit photos of the answers to Canvas. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+**Question** 
+
+- Use the following codes to plot the Airline Passenger data and its additive decomposition
+
+```{r, eval=FALSE}
+data("AirPassengers")
+plot(AirPassengers)
+ourDecomposition <- decompose(AirPassengers, type="additive")
+plot(ourDecomposition)
+```
+
+- Change `additive` to `multiplicative` to plot the multiplicative decomposition
+
+- Plot the [Electric_Production](data/Electric_Production.csv) and its decomposition (*Notice: You need to use function `ts` to create the time series first*)
+
+- Plot the [Electric_Production](data/Electric_Production.csv) from 1985 to 1995 and its decomposition
+
+```{r, eval=FALSE, echo=FALSE}
+d =  read.csv('data/Electric_Production.csv')
+t2 = ts(d$IPG2211A2N, start = 1985, end = 1995, frequency = 12)
+ourDecomposition <- decompose(t2, type="additive")
+plot(ourDecomposition)
+```
+
+- (Ask the instructor:) Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  

@@ -1,0 +1,421 @@
+---
+title: "Time Series Project"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = FALSE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+# 1. Exploration
+
+- Import the series. Specify the correct time index and frequency for the series. 
+
+- Plot the time series.  
+
+- Comment on the the trend of the series (does the series have trend? upward or downward? from when to when, etc). 
+
+- Comment on the seasonality of the series (does the series have seasonal component? if so, what is the seasonal period, etc.)
+
+- Comment on the seasonality of the series. Notice that trend or seasonal series is not stationary, being stationary implying having constant variance and constant mean. 
+
+
+```{r}
+library(TTR)
+library(forecast)
+df <- read.csv("Amtrak data.csv")
+y <- ts(df$Ridership, start = c(1991,1), end = c(2004, 3), freq = 12)
+plot(y, xlab = "Time", ylab = "Ridership")
+```
+
+### Smoothing 
+
+- *Moving Average*:  Explain the main idea of Moving average (MA). Apply the MA method on the series.  Plot the original series and its MA smoothing. Try a few different moving average $k$ and comment on the trend of the series through the smoothing curve. What values of $k$ best reveal the series pattern?  
+
+```{r}
+plot(y, xlab = "Time", ylab = "Ridership")
+
+# create a moving average series
+k = 16  # set the moving average 
+y_sma = SMA(y, n = k)
+
+# plot the moving average series
+lines(y_sma, col = "red")
+```
+
+- *Exponential Smoothing* (ES): Explain the main idea of Moving average.  Apply the ES method on the series.  Plot the original series and its ES smoothing. Try a few different weights comment on the trend of the series through the smoothing curve. What values of the weight best reveal the series' pattern?  Compare the ES curve and the MA curve above. 
+
+
+```{r}
+plot(y, xlab = "Time", ylab = "Ridership")
+
+# create a moving average series
+w = .7
+
+y_ema = EMA(y, ratio = 1-w)
+
+
+# plot the moving average series
+lines(y_ema, col = "red")
+```
+
+### Decomposition
+
+- *Classical Decomposition.* Explain the idea of Classical Decomposition in your own words. Apply the classical decomposition on the series for additive model and multiplicative model. 
+
+```{r}
+ourDecomposition <- decompose(y, type="additive")
+plot(ourDecomposition)
+```
+
+
+```{r}
+ourDecomposition <- decompose(y, type="multiplicative")
+plot(ourDecomposition)
+```
+
+-  *STL Decomposition.* Explain the idea of STL Decomposition in your own words. What is the main difference between the classical decomposition and STL Decomposition. Apply STL Decomposition on the series. 
+
+```{r}
+ourDecomposition <- stl(y, s.window = "periodic")
+plot(ourDecomposition)
+```
+
+### Auto-correltion 
+
+- Explain what the Auto-correlation Function (ACF) is and plot the ACF of the series. What is the first value of the ACF (ACF when the lag is 0) Is the series stationary according to the look of the ACF?
+
+```{r}
+acf(y)
+```
+
+- Explain what the Partial Auto-correlation Function (PACF) is and plot the PACF of the series. 
+
+```{r}
+pacf(y)
+```
+
+
+## 2. Modelling
+
+- Split the original series into the training series and the testing series 
+
+- Applying two models
+
+### Train - Split
+
+```{r}
+# data partition
+nValid <- 36
+nTrain <- length(y) - nValid
+train.ts <- window(y, start = c(1991, 1), end = c(1991, nTrain))
+valid.ts <- window(y, start = c(1991, nTrain + 1), end = c(1991, nTrain + nValid))
+
+# Modeling
+
+# more advanced model
+model1 <- tslm(train.ts ~ trend + I(trend^2)+ season)
+model2 = auto.arima(train.ts)
+model3 = HoltWinters(train.ts, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+```
+
+## 3. Model Evaluation
+
+### Residual Analysis
+
+Make sure the residual looks like white-noise
+The residuals should have no autocorrelation.
+The residuals should have a mean zero
+The residuals should have constant variance
+The residuals should be normally distributed
+
+```{r}
+checkresiduals(model1)
+checkresiduals(model2)
+checkresiduals(model3)
+```
+
+### Testing Accuracy 
+
+```{r}
+
+#basic models
+
+# average method: forecast by the average of the training series
+forecast4 = meanf(train.ts, h = nValid, level = 0)
+
+# naive: forecast by the last observation of the series
+forecast5 = naive(train.ts, h = nValid, level = 0)
+
+# seasonal naive: forecast by the last season
+forecast6 = snaive(train.ts, h = nValid, level = 0)
+
+# drift: drawing the line from the first to the last observation
+forecast7 = rwf(train.ts, h = nValid, level = 0, drift = TRUE)
+
+# forecasting
+forecast1 = forecast(model1, h = nValid, level = 0)
+forecast2 = forecast(model2, h = nValid, level = 0)
+forecast3 = forecast(model3, h = nValid, level = 0)
+
+
+# plotting forecast
+plot(forecast1)
+lines(valid.ts, col = 'red')
+plot(forecast2)
+lines(valid.ts, col = 'red')
+
+plot(forecast3)
+lines(valid.ts, col = 'red')
+
+
+# accuracy
+a1 = accuracy(forecast1$mean, valid.ts)
+a2 = accuracy(forecast2$mean, valid.ts)
+a3 = accuracy(forecast3$mean, valid.ts)
+a4 = accuracy(forecast4$mean, valid.ts)
+a5 = accuracy(forecast5$mean, valid.ts)
+a6 = accuracy(forecast6$mean, valid.ts)
+
+rbind(a1, a2, a3, a4, a5, a6)
+```
+
+## 4. Forecasting
+
+Based on the model evaluation above, decide the best model.  Retrain the best model on the entire series.  Use the retrained model to forecast the next values. Plot the series and the forecast values. 
+
+```{r}
+selected_model =  auto.arima(y)
+new_forecast = forecast(selected_model)
+plot(new_forecast)
+```
+
+
+```{r}
+# Monthly Data
+## ALL CODES
+library(TTR)
+library(forecast)
+df <- read.csv("Amtrak data.csv")
+y <- ts(df$Ridership, start = c(1991,1), end = c(2004, 3), freq = 12)
+plot(y, xlab = "Time", ylab = "Ridership")
+
+##############
+plot(y, xlab = "Time", ylab = "Ridership")
+
+# create a moving average series
+k = 16  # set the moving average 
+y_sma = SMA(y, n = k)
+
+# plot the moving average series
+lines(y_sma, col = "red")
+
+
+plot(y, xlab = "Time", ylab = "Ridership")
+
+# create a moving average series
+w = .7
+
+y_ema = EMA(y, ratio = 1-w)
+
+
+# plot the moving average series
+lines(y_ema, col = "red")
+
+
+ourDecomposition <- decompose(y, type="additive")
+plot(ourDecomposition)
+ourDecomposition <- decompose(y, type="multiplicative")
+plot(ourDecomposition)
+
+acf(y)
+pacf(y)
+
+# data partition
+nValid <- 36
+nTrain <- length(y) - nValid
+train.ts <- window(y, start = c(1991, 1), end = c(1991, nTrain))
+valid.ts <- window(y, start = c(1991, nTrain + 1), end = c(1991, nTrain + nValid))
+
+# Modeling
+
+# more advanced model
+model1 <- tslm(train.ts ~ trend + I(trend^2)+ season)
+model2 = auto.arima(train.ts)
+model3 = HoltWinters(train.ts, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+
+checkresiduals(model1)
+checkresiduals(model2)
+checkresiduals(model3)
+
+
+
+#basic models
+
+# average method: forecast by the average of the training series
+forecast4 = meanf(train.ts, h = nValid, level = 0)
+
+# naive: forecast by the last observation of the series
+forecast5 = naive(train.ts, h = nValid, level = 0)
+
+# seasonal naive: forecast by the last season
+forecast6 = snaive(train.ts, h = nValid, level = 0)
+
+# drift: drawing the line from the first to the last observation
+forecast7 = rwf(train.ts, h = nValid, level = 0, drift = TRUE)
+
+# forecasting
+forecast1 = forecast(model1, h = nValid, level = 0)
+forecast2 = forecast(model2, h = nValid, level = 0)
+forecast3 = forecast(model3, h = nValid, level = 0)
+
+
+# plotting forecast
+plot(forecast1)
+lines(valid.ts, col = 'red')
+plot(forecast2)
+lines(valid.ts, col = 'red')
+
+plot(forecast3)
+lines(valid.ts, col = 'red')
+
+
+# accuracy
+a1 = accuracy(forecast1$mean, valid.ts)
+a2 = accuracy(forecast2$mean, valid.ts)
+a3 = accuracy(forecast3$mean, valid.ts)
+a4 = accuracy(forecast4$mean, valid.ts)
+a5 = accuracy(forecast5$mean, valid.ts)
+a6 = accuracy(forecast6$mean, valid.ts)
+
+rbind(a1, a2, a3, a4, a5, a6)
+
+selected_model =  auto.arima(y)
+new_forecast = forecast(selected_model)
+plot(new_forecast)
+
+```
+
+
+```{r}
+## ALL CODES
+library(TTR)
+library(forecast)
+
+df <- read.csv("data/algeria_economy.csv")
+
+#df <- read.csv("Amtrak data.csv")
+
+
+
+y <- ts(df$GDP, start = c(1960), freq = 1)
+plot(y)
+
+##############
+
+
+# create a moving average series
+k = 16  # set the moving average 
+y_sma = SMA(y, n = k)
+
+# plot the moving average series
+lines(y_sma, col = "red")
+
+
+plot(y)
+
+# create a moving average series
+w = .7
+
+y_ema = EMA(y, ratio = 1-w)
+
+
+# plot the moving average series
+lines(y_ema, col = "red")
+
+
+ourDecomposition <- decompose(y, type="additive")
+plot(ourDecomposition)
+ourDecomposition <- decompose(y, type="multiplicative")
+plot(ourDecomposition)
+
+acf(y)
+pacf(y)
+
+# data partition
+nValid <- round(0.2*length(y))
+nTrain <- length(y) - nValid
+train.ts <- window(y, start = c(1960), end = c(2000))
+valid.ts <- window(y, start = c(2001), end = c(2017))
+
+# Modeling
+
+# more advanced model
+model1 <- tslm(train.ts ~ trend + I(trend^2)+ season)
+model2 = auto.arima(train.ts)
+model3 = HoltWinters(train.ts, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+
+model8 = tbats(train.ts)
+forecast8 = forecast(model1, h = nValid, level = 0)
+
+checkresiduals(model1)
+checkresiduals(model2)
+checkresiduals(model3)
+
+#basic models
+
+# average method: forecast by the average of the training series
+forecast4 = meanf(train.ts, h = nValid, level = 0)
+
+# naive: forecast by the last observation of the series
+forecast5 = naive(train.ts, h = nValid, level = 0)
+
+# seasonal naive: forecast by the last season
+forecast6 = snaive(train.ts, h = nValid, level = 0)
+
+# drift: drawing the line from the first to the last observation
+forecast7 = rwf(train.ts, h = nValid, level = 0, drift = TRUE)
+
+# forecasting
+forecast1 = forecast(model1, h = nValid, level = 0)
+forecast2 = forecast(model2, h = nValid, level = 0)
+forecast3 = forecast(model3, h = nValid, level = 0)
+
+
+# plotting forecast
+plot(forecast1)
+lines(valid.ts, col = 'red')
+plot(forecast2)
+lines(valid.ts, col = 'red')
+
+plot(forecast3)
+lines(valid.ts, col = 'red')
+
+
+# accuracy
+a1 = accuracy(forecast1$mean, valid.ts)
+a2 = accuracy(forecast2$mean, valid.ts)
+a3 = accuracy(forecast3$mean, valid.ts)
+a4 = accuracy(forecast4$mean, valid.ts)
+a5 = accuracy(forecast5$mean, valid.ts)
+a6 = accuracy(forecast6$mean, valid.ts)
+
+rbind(a1, a2, a3, a4, a5, a6)
+
+selected_model =  auto.arima(y)
+new_forecast = forecast(selected_model)
+plot(new_forecast)
+```
+
+

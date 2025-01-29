@@ -1,0 +1,251 @@
+
+---
+title: "Analyzing frequency: tf-idf"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      
+   
+
+---
+class: inverse, middle, center
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
+```
+
+---
+Suppose we have a text data that contains $n$ document as below. 
+
+| Document  |   Texts         |
+|---|------------|
+| 1  | blah blah  | 
+| 2  |  blah blah |
+| ...  | ...        |
+| n  | blah blah   | 
+
+- A document could be a sentence, a paragraph 
+
+- A document contains of `terms`.  Terms could be a word or a collection of words
+
+- How important is a word/term to a document?
+
+---
+# Term frequency (tf)
+
+- The more often the words show up the more important it is
+
+- We could use `Term Frequency`   
+
+- TF (Term Frequency) = (Number of times term `t` appears in a document) / (Total number of terms in the document).
+
+- Please notice that the same word/term may have different `tf` in a different document
+
+- For example: the word `love` in document 1 may have different `tf` when compared with that of document 2. 
+
+---
+# Example
+
+- Calculate the term frequency of the word `cats` for each document in the below text dataset. 
+
+
+|   | Document     |
+|:---|:--------------|
+| 1 | I love cats. Cats are renowned for their graceful agility. Cats are awesome!  |
+| 2 | Cats are furry animals that like to sleep.            |
+| 3 | Dogs and cats are popular pets that bring joy to many families            |
+| 4 | Dogs are friendly animals that enjoy companionship.            |
+
+---
+# Issues with Term frequency (tf)
+
+- Sometimes: Rare terms are more informative than frequent terms
+
+    - Example: “the”, “is”, “of”...
+
+- We should remove some words such as “the”, “is”, “of” if we use `tf` as a measure of importance
+
+- Or we could create a `weight` for a term so that the rare words would have higher weights.
+
+- Inverse Document Frequency (idf) is such a weight
+
+
+---
+# Inverse Document Frequency (idf)
+
+- IDF (Inverse Document Frequency) = log_e(Total number of documents / Number of documents with term `t` in it).
+
+$$idf(t) = \ln \bigg(\frac{\text{Total number of documents}}{\text{Number of documents with term t in it}} \bigg)$$
+
+- The idf of a rare term is high, whereas the idf of a frequent term is likely to be low
+
+- The `idf` of a term is a constant throughout the document.  For example the word `love` in Document 1 should have the same `idf` as the word `love` in Document 2. 
+
+---
+# tf-idf
+
+
+$$\text{tf-idf }(t) = \text{tf }(t) \cdot \text{tf }(t) $$
+
+- The `tf-idf` of the same term may have different values in different documents.  For example the word `love` in Document 1 may have a different value `tf-idf` compared to the word `love` in Document 2. 
+
+
+---
+# Example
+
+- Calculate the idf and tf-idf of the word `cats` for the documents in the below text dataset. 
+
+
+|   | Document     |
+|:---|:--------------|
+| 1 | I love pets. Cats are renowned for their graceful agility. Cats are awesome!  |
+| 2 | Cats are friendly animals that like to sleep.            |
+| 3 | Dogs and cats are friendly pets that bring joy to many families            |
+| 4 | Dogs are friendly animals that enjoy companionship.            |
+
+---
+# Example
+
+[Sample Codes](assignment14_codes.html)
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('amazon_reviews.csv')
+
+df = df %>% 
+  select(name, reviews.text) %>% 
+  filter(name %in% c('Amazon Kindle Paperwhite - eBook reader - 4 GB - 6 monochrome Paperwhite - touchscreen - Wi-Fi - black,,,',	
+'All-New Fire HD 8 Tablet, 8 HD Display, Wi-Fi, 16 GB - Includes Special Offers, Magenta')) %>% 
+  rename(texts = reviews.text,
+         document = name)
+
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+df_words = df %>% 
+  unnest_tokens(input = texts, output = word) %>% 
+  count(document, word, sort = TRUE) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)
+
+total_words <- df_words %>% 
+  group_by(document) %>% 
+  summarize(total = sum(n))
+
+df_words <- left_join(df_words, total_words)
+
+df_tf = df_words %>% 
+  group_by(document) %>% 
+  mutate(tf = n/total)
+
+df_tf %>% 
+  group_by(document) %>% 
+  slice_max(tf, n = 5) %>% 
+  ungroup() %>%
+  ggplot(aes(tf, fct_reorder(word, tf), fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, ncol = 2, scales = "free") +
+  labs(x = "tf", y = NULL)
+
+
+```
+
+---
+# Plot tf-idf
+
+```{r}
+df_tf_idf <- df_words %>%
+  bind_tf_idf(word, document, n)
+
+library(forcats)
+df_tf_idf %>%
+  group_by(document) %>%
+  slice_max(tf_idf, n = 15) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, ncol = 2, scales = "free") +
+  labs(x = "tf-idf", y = NULL)
+
+```
+
+
+
+
+---
+
+```{r, eval=FALSE, echo=FALSE}
+library(tidyverse)
+library(tidytext)
+library(knitr)
+library(kableExtra)
+df <- read_csv('netflix_titles.csv')
+
+df = df %>% 
+  select(type, description) %>% 
+  rename(texts = description,
+         document = type)
+
+
+df_words = df %>% 
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(tibble(word = c(letters, LETTERS, "oh", 'just'))) %>% 
+  count(document, word, sort = TRUE)
+
+total_words <- df_words %>% 
+  group_by(document) %>% 
+  summarize(total = sum(n))
+
+df_words <- left_join(df_words, total_words)
+
+df_tf = df_words %>% 
+  group_by(document) %>% 
+  mutate(tf = n/total)
+
+
+df_tf %>% 
+  group_by(document) %>% 
+  slice_max(tf, n = 5) %>% 
+  ungroup() %>%
+  ggplot(aes(tf, fct_reorder(word, tf), fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, ncol = 2, scales = "free") +
+  labs(x = "tf", y = NULL)
+
+
+df_tf_idf <- df_words %>%
+  bind_tf_idf(word, document, n)
+
+library(forcats)
+
+df_tf_idf %>%
+  group_by(document) %>%
+  slice_max(tf_idf, n = 15) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, ncol = 2, scales = "free") +
+  labs(x = "tf-idf", y = NULL)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

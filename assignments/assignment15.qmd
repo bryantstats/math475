@@ -1,0 +1,35 @@
+---
+title: "Assignment 15 - Text Clustering"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+### Question. 
+
+[Sample Codes](assignment15_codes2.html)
+
+Find two text datasets and do the follows.  
+
+- Print out a sample of the Document Term Matrix using term frequency
+
+- Print out a sample of the Document Term Matrix using tf-idf
+
+- Cluster the words in the dataset using k-means. 
+
+- Plot the words frequency of the words in each clusters
+
+- Plot the frequency of the part of speech of all the words in the dataset.  

@@ -1,0 +1,273 @@
+
+---
+title: "Text Mining - Exploration"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      
+   
+
+---
+class: inverse, middle, center
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
+```
+
+
+
+
+---
+# Token
+
+- A token is a meaningful unit of text. 
+
+---
+
+```{r, echo=TRUE}
+library(tidyverse)
+library(tidytext)
+text <- c("Bryant University: A private university in Smithfield, Rhode Island! It has two colleges, the College of Arts and Sciences and the College of Business, and is accredited by the New England Commission of Higher Education")
+
+text_df <- tibble(text = text)
+
+text_df %>%
+    unnest_tokens(word, text)
+
+```
+
+
+---
+# Text Data 
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(knitr)
+library(kableExtra)
+df <- read_csv('netflix_titles.csv')
+df %>% head(5) %>% select(title, release_year, description) %>% kable()
+```
+
+
+
+```{r, message=FALSE, eval=FALSE}
+library(tidyverse)
+library(tidytext)
+library(knitr)
+library(kableExtra)
+df <- read_csv('netflix_titles.csv')
+df %>% head(5) %>% select(title, release_year, description) %>% kable()
+```
+
+---
+
+- The first 5 rows and a three columns of the data
+
+```{r, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(tidytext)
+library(knitr)
+library(kableExtra)
+df <- readr::read_csv('netflix_titles.csv')
+df %>% head(5) %>% select(title, release_year, description) %>% kable()
+```
+
+
+
+---
+```{r}
+library(tidyverse)
+library(tidytext)
+library(knitr)
+library(kableExtra)
+df <- readr::read_csv('netflix_titles.csv')
+
+d1 <- df %>% 
+  filter(title=='Avengers: Infinity War') %>% 
+  select(title, description)
+kable(d1)
+```
+
+---
+```{r}
+d1 %>% unnest_tokens(input = description, output = word) %>% 
+  kable() %>% kable_styling(font_size = 12)
+```
+
+---
+```{r}
+d1 %>% unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  rename(token = word) %>% 
+  kable()%>% kable_styling(font_size = 12)
+```
+
+
+---
+
+```{r}
+df %>% 
+  filter(title=='Avengers: Infinity War'|title=='Spider-Man 3') %>% 
+  select(title, description) %>% 
+  unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  rename(token = word) %>% 
+  kable()%>% kable_styling(font_size = 10)
+```
+
+
+---
+```{r}
+d1 <- df %>%
+  unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  rename(token = word) %>% 
+  count(token, sort = TRUE)
+
+d1 %>% head(10) %>% kable()
+```
+
+---
+```{r}
+d1 %>% head(10) %>% 
+  ggplot(aes(x = n, y = reorder(token, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+```
+
+---
+class: center
+```{r, echo=FALSE}
+library(wordcloud) 
+pal <- brewer.pal(8,"Dark2")
+d1 %>%
+  with(wordcloud(token, n, random.order = FALSE, 
+                 max.words = 50, colors=pal))
+```
+
+---
+# Sentiment Analysis
+
+```{r}
+df %>% 
+  filter(title=='Avengers: Infinity War') %>% 
+  select(title, description) %>% 
+  kable()
+
+d1 <- df %>% 
+  filter(title=='Avengers: Infinity War') %>% 
+  select(title, description)
+
+```
+
+---
+```{r}
+d1 %>% 
+  unnest_tokens(input = description, output = word) %>% 
+  kable() %>% kable_styling(font_size = 12)
+```
+
+---
+```{r}
+d1 %>% unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  kable() %>% kable_styling(font_size = 12)
+```
+
+
+---
+# Using `nrc`
+```{r}
+d1 %>% unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  kable()
+```
+
+ - Some words are missing
+ - Some words have more than one sentiment
+ 
+---
+```{r}
+df %>%
+    unnest_tokens(input = description, output = word) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(type, word, sort = TRUE) %>%
+    group_by(type) %>% 
+    inner_join(get_sentiments("nrc")) %>%
+    filter(!is.na(sentiment)) %>%
+    count(sentiment, sort = TRUE) %>% 
+    group_by(type) %>% 
+    mutate(n = n/sum(n)) %>% 
+    ggplot(aes(sentiment, n, fill=type))+geom_col(position = 'fill')+
+    labs(y='Relative Frequency', x ='')
+
+```
+
+---
+# Using `bing`
+```{r}
+df %>% 
+  filter(title=='Avengers: Infinity War'|title=='Spider-Man 3') %>% 
+  select(title, description) %>% 
+  unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  kable()
+```
+
+---
+```{r}
+df %>%
+    unnest_tokens(input = description, output = word) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(type, word, sort = TRUE) %>%
+    group_by(type) %>% 
+    inner_join(get_sentiments("bing")) %>%
+    filter(!is.na(sentiment)) %>%
+    count(sentiment, sort = TRUE) %>% 
+    group_by(type) %>% 
+    mutate(n = n/sum(n)) %>% 
+    ggplot(aes(sentiment, n, fill=type))+geom_col(position = 'fill')+
+    labs(y='Relative Frequency', x ='')
+
+```
+
+
+
+---
+# Using `afinn`
+```{r}
+df %>% 
+  filter(title=='Avengers: Infinity War'|title=='Spider-Man 3') %>% 
+  select(title, description) %>% 
+  unnest_tokens(input = description, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  kable()
+```
+
+---
+```{r}
+df %>%
+    unnest_tokens(input = description, output = word) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(type, word, sort = TRUE) %>%
+    group_by(type) %>% 
+    inner_join(get_sentiments("afinn")) %>%
+    mutate(sentiment = value) %>% 
+    filter(!is.na(sentiment)) %>%
+    count(sentiment, sort = TRUE) %>% 
+    group_by(type) %>% 
+    mutate(n = n/sum(n)) %>% 
+    ggplot(aes(type, n, fill=factor(sentiment)))+geom_col(position = 'dodge')+
+    labs(y='Relative Frequency', fill = 'Sentiment', x = '')
+
+
+```

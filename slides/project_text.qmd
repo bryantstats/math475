@@ -1,0 +1,341 @@
+---
+title: "Text Mining Project"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+------------------------------------------------------------------------
+
+## The Goal of the Project
+
+The goal of the project to use the text mining techniques that we covered in the class to extract as much as possible useful information and patterns from the datasets (tell as many stories as possible from the data.). 
+
+You can work in a group of no more than two.  
+
+## The Dataset
+
+In this project, you will be working with text dataset from the [The Consumer Financial Protection Bureau](https://www.consumerfinance.gov/).  
+
+You do not have to use the full dataset for the project.  To filter the dataset before downloading, please go to [this link](https://www.consumerfinance.gov/data-research/consumer-complaints/search/?date_received_min=2011-12-01&page=1&searchField=all&size=25&sort=created_date_desc&tab=List).  Make sure that you tick `Only show complaints with narratives?` to filter out complaints without narratives. 
+
+## Working with Large Datasets
+
+A trick to work with a large dataset is first work on a subset of the dataset. Make sure the codes work well.  Then apply the codes on the entire dataset. This is to avoid having to wait a long time (due to a larger dataset) for the codes to run just to see an error.
+
+To subset the data, we could use
+
+```{r, echo=TRUE, eval=FALSE}
+
+# subset the first 500 rows of the data
+df = df[c(1:500),]  
+
+# OR
+
+# a random sample of 500 rows from the data
+df = df[sample(nrow(df), 500),]  
+
+```
+
+## Grading Criteria
+
+You will be graded on your presentation presented on the final exam day. Specifically, your work will be graded based on the follows. 
+
+- The implementation of the text mining techniques (60%). By successfully implement all the techniques (listed in the next section), you will be guaranteed 60% of the grades. 
+
+- The qualities/interesting of your stories/findings (40%). 
+
+## Text Mining Techniques
+
+The list of text mining techniques covered are listed below.  
+
+- Word Frequency and Word Cloud of the entire text variables. (Assignment 11)
+
+- Word Frequency and Word Cloud by documents (Assignment 11)
+
+- Part of Speech Plots (Assignment 15)
+
+- Sentiment Analysis (Assignment 11)
+
+- Bigrams Analysis (Assignment 12)
+
+- Word Pair and Correlation Analysis (Assignment 13)
+
+-  tf-idf plots (Assignment 14)
+
+- Text Clustering (Assignment 15)
+ 
+- Topic Modeling (Assignment 16)
+
+- Classification Model (Assignment 17)
+
+- Concept Links (Assignment 18)
+
+- Rule Builder (Assignment 18)
+
+## Submission
+
+Submit the presentation file to Canvas. 
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tm)
+library(wordcloud)
+df <- read_csv("complaints2.csv") %>% head(500)
+
+df = as_tibble(df, .name_repair = "universal" )
+
+df = df %>% 
+  rename(texts = Consumer.complaint.narrative) %>% 
+  select(texts)
+
+stop_words2 = tibble(word = c(letters, LETTERS, "oh", 'just', "XXXXX", "XXXX", "XX", "xxxx", "xxxxx", "xx"))
+
+
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_words2)%>% 
+  count(word, sort = TRUE)%>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+
+
+library(wordcloud) 
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_words2)%>% 
+  count(word, sort = TRUE)%>% 
+  with(wordcloud(word, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+
+```
+
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_words2) %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Relative Frequency', x ='')
+
+```
+
+
+```{r}
+df_bigrams <- df %>%
+  unnest_tokens(input = texts, output = bigram, token = "ngrams", n = 2) %>% 
+  filter(!is.na(bigram))
+
+df_bigrams %>%
+  count(bigram, sort = TRUE)
+df_bigrams %>%
+  count(bigram, sort = TRUE) %>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(bigram, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+
+```
+
+
+
+```{r}
+bigrams_separated <- df_bigrams %>%
+    separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word1 %in% stop_words2$word) %>%
+    filter(!word2 %in% stop_words2$word)
+
+# new bigram counts:
+bigram_counts <- bigrams_filtered %>% 
+    count(word1, word2, sort = TRUE)
+bigram_counts
+
+bigram_counts$pairs = paste0(bigram_counts$word1, " ", bigram_counts$word2)
+
+bigram_counts %>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(pairs, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+
+```
+
+
+
+```{r}
+library(igraph)
+bigram_graph <- bigram_counts %>%
+  filter(n > 500) %>%
+  graph_from_data_frame()
+
+library(ggraph)
+set.seed(2024)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+
+
+```{r}
+## create a wordcloud
+library(wordcloud) 
+bigram_counts %>% 
+  with(wordcloud(pairs, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+```
+
+```{r}
+df <- read_csv("complaints2.csv") %>% head(500)
+
+df = as_tibble(df, .name_repair = "universal" )
+
+df = df %>% 
+  rename(texts = Consumer.complaint.narrative,
+         document = Sub.product)
+
+# create the DTM
+df_tm <- df %>% 
+  unnest_tokens(output = word, input = texts) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_words2) %>% 
+  anti_join(tibble(word = c(letters, LETTERS, "oh", 'just', 've', as.character(c(1:100)))))
+
+word_freq <- df_tm %>% 
+  group_by(document) %>% count(word, sort = TRUE)
+
+df_dtm <- word_freq %>% 
+  cast_dtm(document = document, term = word, n)
+
+tm::inspect(df_dtm)
+
+library(topicmodels)
+# Perform Topic Modeling
+
+n_topics = 2  # set the number of topics
+
+lda_out <-
+  LDA(df_dtm, k = n_topics, method = 'Gibbs', 
+      control = list(seed = 1111))
+
+lda_topics <- lda_out %>%
+  tidy(matrix = "beta") 
+
+word_probs <- lda_topics %>%
+  group_by(topic) %>%
+  slice_max(order_by = beta, n = 10) %>%
+  ungroup() %>%
+  mutate(term = fct_reorder(term, beta))
+
+# bar chart
+word_probs %>% 
+  ggplot(aes(beta, term, fill = topic)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ as.factor(topic), scales = "free") +
+  labs(x = "Probability",
+       y = NULL)+
+  scale_y_reordered() 
+
+
+```
+```{r}
+# word cloud
+ library(wordcloud) 
+pal <- brewer.pal(8,"Dark2")
+
+for (i in c(1:n_topics))
+{
+  topic <- lda_topics %>%
+  group_by(topic) %>% 
+  filter(topic==i)
+
+topic %>%
+  with(wordcloud(term, beta, random.order = FALSE, 
+                 max.words = 50, colors=pal))
+}
+```
+```{r}
+# topic distribution for each documents
+lda_documents = lda_out %>%
+  tidy(matrix = "gamma") 
+
+lda_documents %>% 
+  ggplot() +
+  geom_col(aes(x = document, y = gamma, fill = factor(topic)))+
+  labs(fill = 'Topics')
+
+```
+
+
+```{r}
+library(caret)
+library(themis)
+library(textrecipes)
+library(tidyverse)
+library(ranger)
+
+df <- read_csv("complaints2.csv") %>% head(10000)
+
+df = as_tibble(df, .name_repair = "universal" )
+
+df <- df %>% 
+  select(Sub.product, Consumer.complaint.narrative) %>% 
+  rename(target = Sub.product,
+         texts = Consumer.complaint.narrative) %>% 
+  drop_na()
+
+# Convert text data to numeric variables
+a <- recipe(target ~.,
+       data = df) %>% 
+  step_tokenize(texts) %>% 
+  step_tokenfilter(texts, max_tokens = 300) %>% 
+  step_tfidf(texts) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_smote(target) %>% 
+  prep()
+df <- juice(a)
+
+
+# Using Caret for modeling
+set.seed(2021)
+splitIndex <- createDataPartition(df$target, p = .7, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+model <- ranger(target ~ ., data = df_train)
+pred <- predict(model, df_test)$predictions
+
+cm <- confusionMatrix(data = pred, reference = df_test$target)
+cm$overall[1]
+d = data.frame(pred = pred, obs = df_test$target)
+library(yardstick)
+d %>% conf_mat(pred, obs) %>% autoplot
+```
+
+

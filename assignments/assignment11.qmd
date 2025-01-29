@@ -1,0 +1,126 @@
+---
+title: "Assignment 11 - Visualizing Text Data"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+
+### Questions
+
+1. Working with a text dataset containing quotes from the TV Show Friends. 
+
+    [Dataset](friends_quotes.csv)
+
+Do the follows. 
+
+- Plot the word frequency of the text data
+
+- Plot a word cloud of the text data
+
+- Run a sentiment analysis on the data
+
+You can find sample codes for this question at
+
+[Sample Codes](assignment11_codes.html)
+
+```{r, eval=FALSE, echo=FALSE}
+library(tidyverse)
+library(tidytext)
+df = read_csv('friends_quotes.csv')
+df = df %>% 
+  select(quote) %>% 
+  rename(text = quote)
+
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+# list of tokens/words
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)
+
+# Count word frequency
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)
+
+# Plot word frequency
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)%>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+
+# plot word cloud
+
+library(wordcloud) 
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)%>% 
+  with(wordcloud(word, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Relative Frequency', x ='')
+
+
+
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Frequency', x ='')
+
+
+
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  ggplot(aes(value))+geom_bar()+
+  labs(y='Frequency', x ='')
+```
+
+2. Do Question 1 on your own text dataset. 
+
+
+

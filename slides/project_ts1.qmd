@@ -1,0 +1,168 @@
+---
+title: "Time Series Project 1"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+
+# 1. Exploration
+
+```{r}
+#| label: fig-charts
+#| fig-cap: "Charts"
+
+library(TTR)
+library(forecast)
+df <- read.csv("Amtrak data.csv")
+y <- ts(df$Ridership, start = c(1991,1), end = c(2004, 3), freq = 12)
+plot(y, xlab = "Time", ylab = "Ridership")
+```
+
+### Smoothing 
+
+- Moving Average
+
+```{r}
+#| label: fig-charts2
+#| fig-cap: "Charts"
+
+plot(y, xlab = "Time", ylab = "Ridership")
+
+# create a moving average series
+k = 16  # set the moving average 
+y_sma = SMA(y, n = k)
+
+# plot the moving average series
+lines(y_sma, col = "red")
+```
+
+- Exponential Smoothing
+
+```{r}
+plot(y, xlab = "Time", ylab = "Ridership")
+
+# create a moving average series
+w = .7
+
+y_ema = EMA(y, ratio = 1-w)
+
+
+# plot the moving average series
+lines(y_ema, col = "red")
+```
+### Decomposition
+
+- Classical Decomposition
+
+```{r}
+ourDecomposition <- decompose(y, type="additive")
+plot(ourDecomposition)
+```
+
+
+```{r}
+ourDecomposition <- decompose(y, type="multiplicative")
+plot(ourDecomposition)
+```
+
+-  STL Decomposition
+
+```{r}
+ourDecomposition <- stl(y, s.window = "periodic")
+plot(ourDecomposition)
+```
+
+- Plot the ACF, PACF
+
+```{r}
+acf(y)
+pacf(y)
+```
+
+## 2. Modelling
+
+### Train - Split
+
+```{r}
+
+
+# data partition
+nValid <- 36
+nTrain <- length(y) - nValid
+train.ts <- window(y, start = c(1991, 1), end = c(1991, nTrain))
+valid.ts <- window(y, start = c(1991, nTrain + 1), end = c(1991, nTrain + nValid))
+
+# Modeling
+
+#basic models
+
+# average method: forecast by the average of the training series
+forecast4 = meanf(train.ts, h = nValid, level = 0)
+
+# naive: forecast by the last observation of the series
+forecast5 = naive(train.ts, h = nValid, level = 0)
+
+# seasonal naive: forecast by the last season
+forecast6 = snaive(train.ts, h = nValid, level = 0)
+
+# drift: drawing the line from the first to the last observation
+forecast7 = rwf(train.ts, h = nValid, level = 0, drift = TRUE)
+
+
+
+# more advanced model
+model1 <- tslm(train.ts ~ trend + I(trend^2) + season)
+model2 = auto.arima(train.ts)
+model3 = HoltWinters(train.ts, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+
+
+# forecasting
+forecast1 = forecast(model1, h = nValid, level = 0)
+forecast2 = forecast(model2, h = nValid, level = 0)
+forecast3 = forecast(model3, h = nValid, level = 0)
+
+
+# plotting forecast
+plot(forecast1)
+lines(valid.ts, col = 'red')
+plot(forecast2)
+lines(valid.ts, col = 'red')
+
+plot(forecast3)
+lines(valid.ts, col = 'red')
+
+
+# accuracy
+a1 = accuracy(forecast1$mean, valid.ts)
+a2 = accuracy(forecast2$mean, valid.ts)
+a3 = accuracy(forecast3$mean, valid.ts)
+
+rbind(a1, a2, a3)
+```
+
+# Residual Plots
+
+Make sure the residual looks like white-noise
+The residuals should have no autocorrelation.
+The residuals should have a mean zero
+The residuals should have constant variance
+The residuals should be normally distributed
+
+
+```{r}
+checkresiduals(model1)
+checkresiduals(model2)
+checkresiduals(model3)
+```
+
+

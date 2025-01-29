@@ -1,0 +1,115 @@
+---
+title: "Exponential Smoothing Forecasting"
+format: 
+  beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+# Forecasting with Exponential Smoothing
+
+- Single ES: constant level (no trend) and no seasonality
+
+- Holt’s Exponential Smoothing (Using double ES): increasing or decreasing trend and no seasonality. 
+
+- Holt-Winters Exponential Smoothing (Using triple ES): increasing or decreasing trend and seasonality. Holt and Winter 
+
+# Forecasting with Single Exponential Smoothing
+
+```{r, echo=FALSE}
+library(forecast)
+rain <- read.csv('rainfall_london.csv')
+ts1 <- ts(rain,start=c(1813))
+plot(ts1)
+```
+
+
+# Making Forecast
+
+```{r}
+ts1_forecast <- HoltWinters(ts1, beta=FALSE, gamma=FALSE)
+ts1_forecast
+```
+
+#
+
+```{r}
+ts1_forecast$fitted
+plot(ts1_forecast)
+```
+
+# Forecasting
+
+```{r}
+ts1_forecast2 <- forecast(ts1_forecast, h=8)
+ts1_forecast2
+plot(ts1_forecast2)
+```
+
+# Holt’s Exponential Smoothing
+
+- Increasing or decreasing trend and no seasonality
+
+```{r}
+skirts <- read.csv('skirts.csv')
+ts2 <- ts(skirts,start=c(1866))
+plot(ts2)
+```
+
+# 
+
+```{r}
+ts2_forecast <- HoltWinters(ts2, gamma=FALSE)
+ts2_forecast
+plot(ts2_forecast)
+ts2_forecast2 <- forecast(ts2_forecast, h=19)
+plot(ts2_forecast2)
+```
+
+
+# Holt-Winters Exponential Smoothing
+
+- increasing or decreasing trend and seasonality
+
+```{r}
+souvenir <- read.csv('souvenir.csv')
+souvenirtimeseries <- ts(souvenir, frequency=12, start=c(1987,1))
+logsouvenirtimeseries <- log(souvenirtimeseries)
+souvenirtimeseriesforecasts <- HoltWinters(logsouvenirtimeseries)
+plot(souvenirtimeseriesforecasts)
+```
+
+#
+
+```{r}
+souvenirtimeseriesforecasts2 <- forecast(souvenirtimeseriesforecasts, h=48)
+plot(souvenirtimeseriesforecasts2)
+```
+
+#
+
+```{r}
+souvenir <- read.csv('souvenir.csv')
+souvenirtimeseries <- ts(souvenir, frequency=12, start=c(1987,1))
+logsouvenirtimeseries <- souvenirtimeseries
+souvenirtimeseriesforecasts <- HoltWinters(logsouvenirtimeseries)
+plot(souvenirtimeseriesforecasts)
+souvenirtimeseriesforecasts2 <- forecast(souvenirtimeseriesforecasts, h=48)
+plot(souvenirtimeseriesforecasts2)
+```
+
+
+#
+
+- The parameters alpha, beta and gamma all have values between 0 and 1.
+
+- Values that are close to 0 mean that relatively little weight is placed on the most recent observations (the weights are spread out for the past observations) when making forecasts of future values.
+
+- Alpha estimates the level
+
+- Beta estimate the slopes of the trend component
+
+- Gamma estimate the slope of the seasonal component

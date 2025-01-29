@@ -1,0 +1,55 @@
+---
+title: "Assignment 10 - Time Series in SAS"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Record a video to answer the following questions using SAS Enterprise Guide.  You can find a similar video at the below link.*
+
+[Video Instruction](https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d5d0118f-d96b-45b8-8a7b-b13f010d7717)
+
+------------------------------------------------------------------------
+
+![](13.png)
+
+### Questions
+
+Working with the [inflation data](inflation.csv). The dataset contains monthly observations in the US from 1950-2 to 1990-12.  A time series containing :
+
+- pai1: one-month inflation rate (in percent, annual rate)
+
+- pai3: three-month inflation rate (in percent, annual rate)
+
+- tb1: one-month T-bill rate (in percent, annual rate)
+
+- tb3: three-month T-bill rate (in percent, annual rate)
+
+- cpi: CPI for urban consumers, all items (the 1982-1984 average is set to 100)
+
+**Do the follows.**
+
+-   Create a time series of one month T-bill rate (which is the variable `tb1`)
+
+-   Plot the time series
+
+-   Plot the Exponential Smoothing with the weight of .1
+
+-   Create a training time series where the time is from 1950-1985
+
+-   Model the training series using the ARIMA(1,1,1) and plot the forecast
+
+-   Use the model to make forecast for the next years of 1986-1990
+
+-   Export the forecast to Excel and calculate the Mean Absolute Percentage Error (MAPE) of the forecasting. 
+
+

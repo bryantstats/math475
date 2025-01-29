@@ -1,0 +1,94 @@
+---
+title: "Assignment 17 - Classification Model using Text Data"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+[Sample Codes](assignment17_codes2.html)
+
+### Question 1. 
+
+In this question, we will work with the [Data Analyst Jobs](DataAnalyst3.csv) dataset
+
+More information about the data can be found [here](https://www.kaggle.com/datasets/andrewmvd/data-analyst-jobs)
+
+- Use the following code to create binary variable on rating, called `Rating2`
+
+```{r, eval=FALSE}
+library(tidyverse)
+
+df = read_csv('DataAnalyst3.csv')
+
+# calculate the median rating
+m = median(df$Rating)
+
+# Create a binary rating variable
+df$Rating2 = if_else(df$Rating > m, "high", "low")
+```
+
+
+- Train and test a model to predict whether the rating of the job is high or low (target variable is `Rating2`) based on the job descriptions.
+
+- Adding more predictors to the model to improve the testing accuracy of the model
+
+### Question 2
+
+Redo Question 1 on your own data (you can decide the target for your model)
+
+```{r, eval=FALSE, echo=FALSE}
+library(caret)
+library(themis)
+library(textrecipes)
+library(tidyverse)
+library(ranger)
+
+df <- df %>% 
+  select(Rating2, Job.Description, Location, Type.of.ownership, Industry, Sector, Headquarters) %>% 
+  rename(target = Rating2,
+         texts = Job.Description) %>% 
+  drop_na()
+  
+# Convert text data to numeric variables
+a <- recipe(target ~.,
+       data = df) %>% 
+  step_tokenize(texts) %>% 
+  step_tokenfilter(texts, max_tokens = 100) %>% 
+  step_tfidf(texts) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_smote(target) %>% 
+  prep()
+df <- juice(a)
+
+# Using Caret for modeling
+set.seed(2021)
+splitIndex <- createDataPartition(df$target, p = .7, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+model <- ranger(target ~ ., data = df_train)
+
+pred <- predict(model, df_test)$predictions
+
+cm <- confusionMatrix(data = pred, reference = df_test$target)
+cm$overall[1]
+
+d = data.frame(pred = pred, obs = df_test$target)
+library(yardstick)
+d %>% conf_mat(pred, obs) %>% autoplot
+```

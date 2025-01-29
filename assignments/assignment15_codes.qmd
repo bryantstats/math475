@@ -1,0 +1,314 @@
+---
+title: "Text Mining - Part of Speech"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+
+### Datasets
+
+- In this notebook, we will study a text dataset containing reviews from Amazon. The dataset can be downloaded below.
+
+[Dataset](amazon_reviews.csv)
+
+
+## Document Term Matrix
+
+A term-document matrix represents the relationship between terms and documents. It converts a text dataset into a numeric dataset. 
+
+### Document Term Matrix - term frequency
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tm)
+library(wordcloud)
+df <- read_csv("amazon_reviews.csv")
+
+df <- df %>% 
+  select(id, reviews.text) %>% 
+  rename(document = id, 
+         texts = reviews.text)
+
+# create the DTM
+df_tm <- df %>% 
+  unnest_tokens(output = word, input = texts) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(tibble(word = c(letters, LETTERS, "oh", 'just', as.character(c(1:100)))))
+
+word_freq <- df_tm %>% 
+  group_by(document) %>% count(word, sort = TRUE)
+
+df_dtm <- word_freq %>% 
+  cast_dtm(document = document, term = word, n)
+
+tm::inspect(df_dtm)
+```
+
+```{r}
+df_dtm <- weightTfIdf(df_dtm)
+tm::inspect(df_dtm)
+```
+
+## Clustering
+
+- Once the text dataset is converted into a numeric dataset, we could perform statistical or data mining techniques on the data.  In this section we will implement clustering technique after on the Document Term Matrix of a text dataset. 
+
+
+```{r}
+# df_dtm <- removeSparseTerms(df_dtm, 0.5)
+kmeans.data <- as.matrix(t(df_dtm))
+kfit <- kmeans(kmeans.data, 3)
+```
+
+- Plot word cloud
+
+```{r}
+# plot word cloud
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  count(word, sort = TRUE) %>% 
+  with(wordcloud(word, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+```
+
+- Plot cluster 1
+
+```{r}
+# Plot cluster 
+k = 1
+
+cluster = names(kfit$cluster)[kfit$cluster==k]
+cluster = as_tibble(cluster) %>% 
+  rename(word = value)
+
+cluster = word_freq <- df_tm %>% 
+  count(word, sort = TRUE) %>% 
+  inner_join(cluster, by = 'word')
+
+library(wordcloud)
+set.seed(2024)
+cluster %>% with(wordcloud(word, n, max.words = 50, random.order = FALSE, rot.per = 0.35, 
+    colors = brewer.pal(8, "Dark2")))
+```
+
+- Plot cluster 2
+
+```{r}
+# Plot cluster 
+k = 2
+
+cluster = names(kfit$cluster)[kfit$cluster==k]
+cluster = as_tibble(cluster) %>% 
+  rename(word = value)
+
+cluster = word_freq <- df_tm %>% 
+  count(word, sort = TRUE) %>% 
+  inner_join(cluster, by = 'word')
+
+library(wordcloud)
+set.seed(2024)
+cluster %>% with(wordcloud(word, n, max.words = 50, random.order = FALSE, rot.per = 0.35, 
+    colors = brewer.pal(8, "Dark2")))
+```
+
+- Plot cluster 3
+
+```{r}
+# Plot cluster 
+k = 3
+
+cluster = names(kfit$cluster)[kfit$cluster==k]
+cluster = as_tibble(cluster) %>% 
+  rename(word = value)
+
+cluster = word_freq <- df_tm %>% 
+  count(word, sort = TRUE) %>% 
+  inner_join(cluster, by = 'word')
+
+library(wordcloud)
+set.seed(2024)
+cluster %>% with(wordcloud(word, n, max.words = 50, random.order = FALSE, rot.per = 0.35, 
+    colors = brewer.pal(8, "Dark2")))
+```
+
+## Document Term Matrix - tf-idf
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tm)
+library(wordcloud)
+df <- read_csv("amazon_reviews.csv")
+
+df <- df %>% 
+  select(id, reviews.text) %>% 
+  rename(document = id, 
+         texts = reviews.text)
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+df_words = df %>% 
+  unnest_tokens(input = texts, output = word) %>% 
+  count(document, word, sort = TRUE) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)
+
+total_words <- df_words %>% 
+  group_by(document) %>% 
+  summarize(total = sum(n))
+
+df_words <- left_join(df_words, total_words)
+
+df_tf = df_words %>% 
+  group_by(document) %>% 
+  mutate(tf = n/total)
+
+df_tf_idf <- df_words %>%
+  bind_tf_idf(word, document, n)
+
+df_tf_idf %>% 
+  drop_na() %>% 
+  with(wordcloud(words = word, freq = tf_idf, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+```
+
+
+```{r}
+# create the DTM
+df_tm <- df %>% 
+  unnest_tokens(output = word, input = texts) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(tibble(word = c(letters, LETTERS, "oh", 'just', as.character(c(1:100)))))
+
+word_freq <- df_tm %>% 
+  group_by(document) %>% count(word, sort = TRUE)
+
+df_dtm <- word_freq %>% 
+  cast_dtm(document = document, term = word, n)
+
+df_dtm <- weightTfIdf(df_dtm)
+
+# df_dtm <- removeSparseTerms(df_dtm, 0.5)
+kmeans.data <- as.matrix(t(df_dtm))
+kfit <- kmeans(kmeans.data, 3)
+```
+
+
+
+- Plot cluster 1
+
+```{r}
+# Plot cluster 
+k = 1
+
+cluster = names(kfit$cluster)[kfit$cluster==k]
+cluster = as_tibble(cluster) %>% 
+  rename(word = value)
+
+cluster = word_freq <- df_tm %>% 
+  count(word, sort = TRUE) %>% 
+  inner_join(cluster, by = 'word')
+
+library(wordcloud)
+set.seed(2024)
+cluster %>% with(wordcloud(word, n, max.words = 50, random.order = FALSE, rot.per = 0.35, 
+    colors = brewer.pal(8, "Dark2")))
+```
+
+- Plot cluster 2
+
+```{r}
+# Plot cluster 
+k = 2
+
+cluster = names(kfit$cluster)[kfit$cluster==k]
+cluster = as_tibble(cluster) %>% 
+  rename(word = value)
+
+cluster = word_freq <- df_tm %>% 
+  count(word, sort = TRUE) %>% 
+  inner_join(cluster, by = 'word')
+
+library(wordcloud)
+set.seed(2024)
+cluster %>% with(wordcloud(word, n, max.words = 50, random.order = FALSE, rot.per = 0.35, 
+    colors = brewer.pal(8, "Dark2")))
+```
+
+- Plot cluster 3
+
+```{r}
+# Plot cluster 
+k = 3
+
+cluster = names(kfit$cluster)[kfit$cluster==k]
+cluster = as_tibble(cluster) %>% 
+  rename(word = value)
+
+cluster = word_freq <- df_tm %>% 
+  count(word, sort = TRUE) %>% 
+  inner_join(cluster, by = 'word')
+
+library(wordcloud)
+set.seed(2024)
+cluster %>% with(wordcloud(word, n, max.words = 50, random.order = FALSE, rot.per = 0.35, 
+    colors = brewer.pal(8, "Dark2")))
+```
+
+
+## Part of Speech
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('netflix_titles.csv')
+
+df = df %>% 
+  select(type, description) %>% 
+  rename(texts = description,
+         document = type)
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+df %>% 
+    unnest_tokens(input = texts, output = word) %>% 
+    group_by(document) %>% 
+    count(document, word, sort = TRUE) %>% 
+    anti_join(get_stopwords()) %>% 
+    anti_join(stop_word2) %>% 
+    inner_join(parts_of_speech) %>%                   # join POS
+    count(pos) %>%                                    # count
+    mutate(prop=n/sum(n)) %>% 
+    slice_max(prop, n = 15) %>%
+    ggplot()+geom_col(aes(y = pos, x = prop, fill =  document), position = 'dodge')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---

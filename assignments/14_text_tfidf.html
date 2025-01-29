@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Analyzing frequency: tf-idf</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Analyzing frequency: tf-idf
+]
+
+---
+
+class: inverse, middle, center
+
+
+
+---
+Suppose we have a text data that contains `\(n\)` document as below. 
+
+| Document  |   Texts         |
+|---|------------|
+| 1  | blah blah  | 
+| 2  |  blah blah |
+| ...  | ...        |
+| n  | blah blah   | 
+
+- A document could be a sentence, a paragraph 
+
+- A document contains of `terms`.  Terms could be a word or a collection of words
+
+- How important is a word/term to a document?
+
+---
+# Term frequency (tf)
+
+- The more often the words show up the more important it is
+
+- We could use `Term Frequency`   
+
+- TF (Term Frequency) = (Number of times term `t` appears in a document) / (Total number of terms in the document).
+
+- Please notice that the same word/term may have different `tf` in a different document
+
+- For example: the word `love` in document 1 may have different `tf` when compared with that of document 2. 
+
+---
+# Example
+
+- Calculate the term frequency of the word `cats` for each document in the below text dataset. 
+
+
+|   | Document     |
+|:---|:--------------|
+| 1 | I love cats. Cats are renowned for their graceful agility. Cats are awesome!  |
+| 2 | Cats are furry animals that like to sleep.            |
+| 3 | Dogs and cats are popular pets that bring joy to many families            |
+| 4 | Dogs are friendly animals that enjoy companionship.            |
+
+---
+# Issues with Term frequency (tf)
+
+- Sometimes: Rare terms are more informative than frequent terms
+
+    - Example: “the”, “is”, “of”...
+
+- We should remove some words such as “the”, “is”, “of” if we use `tf` as a measure of importance
+
+- Or we could create a `weight` for a term so that the rare words would have higher weights.
+
+- Inverse Document Frequency (idf) is such a weight
+
+
+---
+# Inverse Document Frequency (idf)
+
+- IDF (Inverse Document Frequency) = log_e(Total number of documents / Number of documents with term `t` in it).
+
+`$$idf(t) = \ln \bigg(\frac{\text{Total number of documents}}{\text{Number of documents with term t in it}} \bigg)$$`
+
+- The idf of a rare term is high, whereas the idf of a frequent term is likely to be low
+
+- The `idf` of a term is a constant throughout the document.  For example the word `love` in Document 1 should have the same `idf` as the word `love` in Document 2. 
+
+---
+# tf-idf
+
+
+$$\text{tf-idf }(t) = \text{tf }(t) \cdot \text{tf }(t) $$
+
+- The `tf-idf` of the same term may have different values in different documents.  For example the word `love` in Document 1 may have a different value `tf-idf` compared to the word `love` in Document 2. 
+
+
+---
+# Example
+
+- Calculate the idf and tf-idf of the word `cats` for the documents in the below text dataset. 
+
+
+|   | Document     |
+|:---|:--------------|
+| 1 | I love pets. Cats are renowned for their graceful agility. Cats are awesome!  |
+| 2 | Cats are friendly animals that like to sleep.            |
+| 3 | Dogs and cats are friendly pets that bring joy to many families            |
+| 4 | Dogs are friendly animals that enjoy companionship.            |
+
+---
+# Example
+
+[Sample Codes](assignment14_codes.html)
+
+![](14_text_tfidf_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+---
+# Plot tf-idf
+
+
+```
+## # A tibble: 8,605 × 7
+##    document                                word      n total     tf   idf tf_idf
+##    &lt;chr&gt;                                   &lt;chr&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+##  1 Amazon Kindle Paperwhite - eBook reade… kind…  1717 52533 0.0327     0      0
+##  2 All-New Fire HD 8 Tablet, 8 HD Display… tabl…  1342 41031 0.0327     0      0
+##  3 Amazon Kindle Paperwhite - eBook reade… read   1169 52533 0.0223     0      0
+##  4 All-New Fire HD 8 Tablet, 8 HD Display… great  1067 41031 0.0260     0      0
+##  5 Amazon Kindle Paperwhite - eBook reade… read…   950 52533 0.0181     0      0
+##  6 Amazon Kindle Paperwhite - eBook reade… great   947 52533 0.0180     0      0
+##  7 Amazon Kindle Paperwhite - eBook reade… easy    925 52533 0.0176     0      0
+##  8 Amazon Kindle Paperwhite - eBook reade… books   778 52533 0.0148     0      0
+##  9 Amazon Kindle Paperwhite - eBook reade… love    772 52533 0.0147     0      0
+## 10 Amazon Kindle Paperwhite - eBook reade… light   686 52533 0.0131     0      0
+## # ℹ 8,595 more rows
+```
+
+![](14_text_tfidf_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

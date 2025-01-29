@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>An Overview of Data Mining</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/xaringanExtra-webcam/webcam.js"></script>
+    <script id="xaringanExtra-webcam-options" type="application/json">{"width":"200","height":"200","margin":"1em"}</script>
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# An Overview of Data Mining
+]
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- 
+#  Cross Sectional vs. Time Series
+
+-   Cross Sectional Data: Multiple objects observed at a particular point of time
+
+--- 
+#  Cross Sectional vs. Time Series
+
+- Cross Sectional Data: Multiple objects observed at a particular point of time
+
+- Examples: customers’ behavioral data at today’s update, companies’ account balances
+at the end of the last year, patients’ medical records at the end of the current month.
+
+--- 
+#  Cross Sectional vs. Time Series
+
+- Cross Sectional Data: Multiple objects observed at a particular point of time
+
+- Examples: customers’ behavioral data at today’s update, companies’ account balances
+at the end of the last year, patients’ medical records at the end of the current month.
+
+- Time Series Data: One single object (product, country, sensor, ..) observed over multiple equally-spaced
+time periods
+
+--- 
+#  Cross Sectional vs. Time Series
+
+- Cross Sectional Data: Multiple objects observed at a particular point of time
+
+- Examples: customers’ behavioral data at today’s update, companies’ account balances
+at the end of the last year, patients’ medical records at the end of the current month.
+
+- Time Series Data: One single object (product, country, sensor, ..) observed over multiple equally-spaced
+time periods
+
+ - Examples: quarterly Italian GDP of the last 10 years, weekly supermarket sales of the
+previous year, yesterday’s hourly temperature measurements. 
+
+
+--- 
+#  
+
+
+```r
+#  define data
+library(ggfortify)
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```r
+library(tidyverse)
+```
+
+```
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.3     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ lubridate 1.9.3     ✔ tibble    3.2.1
+## ✔ purrr     1.0.2     ✔ tidyr     1.3.0
+```
+
+```
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+```
+
+```r
+library(xts)
+```
+
+```
+## Loading required package: zoo
+## 
+## Attaching package: 'zoo'
+## 
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+## 
+## 
+## ######################### Warning from 'xts' package ##########################
+## #                                                                             #
+## # The dplyr lag() function breaks how base R's lag() function is supposed to  #
+## # work, which breaks lag(my_xts). Calls to lag(my_xts) that you type or       #
+## # source() into this session won't work correctly.                            #
+## #                                                                             #
+## # Use stats::lag() to make sure you're not using dplyr::lag(), or you can add #
+## # conflictRules('dplyr', exclude = 'lag') to your .Rprofile to stop           #
+## # dplyr from breaking base R's lag() function.                                #
+## #                                                                             #
+## # Code in packages is not affected. It's protected by R's namespace mechanism #
+## # Set `options(xts.warn_dplyr_breaks_lag = FALSE)` to suppress this warning.  #
+## #                                                                             #
+## ###############################################################################
+## 
+## Attaching package: 'xts'
+## 
+## The following objects are masked from 'package:dplyr':
+## 
+##     first, last
+```
+
+```r
+library(fpp2)
+```
+
+```
+## Registered S3 method overwritten by 'quantmod':
+##   method            from
+##   as.zoo.data.frame zoo 
+## Registered S3 methods overwritten by 'forecast':
+##   method                 from     
+##   autoplot.Arima         ggfortify
+##   autoplot.acf           ggfortify
+##   autoplot.ar            ggfortify
+##   autoplot.bats          ggfortify
+##   autoplot.decomposed.ts ggfortify
+##   autoplot.ets           ggfortify
+##   autoplot.forecast      ggfortify
+##   autoplot.stl           ggfortify
+##   autoplot.ts            ggfortify
+##   fitted.ar              ggfortify
+##   fortify.ts             ggfortify
+##   residuals.ar           ggfortify
+## ── Attaching packages ────────────────────────────────────────────── fpp2 2.5 ──
+## ✔ forecast  8.21.1     ✔ expsmooth 2.3   
+## ✔ fma       2.5
+```
+
+```r
+library(TTR)
+sales=BJsales
+earnings=JohnsonJohnson
+nile=Nile
+url="http://www.cru.uea.ac.uk/cru/data/temperature/CRUTEM3v-gl.dat"
+f=read.table(url,fill=TRUE)
+ny=nrow(f)/2;x=c(t(f[2*1:ny-1,2:13]))
+temperature=ts(x,start=2019,frequency=12,end=c(2020,1))
+autoplot(temperature)+ ggtitle("World Temperature")
+```
+
+![](intro_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+```{=tex}
+\begin{center}
+\Huge Smoothing
+\end{center}
+```
+
+--- 
+#  6. Smoothing
+
+-   Smoothing is usually done to reveal the series patterns and trends.
+
+--- 
+#  Simple Moving Average Smoothing
+
+-   Moving Average (MA) creates a new series by averaging the most recent observations from the original series.
+
+-   MA(k) creates `\(s_t\)` as follows.
+
+$$
+s_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+$$
+
+-   Larger `\(k\)` will smooth the series more strongly
+
+--- 
+#  
+
+
+```r
+d &lt;- read_csv('data/MedCPISmooth.csv')
+```
+
+```
+## Rows: 241 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (10): yearInt, Month, Quarter, value, PerMEDCPI, YEAR, MCPISM4, MCPISM8,...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Medical Component of the CPI"))
+```
+
+![](intro_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+d &lt;- read_csv('data/MedCPISmooth.csv')
+```
+
+```
+## Rows: 241 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (10): yearInt, Month, Quarter, value, PerMEDCPI, YEAR, MCPISM4, MCPISM8,...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 4
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+d &lt;- read_csv('data/MedCPISmooth.csv')
+```
+
+```
+## Rows: 241 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (10): yearInt, Month, Quarter, value, PerMEDCPI, YEAR, MCPISM4, MCPISM8,...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+d &lt;- read_csv('data/MedCPISmooth.csv')
+```
+
+```
+## Rows: 241 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (10): yearInt, Month, Quarter, value, PerMEDCPI, YEAR, MCPISM4, MCPISM8,...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 16
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+#  Data 1
+t1 = read_csv("beer.csv")
+```
+
+```
+## Rows: 72 Columns: 1
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (1): x
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 1
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Original Series"))
+```
+
+![](intro_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+t1 = read_csv("beer.csv")
+```
+
+```
+## Rows: 72 Columns: 1
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (1): x
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 2
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+k = 5
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+k = 12
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+--- 
+#  Forecasting
+
+-   We can use smoothing for forecasting
+
+-   We have \begin{align*}
+    \hat{s}_t &amp;= \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}\\
+    &amp;=\frac{y_t + y_{t-1} +...+ y_{t-k+1}+y_{t-k}-y_{t-k}}{k}\\
+    &amp;=\frac{y_t + \bigg(y_{t-1} +...+ y_{t-k+1}+y_{t-k}\bigg)-y_{t-k}}{k}\\
+    &amp;= \frac{y_t + k\hat{s}_{t-1}-y_{t-k}}{k}\\
+    &amp;= \hat{s}_{t-1} + \frac{y_t-y_{t-k}}{k}
+    \end{align*}
+
+--- 
+#  Forecasting
+
+-   If there is no trend in `\(y_t\)` the second term `\((y_t-y_{t-k})/k\)` can be ignored
+-   Forecasting `\(l\)` lead time into future by
+
+$$
+\hat{y}_{T+l} = \hat{s}_T
+$$
+
+-   If there is a linear trend in a series, we can use the double moving average to estimate the trend (slope)
+
+--- 
+#  
+
+```{=tex}
+\begin{center}
+\Huge Double MA
+\end{center}
+```
+--- 
+#  7. Double MA
+
+-   Linear trend time series: $$
+    y_t = \beta_0 + \beta_1t +\epsilon_t
+    $$
+
+-   Step 1: Smooth the series $$
+    \hat{s}^{(1)}_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+    $$
+
+-   Step 2: Smooth the smoothed series $$
+    \hat{s}^{(2)}_{t} = \frac{\hat{s}^{(1)}_t + \hat{s}^{(1)}_{t-1} +...+ \hat{s}^{(1)}_{t-k+1}}{k}
+    $$
+
+-   Step 3: Calculate the trend $$
+    b_1 = \hat{\beta_1} =  \frac{2}{k-1}\bigg(\hat{s}_T^{(1)}-\hat{s}_T^{(2)}\bigg)
+    $$
+
+--- 
+#  Forecasting
+
+-   Forecasting `\(l\)` lead time into future by $$
+    \hat{y}_{T+l} = \hat{s}_T + b_1 \cdot l
+    $$
+
+--- 
+#  
+
+You are given the following time series
+
+| `\(t\)`   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| `\(y_t\)` | 1   | 3   | 5   | 8   | 13  |
+
+-   Forecasting `\(y_{7}\)` using simple moving average with `\(k = 2\)`
+
+-   Forecasting `\(y_{7}\)` using double moving average with `\(k = 2\)`
+
+--- 
+#  
+
+--- 
+#  Example
+
+-   We simulate 100 data points ($T=100$) of $$
+    y_t = 1 +3t + \epsilon, 
+    $$ where, `\(\epsilon \sim N(0, 5^2)\)`.
+
+--- 
+#  
+
+
+```r
+set.seed(2022)
+n = 100
+y = rep(0, n)
+
+y[1] = 0
+b0 = 1
+b1 = 3
+
+e = rnorm(n, sd = 5)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*t+e[t]
+}
+
+k = 12 
+s1 = SMA(y, n = k)
+s2 = SMA(s1, n = k)
+
+
+b1_hat = 2*(s1[n]-s2[n])/(k-1)
+
+autoplot(ts(y)) + ggtitle("Original Series")
+```
+
+![](intro_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+autoplot(ts(s1)) + ggtitle(paste0("MA Series with k = ",k))
+```
+
+![](intro_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+autoplot(ts(s2)) + ggtitle(paste0("Double MA Series with k = ",k))
+```
+
+![](intro_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+-   Using the above steps, the estimated trend is `\(b_1 = 2.92\)`
+
+-   The forecast for the next points from `\(y_{100}\)` is
+
+$$
+    \hat{y}_{100+l} = \hat{s}_{100}+ b_1\cdot l = \hat{s}_{100}+ 2.92\cdot l
+$$
+
+--- 
+#  
+
+```{=tex}
+\begin{center}
+\Huge Exponential Smoothing
+\end{center}
+```
+--- 
+#  Exponential Smoothing
+
+-   MA distributes the weight equally to the recent observations
+
+-   Exponential Smoothing controls the weights of the recent observations by `\(w\)`
+
+$$
+\hat{s}_{t} = \frac{y_t + wy_{t-1} + w^2y_{t-2} + ... + w^ty_0}{1/(1-w)}
+$$
+
+-   Smaller `\(w\)` ($w \to 0$) gives higher weights to the more recent observations
+
+-   Smaller `\(w\)` smooths the series more lightly.
+
+--- 
+#  Exponential Smoothing
+
+-   We have \begin{align*}
+    \hat{s}_{t} &amp;= \hat{s}_{t-1} + (1-w)(y_t-\hat{s}_{t-1})\\
+    &amp; = (1-w)y_t + w\hat{s}_{t-1}
+    \end{align*}
+
+-   When `\(w \to 0\)`, `\(\hat{s}_{t} \to y_t\)`, or little smoothing has taken
+
+--- 
+#  
+
+
+```r
+#  In exponential smoothing, a higher ratio will weight more on the recent observation, 
+#  ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .9
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+#  In exponential smoothing, a higher ratio will weight more on the recent observation, 
+#  ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .5
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+
+```r
+#  In exponential smoothing, a higher ratio will weight more on the recent observation, 
+#  ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .1
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+![](intro_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+--- 
+#  
+
+```{=tex}
+\begin{center}
+\Huge Double Exponential Smoothing
+\end{center}
+```
+--- 
+#  Double Exponential Smoothing
+
+We can use double smoothing to identify the trend and forecast linear trend time series as follows.
+
+-   Step 1: Create a smoothed series: `\(\hat{s}^{(1)}_{t} = (1-w)y_t + w\hat{s}^{(1)}_{t-1}\)`
+
+-   Step 2: Create a double smoothed series: `\(\hat{s}^{(2)}_{t} = (1-w)\hat{s}^{(1)}_{t} + w\hat{s}^{(2)}_{t-1}\)`
+
+-   Step 3: Estimate the trend: $$
+    b_1 = \frac{1-w}{w}(\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T})
+    $$
+
+-   Step 4: Forecast
+
+$$
+\hat{y}_{T+l} = 2\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T}+b_1\cdot l
+$$
+
+--- 
+#  Example
+
+You are given the following time series
+
+| `\(t\)`   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| `\(y_t\)` | 1   | 3   | 5   | 8   | 13  |
+
+-   Forecasting `\(y_{7}\)` using exponential smoothing with `\(w = .8\)`
+
+-   Forecasting `\(y_{7}\)` using double exponential smoothing with `\(w = .8\)`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

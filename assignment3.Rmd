@@ -1,0 +1,31 @@
+---
+title: "Assignment 3"
+output:
+  pdf_document: default
+  word_document: default
+date: "2024-02-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Questions
+
+```{r}
+data("AirPassengers")
+plot(AirPassengers)
+ourDecomposition <- decompose(AirPassengers, type="additive")
+plot(ourDecomposition)
+```
+
+```{r}
+data("AirPassengers")
+plot(AirPassengers)
+ourDecomposition <- decompose(AirPassengers, type="multiplicative")
+plot(ourDecomposition)
+
+```
+
+
+

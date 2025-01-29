@@ -1,0 +1,31 @@
+---
+title: "Assignment 5: Exponential Smoothing Forecasting"
+format: html
+editor: visual
+---
+
+------------------------------------------------------------------------
+
+***Submission***: Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+**Questions** 
+
+1. Run the codes in the [slides](https://bryantstats.github.io/math475/slides/5.html#1) to reproduce the results. The links to the datasets used in the slides are as follows.
+
+  - [rainfall_london.csv](https://bryantstats.github.io/math475/slides/rainfall_london.csv)
+  
+  - [skirts.csv](https://bryantstats.github.io/math475/slides/skirts.csv)
+  
+  - [souvenir.csv](https://bryantstats.github.io/math475/slides/souvenir.csv)
+
+2. Find three examples of the below time series and make forecast using Exponential Smoothing
+
+- Time series with no trend and no seasonality
+- Time series with trend and no seasonality
+- Time series with trend and seasonality

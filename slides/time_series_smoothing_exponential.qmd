@@ -1,0 +1,225 @@
+---
+title: "Time Series"
+format: 
+  beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# MA Weights Distribution
+
+```{r}
+k = 2
+t = 20
+
+weights = c(rep(0, t-k), rep(1/k,k))
+plot(weights, main = paste0("Weights for MA Smoothing with k = ", k))
+```
+
+# MA Weights Distribution
+
+```{r}
+k = 4
+t = 20
+
+weights = c(rep(0, t-k), rep(1/k,k))
+plot(weights, main = paste0("Weights for MA Smoothing with k = ", k))
+```
+
+# MA Weights Distribution
+
+```{r}
+k = 6
+t = 20
+
+weights = c(rep(0, t-k), rep(1/k,k))
+plot(weights, main = paste0("Weights for MA Smoothing with k = ", k))
+```
+
+# MA Weights Distribution
+
+```{r}
+k = 10
+t = 20
+
+weights = c(rep(0, t-k), rep(1/k,k))
+plot(weights, main = paste0("Weights for MA Smoothing with k = ", k))
+```
+
+# MA Weights Distribution
+
+```{r}
+k = 15
+t = 20
+
+weights = c(rep(0, t-k), rep(1/k,k))
+plot(weights, main = paste0("Weights for MA Smoothing with k = ", k))
+```
+
+# Exponential Weights Distribution
+
+```{r}
+w = .1
+t = 20
+
+weights = (1-w)*w^(c(t:0))
+plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
+```
+
+# Exponential Weights Distribution
+
+```{r}
+w = .3
+t = 20
+
+weights = (1-w)*w^(c(t:0))
+plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
+```
+
+# Exponential Weights Distribution
+
+```{r}
+w = .5
+t = 20
+
+weights = (1-w)*w^(c(t:0))
+plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
+```
+
+# Exponential Weights Distribution
+
+```{r}
+w = .7
+t = 20
+
+weights = (1-w)*w^(c(t:0))
+plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
+```
+
+# Exponential Weights Distribution
+
+```{r}
+w = .9
+t = 20
+
+weights = (1-w)*w^(c(t:0))
+plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
+```
+
+# Exponential Weights Distribution
+
+```{r}
+w = .99
+t = 20
+
+weights = (1-w)*w^(c(t:0))
+plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
+```
+
+# Exponential Smoothing
+
+-   MA distributes the weight equally to the recent observations
+
+-   Exponential Smoothing controls the weights of the recent observations by $w$
+
+$$
+\hat{s}_{t} = \frac{y_t + wy_{t-1} + w^2y_{t-2} + ... + w^ty_0}{1/(1-w)}
+$$
+
+-   Smaller $w$ smooths the series more lightly.
+
+-   Greater $w$ smooths the series more strongly.
+
+# Exponential Smoothing
+
+-   We have \begin{align*}
+    \hat{s}_{t} &= \hat{s}_{t-1} + (1-w)(y_t-\hat{s}_{t-1})\\
+    & = (1-w)y_t + w\hat{s}_{t-1}
+    \end{align*}
+
+-   When $w \to 0$, $\hat{s}_{t} \to y_t$, or little smoothing has taken
+
+# 
+
+```{r}
+library(ggfortify)
+library(tidyverse)
+library(xts)
+library(fpp2)
+library(TTR)
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+```
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .9
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .5
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .1
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Double Exponential Smoothing
+\end{center}
+```
+# Double Exponential Smoothing
+
+We can use double smoothing to identify the trend and forecast linear trend time series as follows.
+
+-   Step 1: Create a smoothed series: $\hat{s}^{(1)}_{t} = (1-w)y_t + w\hat{s}^{(1)}_{t-1}$
+
+-   Step 2: Create a double smoothed series: $\hat{s}^{(2)}_{t} = (1-w)\hat{s}^{(1)}_{t} + w\hat{s}^{(2)}_{t-1}$
+
+-   Step 3: Estimate the trend: $$
+    b_1 = \frac{1-w}{w}(\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T})
+    $$
+
+-   Step 4: Forecast
+
+$$
+\hat{y}_{T+l} = \hat{s}^{(1)}_{T} + b_1\cdot l
+$$
+
+# Example
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+-   Assume that this is a linear trend time series. Using double exponential smoothing with $w = .8$ to estimate the trend (slope) and forecast $y_{6}$.

@@ -1,0 +1,162 @@
+---
+title: "Text Mining - Correlation"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+
+## Datasets
+
+- In this notebook, we will study a text dataset containing reviews from Amazon. The dataset can be downloaded below.
+
+[Dataset](amazon_reviews.csv)
+
+- We only study the reviews for the item with most number of reviews. First, import the dataset and find out the item with the most number of reviews. 
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('amazon_reviews.csv')
+
+df %>% 
+  group_by(name) %>% 
+  count(sort = TRUE)
+```
+
+We then filter the dataset so that it contains only this item. 
+
+```{r}
+df = df %>% 
+  select(name, reviews.text) %>% 
+  filter(name=='Fire Tablet, 7 Display, Wi-Fi, 8 GB - Includes Special Offers, Magenta') %>% 
+  rename(texts = reviews.text)
+```
+
+## Pairs of words
+
+- Bigrams study pairs of adjacent words. But here we are interested in studying pairs of any words occurring in a document/row. It is easily to see that the amount of any pairs of words will be greater than the amount of pairs of adjacent words. 
+
+```{r}
+df_section_words = df %>% 
+  mutate(section = c(1:nrow(df))) %>% 
+  unnest_tokens(output = word, input = texts) %>% 
+  filter(!word %in% stop_words$word)
+           
+
+library(widyr)
+
+# count words co-occuring within sections
+word_pairs <- df_section_words %>%
+  pairwise_count(word, section, sort = TRUE)
+
+word_pairs
+```
+
+##### Top Most Frequent Pairs
+
+```{r}
+word_pairs %>% 
+  head(20) %>% 
+  mutate(item = paste0(item1, " ", item2)) %>% 
+  ggplot() + 
+  geom_col(aes(y = fct_rev(fct_reorder(item, -n)), x = n))+
+  labs(y = "", x = 'Frequency')
+
+```
+
+#### Graph of Word Pairs
+
+```{r}
+library(igraph)
+pairs_graph <- word_pairs %>%
+  filter(n > 200) %>%
+  graph_from_data_frame()
+
+library(ggraph)
+set.seed(2024)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(pairs_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+
+
+
+## Pairwise correlation
+
+#### Phi-Coefficient and Correlation
+
+Suppose we have a pair of words $(X, Y)$ as follows.
+
+|            | Has word Y | No word Y | Total     |
+|------------|------------|-----------|-----------|
+| Has word X | $n_{11}$   | $n_{10}$ | $n_{1 \cdot}$  |
+| No word X  | $n_{01}$    | $n_{00}$   | $n_{0 \cdot}$  |
+| Total      | $n_{\cdot 1}$   | $n_{\cdot 0}$  | $n$         |
+
+We use the [phi co-efficient](https://en.wikipedia.org/wiki/Phi_coefficient) to compute the correlation of the event that word $X$ occurrs and the event that the word $Y$ occurrs. 
+
+$$
+\phi = \frac{n_{11}n_{00}-n_{10}n_{01}}{\sqrt{n_{1 \cdot}n_{0 \cdot}n_{\cdot 1}n_{\cdot 0}}}
+$$
+
+The range of $\phi$ is from -1 to 1 and can be interpreted as follows. 
+
+- 0 is no relationship. 
+- 1 is a perfect positive relationship: $X$ appears indicates $Y$ appears
+- -1 is a perfect negative relationship: $X$ appears indicates $Y$ does not appear
+
+#### Top correlated Pairs
+
+```{r}
+word_cors <- df_section_words %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(item = word, feature = section, sort = TRUE)
+
+word_cors
+```
+
+```{r}
+word_cors %>% 
+  head(20) %>% 
+  mutate(item = paste0(item1, " ", item2)) %>% 
+  ggplot()+
+  geom_col(aes(y = fct_rev(fct_reorder(item, -correlation)), x = correlation))+
+  labs(y ='')
+```
+
+
+#### Graph of the correlations
+
+```{r}
+library(ggraph)
+library(igraph)
+set.seed(2024)
+
+word_cors %>%
+  filter(correlation > .3) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+```
+
+---

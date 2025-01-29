@@ -1,0 +1,132 @@
+---
+title: "Text Mining"
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: false
+    
+    theme: united
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+![](a11.jpg)
+
+[Dataset](netflix_titles.csv)
+
+## Create a list of tokens
+
+```{r}
+library(tidyverse)
+library(tidytext)
+df = read_csv('netflix_titles.csv')
+df = df %>% 
+  select(description) %>% 
+  rename(text = description)
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+# list of tokens/words
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)
+```
+
+
+## Count the tokens frequency
+
+```{r}
+# Count word frequency
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)
+```
+
+## Plot the token frequency
+
+```{r}
+# Plot word frequency
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)%>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+```
+
+
+## Plot a word cloud
+
+```{r}
+# plot word cloud
+library(wordcloud) 
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)%>% 
+  with(wordcloud(word, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+```
+
+## Sentiment Analysis
+
+### Using `nrc` Lexicon
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Relative Frequency', x ='')
+```
+
+
+### Using `bing` Lexicon
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Frequency', x ='')
+```
+
+
+### Using `afinn` Lexicon
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = text, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  ggplot(aes(value))+geom_bar()+
+  labs(y='Frequency', x ='')
+```
+

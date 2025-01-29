@@ -1,0 +1,111 @@
+---
+title: "Text Mining - tf-idf"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+
+### Datasets
+
+- In this notebook, we will study a text dataset containing reviews from Amazon. The dataset can be downloaded below.
+
+[Dataset](amazon_reviews.csv)
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('amazon_reviews.csv')
+head(df)
+```
+
+### Define `Documents`.
+
+- We could define a document is a review and therefore a document is also a row in a dataset.  However, the data has more than 30,000 rows or documents.  This makes the analysis of each documents rather tedious. 
+
+- To make the number of documents in the data fewer, we will group all the reviews of the same item together and define it as a document.  For simplicity, we choose to analyze the two items with more number of reviews.  First, we count the number of reviews for each item.
+
+
+```{r}
+df %>% 
+  group_by(name) %>% 
+  count(sort = TRUE)
+```
+
+- We then filter out the dataset so that it only contains the two items that we want to analyze. For convenience, we will rename the variables. 
+
+```{r}
+df = df %>% 
+  select(name, reviews.text) %>% 
+  filter(name %in% c('Amazon Kindle Paperwhite - eBook reader - 4 GB - 6 monochrome Paperwhite - touchscreen - Wi-Fi - black,,,',	
+'All-New Fire HD 8 Tablet, 8 HD Display, Wi-Fi, 16 GB - Includes Special Offers, Magenta')) %>% 
+  rename(texts = reviews.text,
+         document = name)
+```
+
+### Plot the term frequency for each documents
+
+
+```{r}
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+df_words = df %>% 
+  unnest_tokens(input = texts, output = word) %>% 
+  count(document, word, sort = TRUE) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)
+
+total_words <- df_words %>% 
+  group_by(document) %>% 
+  summarize(total = sum(n))
+
+df_words <- left_join(df_words, total_words)
+
+df_tf = df_words %>% 
+  group_by(document) %>% 
+  mutate(tf = n/total)
+
+df_tf %>% 
+  group_by(document) %>% 
+  slice_max(tf, n = 5) %>% 
+  ungroup() %>%
+  ggplot(aes(tf, fct_reorder(word, tf), fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, ncol = 2, scales = "free") +
+  labs(x = "tf", y = NULL)
+```
+
+
+### Plot the tf-idf for each documents
+
+```{r}
+
+# Calculate the tf-idf
+df_tf_idf <- df_words %>%
+  bind_tf_idf(word, document, n)
+
+df_tf_idf
+
+library(forcats)
+
+df_tf_idf %>%
+  group_by(document) %>%
+  slice_max(tf_idf, n = 15) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, ncol = 2, scales = "free") +
+  labs(x = "tf-idf", y = NULL)
+
+```
+
+---

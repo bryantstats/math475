@@ -1,0 +1,240 @@
+---
+title: "Visualizing Text Data"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+
+*In this document, we will use R to visualize a text data.  We use the Netflix data at this Kaggle link. This tabular dataset consists of listings of all the movies and tv shows available on Netflix, along with details such as - cast, directors, ratings, release year, duration, etc. The text data that will be analyzed is stored in the description variable. The data can be downloaded at this link.*
+
+
+[Dataset](netflix_titles.csv)
+
+# 1. Analysis on the text variables
+
+## 1.1 Create a list of tokens
+
+```{r}
+library(tidyverse)
+library(tidytext)
+df = read_csv('netflix_titles.csv')
+df = df %>% 
+  select(description) %>% 
+  rename(texts = description)
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+
+# list of tokens/words
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)
+```
+
+
+## 1.2 Count the tokens frequency
+
+```{r}
+# Count word frequency
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)
+```
+
+## 1.3 Plot the token frequency
+
+```{r}
+# Plot word frequency
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)%>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+```
+
+
+## 1.4 Plot a word cloud
+
+```{r}
+# plot word cloud
+library(wordcloud) 
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2)%>% 
+  count(word, sort = TRUE)%>% 
+  with(wordcloud(word, n, random.order = FALSE, 
+                 max.words = 50, colors=brewer.pal(8,"Dark2")))
+```
+
+## 1.5 Sentiment Analysis
+
+### Using `nrc` Lexicon
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Relative Frequency', x ='')
+```
+
+
+### Using `bing` Lexicon
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("bing")) %>% 
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE) %>% 
+  ggplot(aes(sentiment, n))+geom_col()+
+  labs(y='Frequency', x ='')
+```
+
+
+### Using `afinn` Lexicon
+
+```{r}
+# Sentiment Analysis
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  ggplot(aes(value))+geom_bar()+
+  labs(y='Frequency', x ='')
+```
+
+# 2. Analysis by Documents
+
+- Word Frequency
+
+```{r}
+library(tidyverse)
+library(tidytext)
+df = read_csv('netflix_titles.csv')
+
+df = df %>% 
+  select(description, type) %>% 
+  rename(texts = description,
+         document = type)
+
+df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  count(document, word, sort = TRUE) %>% 
+  group_by(document) %>%
+  slice_max(n, n = 10) %>% 
+  ungroup() %>%
+  mutate(word = reorder_within(word, by = n, within = document)) %>%
+  ggplot(aes(n, word, fill = document)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~document, scales = "free") +
+  labs(x = "Frequency",
+       y = NULL)+
+  scale_y_reordered() 
+
+```
+
+- Word Cloud
+
+```{r}
+par(mfrow=c(1,2))
+library(wordcloud) 
+pal <- brewer.pal(8,"Dark2")
+
+df %>%
+  filter(document =='Movie') %>% 
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  count(document, word, sort = TRUE) %>%
+  with(wordcloud(word, n, random.order = FALSE, max.words = 50, colors=pal))
+
+df %>%
+  filter(document =='TV Show') %>% 
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  count(document, word, sort = TRUE) %>%
+  with(wordcloud(word, n, random.order = FALSE, max.words = 50, colors=pal))
+```
+
+### Sentiment Analysis
+
+- By `bing`
+
+```{r}
+df %>%
+    unnest_tokens(input = texts, output = word) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(document, word, sort = TRUE) %>%
+    group_by(document) %>% 
+    inner_join(get_sentiments("bing")) %>%
+    filter(!is.na(sentiment)) %>%
+    count(sentiment, sort = TRUE) %>% 
+    group_by(document) %>% 
+    mutate(n = n/sum(n)) %>% 
+    ggplot(aes(document, n, fill=sentiment))+geom_col(position = 'fill')+
+    labs(y='Relative Frequency', x ='')
+```
+
+
+- By `nrc`
+
+```{r}
+df %>%
+    unnest_tokens(input = texts, output = word) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(document, word, sort = TRUE) %>%
+    group_by(document) %>% 
+    inner_join(get_sentiments("nrc")) %>%
+    filter(!is.na(sentiment)) %>%
+    count(sentiment, sort = TRUE) %>% 
+    group_by(document) %>% 
+    mutate(n = n/sum(n)) %>% 
+    ggplot(aes(sentiment, n, fill=document))+geom_col(position = 'fill')+
+    labs(y='Relative Frequency', x ='')
+```
+
+
+- By `afinn`
+
+```{r}
+df %>%
+    unnest_tokens(input = texts, output = word) %>% 
+    anti_join(get_stopwords()) %>% 
+    count(document, word, sort = TRUE) %>%
+    group_by(document) %>% 
+    inner_join(get_sentiments("afinn")) %>%
+    mutate(sentiment = value) %>% 
+    filter(!is.na(sentiment)) %>%
+    count(sentiment, sort = TRUE) %>% 
+    group_by(document) %>% 
+    mutate(n = n/sum(n)) %>% 
+    ggplot(aes(document, n, fill=factor(sentiment)))+geom_col(position = 'dodge')+
+    labs(y='Relative Frequency', fill = 'Sentiment', x = '')
+```
+

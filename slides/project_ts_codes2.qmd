@@ -1,0 +1,211 @@
+---
+title: "Time Series Project"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE)
+```
+
+------------------------------------------------------------------------
+
+This is sample codes for the time series project.  The dataset can be download at the link below. 
+
+[Data](data/us_retail_employment.csv)
+
+------------------------------------------------------------------------
+
+## 1. Data Exploration
+
+-   Import the series. Note: Make sure you specify the correct starting time and frequency for the series.
+
+-   Plot the time series.
+
+```{r}
+library(TTR)
+library(forecast)
+df <- read.csv("data/us_retail_employment.csv")
+y <- ts(df$Employed, start = c(1990, 1), end = c(2019, 9), freq = 12)
+plot(y)
+```
+
+### 1.1 Smoothing
+
+-   *Moving Average*
+
+```{r}
+plot(y)
+
+# create a moving average series
+k = 16  # set the moving average 
+y_sma = SMA(y, n = k)
+
+# plot the moving average series
+lines(y_sma, col = "red")
+```
+
+-   *Exponential Smoothing* 
+
+```{r}
+plot(y)
+
+# create a moving average series
+w = .7
+
+y_ema = EMA(y, ratio = 1-w)
+
+
+# plot the moving average series
+lines(y_ema, col = "red")
+```
+
+### 1.2 Decomposition
+
+-   *Classical Decomposition*
+
+```{r}
+ourDecomposition <- decompose(y, type="additive")
+plot(ourDecomposition)
+```
+
+```{r}
+ourDecomposition <- decompose(y, type="multiplicative")
+plot(ourDecomposition)
+```
+
+-   *STL Decomposition*
+
+```{r}
+ourDecomposition <- stl(y, s.window = "periodic")
+plot(ourDecomposition)
+```
+
+### 1.3 Auto-correltion
+
+-   ACF
+
+```{r}
+acf(y)
+```
+
+-   PACF
+
+```{r}
+pacf(y)
+```
+
+## 2. Modelling
+
+### 2.1 Model Training
+
+-   Split the original series into the training series and the testing series
+
+-   Train all six models
+
+```{r}
+# data partition
+
+# set the proportion of the test set 
+p = .2 
+
+nValid <- round(.2*length(y))
+nTrain <- length(y) - nValid
+train.ts <- window(y, start = c(1990, 1), end = c(1990, nTrain))
+valid.ts <- window(y, start = c(1990, nTrain + 1), end = c(1990, nTrain + nValid))
+
+# Modeling
+# baseline models
+
+# average method: forecast by the average of the training series
+model1 = meanf(train.ts, h = nValid, level = 0)
+
+# naive: forecast by the last observation of the series
+model2 = naive(train.ts, h = nValid, level = 0)
+
+# seasonal naive: forecast by the last season
+model3 = snaive(train.ts, h = nValid, level = 0)
+
+# drift: drawing the line from the first to the last observation
+model4 = rwf(train.ts, h = nValid, level = 0, drift = TRUE)
+
+
+
+# more advanced model
+model5 = HoltWinters(train.ts, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+model6 = auto.arima(train.ts)
+
+```
+
+### 2.2 Residual Analysis
+
+Report the residuals analysis of all the models.
+
+```{r}
+checkresiduals(model1)
+checkresiduals(model2)
+checkresiduals(model3)
+checkresiduals(model4)
+checkresiduals(model5)
+checkresiduals(model6)
+```
+
+### 2.3 Testing Accuracy
+
+-   Calculate the forecast of all the models on the validation period. Calculate the Mean absolute percentage error (MAPE) of all the models. Plot the forecast of all models. 
+
+```{r}
+# forecasting
+forecast1 = forecast(model1, h = nValid, level = 0)
+forecast2 = forecast(model2, h = nValid, level = 0)
+forecast3 = forecast(model3, h = nValid, level = 0)
+forecast4 = forecast(model4, h = nValid, level = 0)
+forecast5 = forecast(model5, h = nValid, level = 0)
+forecast6 = forecast(model6, h = nValid, level = 0)
+
+
+# plotting forecast
+plot(forecast1)
+lines(valid.ts, col = 'red')
+plot(forecast2)
+lines(valid.ts, col = 'red')
+plot(forecast3)
+lines(valid.ts, col = 'red')
+plot(forecast4)
+lines(valid.ts, col = 'red')
+plot(forecast5)
+lines(valid.ts, col = 'red')
+plot(forecast6)
+lines(valid.ts, col = 'red')
+
+
+# accuracy
+a1 = accuracy(forecast1$mean, valid.ts)
+a2 = accuracy(forecast2$mean, valid.ts)
+a3 = accuracy(forecast3$mean, valid.ts)
+a4 = accuracy(forecast4$mean, valid.ts)
+a5 = accuracy(forecast5$mean, valid.ts)
+a6 = accuracy(forecast6$mean, valid.ts)
+
+rbind(a1, a2, a3,a4, a5, a6)
+```
+
+## 3. Forecasting
+
+Based on the MAPE above, decide the best model. Retrain the best model on the entire series. Use the retrained model to forecast the next values. Plot the series and the forecast values.
+
+```{r}
+# the rwf model gives the lowest MAPE, 
+# so we will select this model as the final model 
+# to train it on the entire dataset to make forecasting.
+
+selected_model =  rwf(y)
+new_forecast = forecast(selected_model)
+plot(new_forecast)
+```
+
+------------------------------------------------------------------------

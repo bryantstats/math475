@@ -1,0 +1,43 @@
+---
+title: "Assignment 18 - Text Mining in SAS"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Address all of the questions in the assignment in a Microsoft Word document with screenshots from SAS Enterprise Miner or a video recording*
+
+------------------------------------------------------------------------
+
+[Video Instruction](https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=76ff0125-1661-48c3-bde7-b15b0108f5c4)
+
+In this assignment we will work with the [Data Analyst Jobs](https://www.kaggle.com/datasets/andrewmvd/data-analyst-jobs). 
+
+Download a version of the data at this below link. 
+
+[Dataset](DataAnalyst4.xlsx)
+
+### Question 1
+
+- Import the dataset and set the text variable to be `Job_Description` and the target variable to be `salary_max2` (indicating if the max salary is greater than 87K). 
+
+- Apply Text Parsing and Text Filter nodes to the dataset. What is the most frequent words in the dataset? Write any comments you have. 
+
+- Show the concept link for the term `sql` and `visualization`. Write any comments you have when observing the concept links.  
+
+### Question 2
+
+- Apply the text topic with your chosen number of topics. Are you able to identify the topics in the job descriptions? 
+
+### Question 3
+
+- Apply the Rule Builder node with the selected target variable. What are the top 5 words in term of precision that are associated with the `High` maximum salary?
