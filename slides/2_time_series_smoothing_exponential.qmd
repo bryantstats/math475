@@ -126,7 +126,7 @@ plot(weights, main = paste0("Weights for Exponential Smoothing with w = ", w))
 -   Exponential Smoothing controls the weights of the recent observations by $w$
 
 $$
-\hat{s}_{t} = \frac{y_t + wy_{t-1} + w^2y_{t-2} + ... + w^ty_0}{1/(1-w)}
+s_{t} = \frac{y_t + wy_{t-1} + w^2y_{t-2} + ... + w^ty_0}{1/(1-w)}
 $$
 
 -   Smaller $w$ smooths the series more lightly.
@@ -136,11 +136,11 @@ $$
 # Exponential Smoothing
 
 -   We have \begin{align*}
-    \hat{s}_{t} &= \hat{s}_{t-1} + (1-w)(y_t-\hat{s}_{t-1})\\
-    & = (1-w)y_t + w\hat{s}_{t-1}
+    s_{t} &= s_{t-1} + (1-w)(y_t-s_{t-1})\\
+    & = (1-w)y_t + ws_{t-1}
     \end{align*}
 
--   When $w \to 0$, $\hat{s}_{t} \to y_t$, or little smoothing has taken
+-   When $w \to 0$, $s_{t} \to y_t$, or little smoothing has taken
 
 # 
 
@@ -200,18 +200,18 @@ lines(t1_ema, col = "red")
 
 We can use double smoothing to identify the trend and forecast linear trend time series as follows.
 
--   Step 1: Create a smoothed series: $\hat{s}^{(1)}_{t} = (1-w)y_t + w\hat{s}^{(1)}_{t-1}$
+-   Step 1: Create a smoothed series: $s^{(1)}_{t} = (1-w)y_t + ws^{(1)}_{t-1}$
 
--   Step 2: Create a double smoothed series: $\hat{s}^{(2)}_{t} = (1-w)\hat{s}^{(1)}_{t} + w\hat{s}^{(2)}_{t-1}$
+-   Step 2: Create a double smoothed series: $s^{(2)}_{t} = (1-w)s^{(1)}_{t} + ws^{(2)}_{t-1}$
 
 -   Step 3: Estimate the trend: $$
-    b_1 = \frac{1-w}{w}(\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T})
+    b_1 = \frac{1-w}{w}(s^{(1)}_{T}-s^{(2)}_{T})
     $$
 
 -   Step 4: Forecast
 
 $$
-\hat{y}_{T+l} = \hat{s}^{(1)}_{T} + b_1\cdot l
+\hat{y}_{T+l} = s^{(1)}_{T} + b_1\cdot l
 $$
 
 # Example

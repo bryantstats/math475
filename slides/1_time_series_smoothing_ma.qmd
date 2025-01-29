@@ -199,20 +199,20 @@ lines(t1_sma, col = "red")
 -   We can use MA smoothing for forecasting
 
 -   We have \begin{align*}
-    \hat{s}_t &= \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}\\
+    s_t &= \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}\\
     &=\frac{y_t + y_{t-1} +...+ y_{t-k+1}+y_{t-k}-y_{t-k}}{k}\\
     &=\frac{y_t + \bigg(y_{t-1} +...+ y_{t-k+1}+y_{t-k}\bigg)-y_{t-k}}{k}\\
-    &= \frac{y_t + k\hat{s}_{t-1}-y_{t-k}}{k}\\
-    &= \hat{s}_{t-1} + \frac{y_t-y_{t-k}}{k}
+    &= \frac{y_t + ks_{t-1}-y_{t-k}}{k}\\
+    &= s_{t-1} + \frac{y_t-y_{t-k}}{k}
     \end{align*}
 
 # Forecasting
 
 -   If there is no trend in $y_t$ the second term $(y_t-y_{t-k})/k$ can be ignored
--   Forecasting $l$ lead time into future by
+-   If $y_{Y}$ is the lastest value observed, we can forecast $l$ lead time into future by  ($\hat{y}_{T+l}$  is a forecast of $y_{T+l}$)
 
 $$
-\hat{y}_{T+l} = \hat{s}_T
+\hat{y}_{T+l} = s_T
 $$
 
 -   If there is a linear trend in a series, we can use the double moving average to estimate the trend (slope)
@@ -231,21 +231,21 @@ $$
     $$
 
 -   Step 1: MA Smooth the series $$
-    \hat{s}^{(1)}_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+    s^{(1)}_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
     $$
 
 -   Step 2: MA Smooth the smoothed series $$
-    \hat{s}^{(2)}_{t} = \frac{\hat{s}^{(1)}_t + \hat{s}^{(1)}_{t-1} +...+ \hat{s}^{(1)}_{t-k+1}}{k}
+    s^{(2)}_{t} = \frac{s^{(1)}_t + s^{(1)}_{t-1} +...+ s^{(1)}_{t-k+1}}{k}
     $$
 
 -   Step 3: Calculate the linear trend/slope $$
-    b_1 = \hat{\beta_1} =  \frac{2}{k-1}\bigg(\hat{s}_T^{(1)}-\hat{s}_T^{(2)}\bigg)
+    b_1 = \hat{\beta}_1 =  \frac{2}{k-1}\bigg(s_T^{(1)}-s_T^{(2)}\bigg)
     $$
 
 # Forecasting
 
 -   Forecasting $l$ lead time into future by $$
-    \hat{y}_{T+l} = \hat{s}^{(1)}_T + b_1 \cdot l
+    \hat{y}_{T+l} = s^{(1)}_T + b_1 \cdot l
     $$
 
 # 
@@ -315,5 +315,5 @@ autoplot(ts(s2)) + ggtitle(paste0("Double MA Series with k = ",k))
 -   The forecast for the next points from $y_{100}$ is
 
 $$
-    \hat{y}_{100+l} = \hat{s}_{100}+ b_1\cdot l = \hat{s}_{100}+ 2.92\cdot l
+    \hat{y}_{100+l} = s_{100}+ b_1\cdot l = s_{100}+ 2.92\cdot l
 $$

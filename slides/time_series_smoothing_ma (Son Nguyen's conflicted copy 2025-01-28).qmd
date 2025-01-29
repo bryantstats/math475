@@ -5,8 +5,9 @@ format:
 editor: visual
 ---
 
-
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
 
 # Cross Sectional vs. Time Series Data
 
@@ -50,13 +51,22 @@ editor: visual
 
 # Examples
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-1-1.pdf)
-:::
-:::
-
+```{r}
+# define data
+library(ggfortify)
+library(tidyverse)
+library(xts)
+library(fpp2)
+library(TTR)
+sales=BJsales
+earnings=JohnsonJohnson
+nile=Nile
+url="http://www.cru.uea.ac.uk/cru/data/temperature/CRUTEM3v-gl.dat"
+f=read.table(url,fill=TRUE)
+ny=nrow(f)/2;x=c(t(f[2*1:ny-1,2:13]))
+temperature=ts(x,start=2019,frequency=12,end=c(2020,1))
+autoplot(temperature)+ ggtitle("World Temperature")
+```
 
 # What to do with time series?
 
@@ -66,13 +76,11 @@ editor: visual
 
 # 
 
-
 ```{=tex}
 \begin{center}
 \Huge Smoothing
 \end{center}
 ```
-
 # Smoothing
 
 -   Smoothing is usually done to reveal the series patterns and trends.
@@ -91,93 +99,100 @@ $$
 
 # 
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-2-1.pdf)
-:::
-:::
-
-
-# 
-
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-3-1.pdf)
-:::
-:::
-
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Medical Component of the CPI"))
+```
 
 # 
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-4-1.pdf)
-:::
-:::
-
-
-# 
-
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-5-1.pdf)
-:::
-:::
-
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 4
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
 
 # 
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-6-1.pdf)
-:::
-:::
-
-
-# 
-
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-7-1.pdf)
-:::
-:::
-
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
 
 # 
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-8-1.pdf)
-:::
-:::
-
-
-# 
-
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-9-1.pdf)
-:::
-:::
-
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 16
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
 
 # 
 
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 32
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
 
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-10-1.pdf)
-:::
-:::
+# 
 
+```{r}
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 1
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Original Series"))
+```
+
+# 
+
+```{r}
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 2
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+k = 5
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+k = 12
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
 
 # Forecasting
 
@@ -204,13 +219,11 @@ $$
 
 # 
 
-
 ```{=tex}
 \begin{center}
 \Huge Double MA
 \end{center}
 ```
-
 # Double MA
 
 -   Linear trend time series: $$
@@ -257,33 +270,43 @@ You are given the following time series
 
 # 
 
+```{r}
+set.seed(2022)
+n = 100
+y = rep(0, n)
 
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-11-1.pdf)
-:::
-:::
+y[1] = 0
+b0 = 1
+b1 = 3
 
+e = rnorm(n, sd = 5)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*t+e[t]
+}
+
+k = 12 
+s1 = SMA(y, n = k)
+s2 = SMA(s1, n = k)
+
+
+b1_hat = 2*(s1[n]-s2[n])/(k-1)
+
+autoplot(ts(y)) + ggtitle("Original Series")
+```
 
 # 
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-12-1.pdf)
-:::
-:::
-
+```{r}
+autoplot(ts(s1)) + ggtitle(paste0("MA Series with k = ",k))
+```
 
 # 
 
-
-::: {.cell}
-::: {.cell-output-display}
-![](time_series_smoothing_ma_files/figure-beamer/unnamed-chunk-13-1.pdf)
-:::
-:::
-
+```{r}
+autoplot(ts(s2)) + ggtitle(paste0("Double MA Series with k = ",k))
+```
 
 # 
 
@@ -294,4 +317,3 @@ You are given the following time series
 $$
     \hat{y}_{100+l} = \hat{s}_{100}+ b_1\cdot l = \hat{s}_{100}+ 2.92\cdot l
 $$
-
