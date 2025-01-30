@@ -9,14 +9,13 @@ editor: visual
 
 
 
-
 [Syllabus](syllabus.html)
 
 | Date | Section/Topic | Notes | Assignments |
 |----------------|----------------|--------------------------|----------------|
 | **Week1** |  |  |  |
-| 1/28 | Time Series: Moving Average       | [Note](slides/time_series_smoothing_ma.pdf)   |  |
-| 1/30 |  |  |  |
+| 1/28 | Time Series: Moving Average       | [Note](slides/1_time_series_smoothing_ma.pdf)   | [Assignment 1](assignments/assignment1.html) |
+| 1/30 | Exponential Smoothing |[Note](slides/2_time_series_smoothing_exponential.pdf)  | [Assignment 2](assignments/assignment2.html) |
 : {.striped .hover}
 
 
