@@ -133,14 +133,16 @@ $$
 
 -   Greater $w$ smooths the series more strongly.
 
-# Exponential Smoothing
+# Another Formula: 
 
--   We have \begin{align*}
+- Exponential Smoothing can be calculated by
+\begin{align*}
+    s_{1} &= y_1, \text{and} \\
     s_{t} &= s_{t-1} + (1-w)(y_t-s_{t-1})\\
     & = (1-w)y_t + ws_{t-1}
     \end{align*}
 
--   When $w \to 0$, $s_{t} \to y_t$, or little smoothing has taken
+-  Notice that: when $w \to 0$, $s_{t} \to y_t$, or little smoothing has taken.
 
 # 
 
