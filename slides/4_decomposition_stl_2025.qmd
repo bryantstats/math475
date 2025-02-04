@@ -124,9 +124,10 @@ plot(ourDecomposition)
 
 # 
 
-```{r}
-y <- ts(c(1:100) + 50*cos(seq(0,16*pi,length.out=100)) + rnorm(100,0,10),frequency=12)
-plot(y)
+```{r, echo=TRUE}
+y <- ts(c(1:100) + 
+          50*cos(seq(0,16*pi,length.out=100)) + 
+          rnorm(100,0,10),frequency=12)
 ```
 
 # 
@@ -136,3 +137,42 @@ y <- ts(c(1:100) + 50*cos(seq(0,16*pi,length.out=100)) + rnorm(100,0,10),frequen
 ourDecomposition <- decompose(y, type="additive")
 plot(ourDecomposition)
 ```
+
+# STL Decomposition
+
+-   Classical Decomposition uses Central Moving Average to estimate the trend
+
+-   STL uses LOESS (locally estimated scatterplot smoothing) to estimate the trend
+
+-   [Link](https://www.wessa.net/download/stl.pdf)
+
+-   The seasonal component is estimated using moving averages of the de-trend series
+
+# 
+
+-   STL is a versatile and robust method for decomposing time series
+
+-   STL can be implemented using `stl` function
+
+# 
+
+```{r, eval=FALSE, echo=TRUE}
+data("AirPassengers")
+stl_Decomposition <- stl(AirPassengers, 
+                        s.window = "periodic")
+plot(stl_Decomposition)
+```
+
+# 
+
+```{r, echo=FALSE}
+data("AirPassengers")
+ourDecomposition <- stl(AirPassengers, s.window = "periodic")
+plot(ourDecomposition)
+```
+
+# Other Decomposition Methods
+
+-   X-11 decomposition: originated in the US Census Bureau and Statistics Canada
+
+-   SEATS decomposition: developed at the Bank of Spain, and is now widely used by government agencies around the world
