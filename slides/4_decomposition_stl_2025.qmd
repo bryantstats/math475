@@ -93,6 +93,11 @@ $$
 
 # Classical Decomposition
 
+- In classical decomposition, we assume that the seasonal component is constant from year to year
+
+
+# Classical Decomposition
+
 -   Trend Estimate: Smooth the data using centred moving average (CMA) of the order equal to the periodicity of the data
 
 -   Detrend the data: calculate the detrended series by subtracting/dividing the trend estimate
@@ -149,6 +154,8 @@ plot(ourDecomposition)
 -   The seasonal component is estimated using moving averages of the de-trend series
 
 # 
+
+-   STL will handle any type of seasonality
 
 -   STL is a versatile and robust method for decomposing time series
 

@@ -5,9 +5,9 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-```
+
+
+
 
 # Time Series Patterns
 
@@ -95,6 +95,7 @@ $$
 
 - In classical decomposition, we assume that the seasonal component is constant from year to year
 
+
 # Classical Decomposition
 
 -   Trend Estimate: Smooth the data using centred moving average (CMA) of the order equal to the periodicity of the data
@@ -107,36 +108,116 @@ $$
 
 # 
 
-```{r}
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](4_decomposition_stl_2025_files/figure-beamer/unnamed-chunk-1-1.pdf)
+:::
+:::
+
+
+
+# 
+
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](4_decomposition_stl_2025_files/figure-beamer/unnamed-chunk-2-1.pdf)
+:::
+:::
+
+
+
+# 
+
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](4_decomposition_stl_2025_files/figure-beamer/unnamed-chunk-3-1.pdf)
+:::
+:::
+
+
+
+# 
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
+y <- ts(c(1:100) + 
+          50*cos(seq(0,16*pi,length.out=100)) + 
+          rnorm(100,0,10),frequency=12)
+```
+:::
+
+
+
+# 
+
+
+
+::: {.cell}
+::: {.cell-output-display}
+![](4_decomposition_stl_2025_files/figure-beamer/unnamed-chunk-5-1.pdf)
+:::
+:::
+
+
+
+# STL Decomposition
+
+-   Classical Decomposition uses Central Moving Average to estimate the trend
+
+-   STL uses LOESS (locally estimated scatterplot smoothing) to estimate the trend
+
+-   [Link](https://www.wessa.net/download/stl.pdf)
+
+-   The seasonal component is estimated using moving averages of the de-trend series
+
+# 
+
+-   STL will handle any type of seasonality
+
+-   STL is a versatile and robust method for decomposing time series
+
+-   STL can be implemented using `stl` function
+
+# 
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
 data("AirPassengers")
-plot(AirPassengers)
+stl_Decomposition <- stl(AirPassengers, 
+                        s.window = "periodic")
+plot(stl_Decomposition)
 ```
+:::
+
+
 
 # 
 
-```{r}
-ourDecomposition <- decompose(AirPassengers, type="additive")
-plot(ourDecomposition)
-```
 
-# 
 
-```{r}
-ourDecomposition <- decompose(AirPassengers, type="multiplicative")
-plot(ourDecomposition)
-```
+::: {.cell}
+::: {.cell-output-display}
+![](4_decomposition_stl_2025_files/figure-beamer/unnamed-chunk-7-1.pdf)
+:::
+:::
 
-# 
 
-```{r}
-y <- ts(c(1:100) + 50*cos(seq(0,16*pi,length.out=100)) + rnorm(100,0,10),frequency=12)
-plot(y)
-```
 
-# 
+# Other Decomposition Methods
 
-```{r}
-y <- ts(c(1:100) + 50*cos(seq(0,16*pi,length.out=100)) + rnorm(100,0,10),frequency=12)
-ourDecomposition <- decompose(y, type="additive")
-plot(ourDecomposition)
-```
+-   X-11 decomposition: originated in the US Census Bureau and Statistics Canada
+
+-   SEATS decomposition: developed at the Bank of Spain, and is now widely used by government agencies around the world
+

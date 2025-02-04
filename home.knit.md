@@ -6,9 +6,9 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-```
+
+
+
 
 [Syllabus](syllabus.html)
 
@@ -19,5 +19,6 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | 1/30 | Exponential Smoothing |[Note](slides/2_time_series_smoothing_exponential.pdf)  | [Assignment 2](assignments/assignment2.html) |
 | 2/4        |  Classical Decomposition                                 | [Note](slides/4_decomposition_stl_2025.pdf)                                               |  |
 : {.striped .hover}
+
 
 
