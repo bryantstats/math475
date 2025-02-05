@@ -14,6 +14,8 @@ knitr::opts_chunk$set(message = FALSE)
 
 ------------------------------------------------------------------------
 
+For Question 1 and 2, a sample solution can be found at [Assignment 2's Sample](assignment2_sample.html)
+
 **Question 1.** *Calculation*
 
 Given the following time series $y_t$.
