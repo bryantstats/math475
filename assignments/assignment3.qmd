@@ -6,7 +6,7 @@ editor: visual
 
 ------------------------------------------------------------------------
 
-***Submission***: Submit photos of the answers to Canvas. 
+***Submission***: Submit the knitted/rendered Word document to Canvas.  
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE)
@@ -38,4 +38,4 @@ ourDecomposition <- decompose(t2, type="additive")
 plot(ourDecomposition)
 ```
 
-- (Ask the instructor:) Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  
+- (Ask the instructor:) Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the Word document to Canvas.  

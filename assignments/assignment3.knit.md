@@ -5,9 +5,12 @@ editor: visual
 ---
 
 
+
 ------------------------------------------------------------------------
 
-***Submission***: Submit photos of the answers to Canvas. 
+***Submission***: Submit the knitted/rendered Word document to Canvas.  
+
+
 
 
 
@@ -18,6 +21,7 @@ editor: visual
 **Question** 
 
 - Use the following codes to plot the Airline Passenger data and its additive decomposition
+
 
 
 ::: {.cell}
@@ -31,6 +35,7 @@ plot(ourDecomposition)
 :::
 
 
+
 - Change `additive` to `multiplicative` to plot the multiplicative decomposition
 
 - Plot the [Electric_Production](data/Electric_Production.csv) and its decomposition (*Notice: You need to use function `ts` to create the time series first*)
@@ -38,10 +43,12 @@ plot(ourDecomposition)
 - Plot the [Electric_Production](data/Electric_Production.csv) from 1985 to 1995 and its decomposition
 
 
+
 ::: {.cell}
 
 :::
 
 
-- (Ask the instructor:) Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  
+
+- (Ask the instructor:) Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the Word document to Canvas.  
 

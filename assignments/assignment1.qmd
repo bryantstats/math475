@@ -6,7 +6,7 @@ editor: visual
 
 ------------------------------------------------------------------------
 
-***Submission***: Submit photos of the answers to Canvas.  For Question 3, submit the plot of the R-code to Canvas. 
+***Submission***: Submit photos of the answers to Canvas.  For Question 3, Submit screenshots of the plots and codes to Canvas.
 
 
 ```{r setup, include=FALSE}
