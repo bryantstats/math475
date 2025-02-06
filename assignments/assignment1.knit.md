@@ -5,9 +5,12 @@ editor: visual
 ---
 
 
+
 ------------------------------------------------------------------------
 
 ***Submission***: Submit photos of the answers to Canvas.  For Question 3, submit the plot of the R-code to Canvas. 
+
+
 
 
 
@@ -43,7 +46,7 @@ We assume the series in question 1 has linear trend. Use double smoothing averag
 
 **Question 3.** *Application of MA: Trend Revealing by Visualization*
 
-In this question, we will use R to plot a time series, create an MA series and plot the MA series. 
+In this question, we will use R to plot a time series, create an MA series and plot the MA series. Submit screenshots of the plots and codes to Canvas.
 
 - Download and Install R at: [link](https://cran.r-project.org/bin/windows/base/R-4.3.2-win.exe)
 
@@ -53,11 +56,11 @@ In this question, we will use R to plot a time series, create an MA series and p
 
 
 
+
 ::: {.cell}
 
 ```{.r .cell-code}
 install.packages('TTR') # install TTR package
-
 library(TTR)
 # read data
 d <- read.csv('https://bryantstats.github.io/math475/data/MedCPISmooth.csv')
@@ -78,6 +81,7 @@ lines(t1_sma, col = "red")
 ::: {.cell}
 
 :::
+
 
 
 ------------------------------------------------------------------------

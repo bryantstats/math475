@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.552">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="assignment2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="assignment2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -131,7 +131,7 @@ window.Quarto = {
 <p>For Question 1 and 2, a sample solution can be found at <a href="assignment2_sample.html">Assignment 2’s Sample</a></p>
 <p><strong>Question 1.</strong> <em>Calculation</em></p>
 <p>Given the following time series <span class="math inline">\(y_t\)</span>.</p>
-<table class="table">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: left;">t</th>
@@ -176,7 +176,7 @@ window.Quarto = {
 <p><strong>Question 2.</strong> <em>Forecasting Linear Trend Time Series</em></p>
 <p>We assume the series in question 1 has linear trend. Use double exponential smoothing to estimate the linear trend (slope) of the time series. Use the estimated linear trend to predict the next value (<span class="math inline">\(y_8\)</span>)</p>
 <p><strong>Question 3.</strong> <em>Trend Revealing by Visualization</em></p>
-<p>In this question, we will use R to plot a time series, create an MA series and plot the MA series.</p>
+<p>In this question, we will use R to plot a time series, create an Exponential Smoothing (ES) series and plot the ES series. Submit screenshots of the plots and codes to Canvas.</p>
 <ul>
 <li>Open Rstudio and use the following code to plot a time series.</li>
 </ul>
@@ -208,14 +208,16 @@ window.Quarto = {
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(t1_ema, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>Increase the value of <span class="math inline">\(w\)</span> to see the effect this parameter on the smoothing series. You can copy and paste the given codes and change the value of <span class="math inline">\(w\)</span>.</li>
+<li><p>Increase the value of <span class="math inline">\(w\)</span> to see the effect this parameter on the smoothing series. You can copy and paste the given codes and change the value of <span class="math inline">\(w\)</span>.</p></li>
+<li><p>Submit screenshots of the plots to Canvas.</p></li>
 </ul>
 <p><strong>Question 4.</strong> <em>Trend Revealing by Visualization</em></p>
 <p>In this assignment we will study the dataset about the economy of Algeria. The dataset can be download at <a href="data/algeria_economy.csv">this link</a>.</p>
-<p>Use the sample codes in Question 3 to do the follows. Ask the instructor for any help.</p>
+<p>Use the sample codes in Question 3 to do the follows. Submit screenshots of the plots and codes to Canvas. Ask the instructor for any help.</p>
 <ul>
 <li><p>Plot the time series of Algeria’s Exports</p></li>
 <li><p>Plot an exponential smoothing series for the above time series. What is your choice for <span class="math inline">\(w\)</span>?</p></li>
+<li><p>Submit screenshots of the plots and codes to Canvas.</p></li>
 </ul>
 <hr>
 
@@ -256,18 +258,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -299,7 +290,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -307,7 +320,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {

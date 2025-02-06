@@ -4,13 +4,17 @@ format: html
 editor: visual
 ---
 
+
+
 ------------------------------------------------------------------------
 
 ***Submission***: Submit photos of the answers to Canvas. For Question 3, submit the plot of the R-code to Canvas.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message = FALSE)
-```
+
+
+
+
+
 
 ------------------------------------------------------------------------
 
@@ -44,7 +48,11 @@ In this question, we will use R to plot a time series, create an Exponential Smo
 
 -   Open Rstudio and use the following code to plot a time series.
 
-```{r, eval=FALSE}
+
+
+::: {.cell}
+
+```{.r .cell-code}
 library(TTR)
 # read data
 d <- read.csv('https://bryantstats.github.io/math475/data/MedCPISmooth.csv')
@@ -58,10 +66,17 @@ t1 = ts(d$PerMEDCPI, start = 1947, frequency = 4)
 # plot the time series
 plot(t1, main = paste0("Medical Component of the CPI"))
 ```
+:::
+
+
 
 -   Use the below codes to add an exponential smoothing series
 
-```{r, eval=FALSE}
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # In exponential smoothing, a higher ratio will weight more on the recent observation, 
 # ratio close to 1 will have a 100% weight on the most recent observation
 w = .1
@@ -71,6 +86,9 @@ t1_ema = EMA(t1, ratio = 1-w)
 plot(t1,  main = paste0("Exponential Smoothing with w = ", w))
 lines(t1_ema, col = "red")
 ```
+:::
+
+
 
 -   Increase the value of $w$ to see the effect this parameter on the smoothing series. You can copy and paste the given codes and change the value of $w$.  
 
@@ -88,16 +106,13 @@ Use the sample codes in Question 3 to do the follows. Submit screenshots of the 
 
 -   Submit screenshots of the plots and codes to Canvas.
 
-```{r, eval=FALSE, echo=FALSE}
 
-d =  read.csv('data/algeria_economy.csv')
-t2 = ts(d$Exports, start = 1960, frequency = 1)
-w = .7
 
-t2_ema = EMA(t2, ratio = 1-w)
+::: {.cell}
 
-plot(t2,  main = paste0("Exponential Smoothing with w = ", w))
-lines(t2_ema, col = "red")
-```
+:::
+
+
 
 ------------------------------------------------------------------------
+
