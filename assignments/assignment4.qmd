@@ -6,7 +6,7 @@ editor: visual
 
 ------------------------------------------------------------------------
 
-***Submission***: Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  
+***Submission***: Include your codes in an Rmarkdown or Quarto, Knit/Render it to either pdf or Word document. Submit the file to Canvas.  
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE)

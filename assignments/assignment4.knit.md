@@ -5,9 +5,12 @@ editor: visual
 ---
 
 
+
 ------------------------------------------------------------------------
 
-***Submission***: Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  
+***Submission***: Include your codes in an Rmarkdown or Quarto, Knit/Render it to either pdf or Word document. Submit the file to Canvas.  
+
+
 
 
 
@@ -18,6 +21,7 @@ editor: visual
 **Questions** 
 
 - Use the following codes to plot the Airline Passenger data and its STL decomposition
+
 
 
 ::: {.cell}
@@ -31,14 +35,17 @@ plot(ourDecomposition)
 :::
 
 
+
 - Plot the [Electric Production](data/Electric_Production.csv) and its stl decomposition (*Notice: You need to use function `ts` to create the time series first*)
 
 - Plot the [Electric Production](data/Electric_Production.csv) from 1985 to 1995 and its stl decomposition
 
 
+
 ::: {.cell}
 
 :::
+
 
 
 - Plot the [US Retail Employment](data/us_retail_employment.csv) and its STL decomposition. 
