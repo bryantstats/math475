@@ -35,6 +35,20 @@ xaringanExtra::use_webcam()
 xaringanExtra::use_fit_screen()
 ```
 
+
+###  Exponential Smoothing Forecast
+
+- Proposed in the late 1950s (Brown, 1959; Holt, 1957; Winters, 1960), 
+
+- Motivated some of the most successful forecasting methods. 
+
+- Forecasts are weighted averages of past observations, with the weights decaying exponentially as the observations get older. 
+
+- More recent the observation the higher the associated weight. 
+
+- This framework generates reliable forecasts quickly and for a wide range of time series
+
+---
 ### Forecasting with Exponential Smoothing
 
 - Single ES: constant level (no trend) and no seasonality
@@ -48,7 +62,7 @@ class: inverse, center, middle
 
 # Forecasting with Single Exponential Smoothing
 
-- constant level (no trend) and no seasonality
+constant level (no trend) and no seasonality
 
 ---
 ### Forecasting with Single Exponential Smoothing
@@ -74,6 +88,7 @@ plot(ts1)
 ```
 
 
+
 ---
 ### Making Forecast
 
@@ -89,6 +104,32 @@ ts1_forecast
 ```{r}
 plot(ts1_forecast)
 ```
+
+
+---
+### Making Forecast
+
+- We can specify the smoothing parameter alpha
+
+- The smaller alpha (closer to 0) will smoothen the original series more strongly. 
+
+---
+### Making Forecast
+
+```{r}
+ts1_forecast <- HoltWinters(ts1, alpha=.1, 
+                            beta=FALSE, 
+                            gamma=FALSE)
+ts1_forecast
+```
+---
+### Making Forecast
+
+
+```{r}
+plot(ts1_forecast)
+```
+
 
 ---
 ### Forecasting
@@ -173,17 +214,31 @@ plot(ts3_forecasts2)
 
 
 ---
+### Log Transformation
 
-```{r, eval=FALSE}
+- The predicted series seems to increase exponentially
+
+- We can transform the series before applying the forecast 
+
+---
+
+```{r, eval=TRUE}
 souvenir <- read.csv('souvenir.csv')
 ts3 <- ts(souvenir, frequency=12, start=c(1987,1))
 logts3 <- log(ts3)
 ts3_forecasts <- HoltWinters(logts3)
 plot(ts3_forecasts)
+```
+
+
+
+---
+#### Log Transformation
+
+```{r}
 ts3_forecasts2 <- forecast(ts3_forecasts, h=48)
 plot(ts3_forecasts2)
 ```
-
 
 ---
 

@@ -37,6 +37,20 @@ class: center, middle, inverse, title-slide
 
 
 
+
+###  Exponential Smoothing Forecast
+
+- Proposed in the late 1950s (Brown, 1959; Holt, 1957; Winters, 1960), 
+
+- Motivated some of the most successful forecasting methods. 
+
+- Forecasts are weighted averages of past observations, with the weights decaying exponentially as the observations get older. 
+
+- More recent the observation the higher the associated weight. 
+
+- This framework generates reliable forecasts quickly and for a wide range of time series
+
+---
 ### Forecasting with Exponential Smoothing
 
 - Single ES: constant level (no trend) and no seasonality
@@ -50,7 +64,7 @@ class: inverse, center, middle
 
 # Forecasting with Single Exponential Smoothing
 
-- constant level (no trend) and no seasonality
+constant level (no trend) and no seasonality
 
 ---
 ### Forecasting with Single Exponential Smoothing
@@ -70,6 +84,7 @@ plot(ts1)
 ### Forecasting with Single Exponential Smoothing
 
 ![](5_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
 
 
 ---
@@ -108,6 +123,52 @@ plot(ts1_forecast)
 
 ![](5_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 
+
+---
+### Making Forecast
+
+- We can specify the smoothing parameter alpha
+
+- The smaller alpha (closer to 0) will smoothen the original series more strongly. 
+
+---
+### Making Forecast
+
+
+```r
+ts1_forecast &lt;- HoltWinters(ts1, alpha=.1, 
+                            beta=FALSE, 
+                            gamma=FALSE)
+ts1_forecast
+```
+
+```
+## Holt-Winters exponential smoothing without trend and without seasonal component.
+## 
+## Call:
+## HoltWinters(x = ts1, alpha = 0.1, beta = FALSE, gamma = FALSE)
+## 
+## Smoothing parameters:
+##  alpha: 0.1
+##  beta : FALSE
+##  gamma: FALSE
+## 
+## Coefficients:
+##       [,1]
+## a 24.77134
+```
+---
+### Making Forecast
+
+
+
+```r
+plot(ts1_forecast)
+```
+
+![](5_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+
 ---
 ### Forecasting
 
@@ -118,15 +179,15 @@ ts1_forecast2
 ```
 
 ```
-##      Point Forecast     Lo 80    Hi 80      Lo 95    Hi 95
-## 1913          27.88 19.965161 35.79484 15.7752977 39.98470
-## 1914          27.88 16.686727 39.07327 10.7613658 44.99863
-## 1915          27.88 14.171096 41.58890  6.9140405 48.84596
-## 1916          27.88 12.050321 43.70968  3.6705953 52.08940
-## 1917          27.88 10.181881 45.57812  0.8130627 54.94694
-## 1918          27.88  8.492682 47.26732 -1.7703442 57.53034
-## 1919          27.88  6.939303 48.82070 -4.1460321 59.90603
-## 1920          27.88  5.493453 50.26655 -6.3572684 62.11727
+##      Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
+## 1913       24.77134 19.16634 30.37633 16.19923 33.34344
+## 1914       24.77134 19.13838 30.40429 16.15648 33.38619
+## 1915       24.77134 19.11057 30.43211 16.11393 33.42874
+## 1916       24.77134 19.08288 30.45979 16.07160 33.47107
+## 1917       24.77134 19.05534 30.48733 16.02947 33.51320
+## 1918       24.77134 19.02792 30.51475 15.98754 33.55513
+## 1919       24.77134 19.00064 30.54203 15.94581 33.59686
+## 1920       24.77134 18.97348 30.56919 15.90428 33.63839
 ```
 
 ---
@@ -135,7 +196,7 @@ ts1_forecast2
 plot(ts1_forecast2)
 ```
 
-![](5_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -155,7 +216,7 @@ ts2 &lt;- ts(skirts,start=c(1866))
 plot(ts2)
 ```
 
-![](5_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -191,7 +252,7 @@ ts2_forecast
 plot(ts2_forecast)
 ```
 
-![](5_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -201,7 +262,7 @@ ts2_forecast2 &lt;- forecast(ts2_forecast, h=19)
 plot(ts2_forecast2)
 ```
 
-![](5_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ---
 class: center, inverse, middle
@@ -217,7 +278,7 @@ ts3 &lt;- ts(souvenir, frequency=12, start=c(1987,1))
 plot(ts3)
 ```
 
-![](5_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -229,7 +290,7 @@ ts3_forecasts &lt;- HoltWinters(ts3, alpha=TRUE,
 plot(ts3_forecasts)
 ```
 
-![](5_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -239,8 +300,15 @@ ts3_forecasts2 &lt;- forecast(ts3_forecasts, h=48)
 plot(ts3_forecasts2)
 ```
 
-![](5_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](5_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
 
+
+---
+### Log Transformation
+
+- The predicted series seems to increase exponentially
+
+- We can transform the series before applying the forecast 
 
 ---
 
@@ -251,10 +319,22 @@ ts3 &lt;- ts(souvenir, frequency=12, start=c(1987,1))
 logts3 &lt;- log(ts3)
 ts3_forecasts &lt;- HoltWinters(logts3)
 plot(ts3_forecasts)
+```
+
+![](5_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+
+
+
+---
+#### Log Transformation
+
+
+```r
 ts3_forecasts2 &lt;- forecast(ts3_forecasts, h=48)
 plot(ts3_forecasts2)
 ```
 
+![](5_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
 
 ---
 
