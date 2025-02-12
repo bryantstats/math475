@@ -1,0 +1,85 @@
+---
+title: "Exponential Smoothing"
+format: 
+  docx: 
+    toc: true
+editor: visual
+---
+
+## 1. Single Exponential Smoothing 
+
+```{r}
+library(forecast)
+rain = read.csv('https://bryantstats.github.io/math475/slides/rainfall_london.csv')
+ts1 = ts(rain, start = 1813, frequency = 1)
+ts1_forecast = HoltWinters(ts1, alpha = TRUE, gamma = FALSE, beta = FALSE)
+plot(ts1_forecast)
+```
+
+```{r}
+ts1_forecasts2 <- forecast(ts1_forecast, h=48)
+plot(ts1_forecasts2)
+```
+
+## 2. Double Exponential Smoothing
+
+```{r}
+skirts <- read.csv('https://bryantstats.github.io/math475/slides/skirts.csv')
+
+ts2 <- ts(skirts,start=c(1866), frequency = 1)
+
+plot(ts2)
+
+```
+
+```{r}
+ts2_forecast <- HoltWinters(ts2, alpha=TRUE, 
+                            beta = TRUE, 
+                            gamma = FALSE)
+plot(ts2_forecast)
+
+```
+
+```{r}
+ts2_forecast2 <- forecast(ts2_forecast, h=19)
+plot(ts2_forecast2)
+
+```
+
+```{r}
+ts2_forecast2
+```
+
+## Triple Exponential Smoothing
+
+```{r}
+souvenir <- read.csv('https://bryantstats.github.io/math475/slides/souvenir.csv')
+ts3 <- ts(souvenir, frequency=12, start=c(1987,1))
+plot(ts3)
+
+```
+
+```{r}
+ts3_forecasts <- HoltWinters(ts3, alpha=TRUE, 
+                            beta=TRUE, 
+                            gamma=TRUE)
+plot(ts3_forecasts)
+
+```
+
+```{r}
+ts3_forecasts2 <- forecast(ts3_forecasts, h=48)
+plot(ts3_forecasts2)
+
+```
+
+## Log Transformation
+
+```{r}
+logts3 <- log(ts3)
+ts3_forecasts <- HoltWinters(logts3)
+plot(ts3_forecasts)
+ts3_forecasts2 <- forecast(ts3_forecasts, h=48)
+plot(ts3_forecasts2)
+
+```
