@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MATH 475. Applied Analytics Using SAS.</title>
+<title>Assignment 6: SAS - Exponential Smoothing Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,31 +23,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="home_files/libs/clipboard/clipboard.min.js"></script>
-<script src="home_files/libs/quarto-html/quarto.js"></script>
-<script src="home_files/libs/quarto-html/popper.min.js"></script>
-<script src="home_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="home_files/libs/quarto-html/anchor.min.js"></script>
-<link href="home_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="home_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="home_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="home_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="home_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="assignment6_2025_files/libs/clipboard/clipboard.min.js"></script>
+<script src="assignment6_2025_files/libs/quarto-html/quarto.js"></script>
+<script src="assignment6_2025_files/libs/quarto-html/popper.min.js"></script>
+<script src="assignment6_2025_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="assignment6_2025_files/libs/quarto-html/anchor.min.js"></script>
+<link href="assignment6_2025_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="assignment6_2025_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="assignment6_2025_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="assignment6_2025_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="assignment6_2025_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body>
+<body class="fullcontent">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-  
-</div>
+
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MATH 475. Applied Analytics Using SAS.</h1>
+<h1 class="title">Assignment 6: SAS - Exponential Smoothing Forecasting</h1>
 </div>
 
 
@@ -64,73 +62,22 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="syllabus.html">Syllabus</a></p>
-<table class="table-striped table-hover caption-top table">
-<thead>
-<tr class="header">
-<th>Date</th>
-<th>Section/Topic</th>
-<th>Notes</th>
-<th>Assignments</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Week 1</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>1/28</td>
-<td>Time Series: Moving Average</td>
-<td><a href="slides/1_time_series_smoothing_ma.pdf">Note</a></td>
-<td><a href="assignments/assignment1.html">Assignment 1</a></td>
-</tr>
-<tr class="odd">
-<td>1/30</td>
-<td>Exponential Smoothing</td>
-<td><a href="slides/2_time_series_smoothing_exponential.pdf">Note</a></td>
-<td><a href="assignments/assignment2.html">Assignment 2</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 2</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/4</td>
-<td>Classical Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment3.html">Assignment 3</a></td>
-</tr>
-<tr class="even">
-<td>2/6</td>
-<td>STL Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment4.html">Assignment 4</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 3</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/11</td>
-<td>Exponential Smoothing Forecasting</td>
-<td><a href="slides/5.html">Slides</a></td>
-<td><a href="assignments/assignment5.html">Assignment 5</a></td>
-</tr>
-<tr class="odd">
-<td>2/13</td>
-<td>SAS: Exponential Smoothing Forecasting</td>
-<td><a href="slides/5.html">Slides</a></td>
-<td><a href="assignments/assignment6_2025.html">Assignment 6</a></td>
-</tr>
-</tbody>
-</table>
+<hr>
+<p><strong><em>Submission</em></strong>: Record a video of you doing this assignment. Submit the video to Canvas.</p>
+<hr>
+<p><strong>Questions</strong></p>
+<p>For the below time series. Do the follows.</p>
+<ol type="1">
+<li><p>Import the series in SAS Enterprise Guide, define the time variable and Plot the series.</p></li>
+<li><p>Make forecast for the next 10 points using Exponential Smoothing Method.</p></li>
+</ol>
+<p>The time series are as follows.</p>
+<ul>
+<li><p><a href="https://bryantstats.github.io/math475/slides/rainfall_london.csv">rainfall_london.csv</a></p></li>
+<li><p><a href="https://bryantstats.github.io/math475/slides/skirts.csv">skirts.csv</a></p></li>
+<li><p><a href="https://bryantstats.github.io/math475/slides/souvenir.csv">souvenir.csv</a></p></li>
+</ul>
+<p>Record a video of you doing this assignment. Submit the video to Canvas.</p>
 
 </main>
 <!-- /main column -->

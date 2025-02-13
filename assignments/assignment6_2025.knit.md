@@ -4,25 +4,29 @@ format: html
 editor: visual
 ---
 
+
+
 ------------------------------------------------------------------------
 
-***Submission***: Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.  
+***Submission***: Record a video of you doing this assignment. Submit the video to Canvas. 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message = FALSE)
-```
+
+
+
+
+
 
 ------------------------------------------------------------------------
 
 **Questions** 
 
-1. For the below time series. Do the follows.
+For the below time series. Do the follows.
 
-a.  Import the series in SAS Enterprise Guide, define the time variable and Plot the series. 
+1.  Import the series in SAS Enterprise Guide, define the time variable and Plot the series. 
 
-b.  Make forecast for the next 10 points using Exponential Smoothing Method. 
+2.  Make forecast for the next 10 points using Exponential Smoothing Method. 
 
-The time Series are as follows. 
+The time series are as follows. 
 
   - [rainfall_london.csv](https://bryantstats.github.io/math475/slides/rainfall_london.csv)
   
@@ -30,3 +34,4 @@ The time Series are as follows.
   
   - [souvenir.csv](https://bryantstats.github.io/math475/slides/souvenir.csv)
 
+Record a video of you doing this assignment. Submit the video to Canvas. 
