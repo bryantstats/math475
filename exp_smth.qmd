@@ -6,7 +6,7 @@ format:
 editor: visual
 ---
 
-## 1. Single Exponential Smoothing 
+## 1. Single Exponential Smoothing
 
 ```{r}
 library(forecast)
