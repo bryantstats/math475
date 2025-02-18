@@ -1,0 +1,96 @@
+---
+title: "whitenoise_randomwalk"
+format: docx
+editor: visual
+---
+
+## White Noise
+
+```{r}
+y = rnorm(100)
+
+yt = ts(y)
+
+plot(yt)
+```
+
+```{r}
+acf(yt)
+```
+
+```{r}
+y = c(1:100)
+
+yt = ts(y)
+
+plot(yt)
+
+acf(yt)
+```
+
+
+```{r}
+y1 = c(1:100)
+
+y2 = rnorm(100, mean = 10, sd = 1)
+
+y = y1 + y2
+
+yt = ts(y)
+
+plot(yt)
+
+acf(yt)
+```
+
+
+
+```{r}
+y1 = c(1:100)
+
+y2 = rnorm(100, mean = 10, sd = 100)
+
+y = y1 + y2
+
+yt = ts(y)
+
+plot(yt)
+
+acf(yt)
+```
+
+## Random Walk
+
+```{r}
+set.seed(10)
+n <- 1000
+ct = c(0, sample(c(-1, 1), n, TRUE))
+x <- cumsum(ct)
+plot(ts(x))
+```
+
+
+```{r}
+y = diff(x)
+
+yt = ts(y)
+
+plot(yt)
+
+acf(yt)
+
+```
+
+## Quantmod Package
+
+
+```{r}
+library(quantmod)
+getSymbols('MSFT', src='yahoo')
+
+y = Ad(MSFT[index(MSFT)>"2023-01-01",])
+plot(y)
+```
+
+
+
