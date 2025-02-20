@@ -6,9 +6,9 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-```
+
+
+
 
 [Syllabus](syllabus.html)
 
@@ -28,5 +28,6 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | 2/20       | Auto-Regressive Models | [Slides](slides/7.html)                                                          | [Assignment 7](assignments/assignment7.html) |
 
 : {.striped .hover}
+
 
 

@@ -193,6 +193,9 @@ autoplot(y) + ggtitle("")
 
 - White Noise is stationary
 
+---
+# Example
+
 ```{r}
 set.seed(10)
 y <- ts(rnorm(200))

@@ -4,7 +4,7 @@
     <title>Autoregressive model - AR(1)</title>
     <meta charset="utf-8" />
     <meta name="author" content=" Son Nguyen " />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
@@ -120,7 +120,7 @@ class: center, middle, inverse, title-slide
 # Example
 
 
-```r
+``` r
 set.seed(30)
 n = 100
 e &lt;- ts(rnorm(n, sd = 10))
@@ -136,7 +136,7 @@ autoplot(y) + ggtitle("")
 # Example
 
 
-```r
+``` r
 set.seed(30)
 n = 100
 e &lt;- ts(rnorm(n, sd = 10))
@@ -152,7 +152,7 @@ autoplot(y) + ggtitle("Non-stationary due to non-constant expected value")
 # Example
 
 
-```r
+``` r
 set.seed(30)
 n = 100
 e1 &lt;- rnorm(n, sd = 1)
@@ -169,7 +169,7 @@ autoplot(ts(y)) + ggtitle("")
 # Example
 
 
-```r
+``` r
 set.seed(30)
 n = 100
 e1 &lt;- rnorm(n, sd = 1)
@@ -186,7 +186,7 @@ autoplot(y) + ggtitle("Non-stationary due to non-constant variance")
 # Example
 
 
-```r
+``` r
 set.seed(10)
 y &lt;- ts(rnorm(200))
 library(ggfortify)
@@ -200,8 +200,11 @@ autoplot(y) + ggtitle("")
 
 - White Noise is stationary
 
+---
+# Example
 
-```r
+
+``` r
 set.seed(10)
 y &lt;- ts(rnorm(200))
 library(ggfortify)
@@ -218,7 +221,7 @@ autoplot(y) + ggtitle("A Stationary Time Series")
 
 
 
-```r
+``` r
 set.seed(10)
 y &lt;- arima.sim(list(order=c(0,1,0)), n=1000)
 library(ggfortify)
@@ -266,7 +269,7 @@ where `\(\beta_0 = \mu(1-\beta_1)\)`. Here, `\(\mu\)` is the mean of the series.
 
 .left-code[
 
-```r
+``` r
 library(ggfortify)
 set.seed(2023)
 n = 1000
@@ -294,7 +297,7 @@ autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
 
 .left-code[
 
-```r
+``` r
 set.seed(2023)
 n = 1000
 y = rep(0, n)
@@ -321,7 +324,7 @@ autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
 
 .left-code[
 
-```r
+``` r
 set.seed(2023)
 n = 1000
 y = rep(0, n)
@@ -348,7 +351,7 @@ autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
 
 .left-code[
 
-```r
+``` r
 set.seed(2023)
 n = 1000
 y = rep(0, n)
@@ -377,7 +380,7 @@ autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
 
 .left-code[
 
-```r
+``` r
 set.seed(2023)
 n = 1000
 y = rep(0, n)
@@ -405,7 +408,7 @@ autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
 - We can conveniently simulate AR(1) using `arima.sim` function
 
 
-```r
+``` r
 yt &lt;- arima.sim(list(order=c(1,0,0), ar=.7), n=1000)
 b0 = 10
 yt &lt;- yt + b0
@@ -420,7 +423,7 @@ plot(yt)
 - For a positive value of `\(\beta_1\)` the ACF exponentially decreases to 0 as the lag increases
 
 
-```r
+``` r
 yt &lt;- arima.sim(list(order=c(1,0,0), ar=.9), n=1000)
 b0 = 10
 yt &lt;- yt + b0
@@ -435,7 +438,7 @@ acf(yt)
 - For negative `\(\beta_1\)` the ACF also exponentially decays to 0 as the lag increases, but the algebraic signs for the autocorrelations alternate between positive and negative
 
 
-```r
+``` r
 yt &lt;- arima.sim(list(order=c(1,0,0), ar=-.9), n=1000)
 b0 = 10
 yt &lt;- yt + b0
@@ -496,7 +499,7 @@ Calculate `\(\hat{\beta}_1\)` using the conditional least squares method.
 - We can estimate the coefficients of AR(1) using the `arima` function
 
 
-```r
+``` r
 yt &lt;- arima.sim(list(order=c(1,0,0), ar=c(.7)), n=1000)
 
 b0 = 10
@@ -508,7 +511,7 @@ plot(yt)
 
 &lt;img src="7_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
 
-```r
+``` r
 arima(yt, order = c(1,0,0))
 ```
 
@@ -531,7 +534,7 @@ arima(yt, order = c(1,0,0))
 - We can estimate the coefficients of AR(1) using the `arima` function
 
 
-```r
+``` r
 arima(yt, order = c(1,0,0))
 ```
 
@@ -581,7 +584,7 @@ Calculate the three step ahead forecast of `\(y_{T+3}\)`
 # Forecasting with AR(1)
 
 
-```r
+``` r
 # create an AR(1) series
 yt &lt;- arima.sim(list(order=c(1,0,0), ar=c(.2)), n=100)
 b0 = 10
@@ -595,7 +598,7 @@ plot(yt)
 # Forecasting with AR(1)
 
 
-```r
+``` r
 # estimate the series using AR(1) model
 yt_ar  = arima(yt, order = c(1,0,0))
 
@@ -609,7 +612,7 @@ points(yt_predicted, type = "l",
 
 &lt;img src="7_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
 
-```r
+``` r
 # calculate Mean Absolute Error - MAE
 mae = mean(abs(yt_ar$residuals))
 
@@ -622,7 +625,7 @@ mae
 ## [1] 0.8031215
 ```
 
-```r
+``` r
 mape
 ```
 
@@ -634,7 +637,7 @@ mape
 # Forecasting with AR(1)
 
 
-```r
+``` r
 hist(yt_ar$residuals)
 ```
 
@@ -645,7 +648,7 @@ hist(yt_ar$residuals)
 # Forecasting with AR(1)
 
 
-```r
+``` r
 acf(yt_ar$residuals)
 ```
 
@@ -656,7 +659,7 @@ acf(yt_ar$residuals)
 # Forecasting with AR(1)
 
 
-```r
+``` r
 ts3_forecasts2 &lt;- forecast(yt_ar, h=5)
 plot(ts3_forecasts2)
 ```
@@ -682,7 +685,7 @@ class: center, middle, inverse
 # Example
 
 
-```r
+``` r
 library(quantmod)
 library(forecast)
 getSymbols("AAPL")
@@ -692,7 +695,7 @@ getSymbols("AAPL")
 ## [1] "AAPL"
 ```
 
-```r
+``` r
 yt = AAPL$AAPL.Open
 yt &lt;- yt[index(yt) &gt; "2023-01-01"]
 ```
@@ -700,7 +703,7 @@ yt &lt;- yt[index(yt) &gt; "2023-01-01"]
 ---
 
 
-```r
+``` r
 acf(yt, lag.max = 100)
 ```
 
@@ -715,7 +718,7 @@ acf(yt, lag.max = 100)
 `$$d_{n} = y_{n+1} - y_n$$`
 
 
-```r
+``` r
 d_AAPL = ts(as.numeric(diff(yt))[-1])
 acf(d_AAPL, lag.max = 100)
 ```
@@ -728,7 +731,7 @@ acf(d_AAPL, lag.max = 100)
 The ACF plot shows that the difference series is stationary and can be model by an AR model.
 
 
-```r
+``` r
 ar_AAPL = arima(d_AAPL, order = c(1,0,0))
 ar_AAPL
 ```
@@ -740,31 +743,31 @@ ar_AAPL
 ## 
 ## Coefficients:
 ##          ar1  intercept
-##       0.0170     0.1567
-## s.e.  0.0589     0.1365
+##       0.0385     0.2143
+## s.e.  0.0433     0.1325
 ## 
-## sigma^2 estimated as 5.257:  log likelihood = -656.64,  aic = 1319.27
+## sigma^2 estimated as 8.648:  log likelihood = -1331.23,  aic = 2668.47
 ```
 
 ---
 - Forecast the next observation of `\(d_n\)`. 
 
 
-```r
+``` r
 d_n = forecast(ar_AAPL, h = 1)
 ```
 
 - Notice that `\(y_{n+1} = y_n + d_n\)`, we can forecast `\(y_{n+1}\)` using `\(y_n\)` and `\(d_n\)`
 
 
-```r
+``` r
 y_next = d_n$mean + yt[length(yt)]
 y_next = as.numeric(y_next)
 y_next
 ```
 
 ```
-## [1] 176.2461
+## [1] 244.8857
 ```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
