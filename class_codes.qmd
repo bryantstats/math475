@@ -1,0 +1,25 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Auto-regressive Models
+
+```{r}
+library(ggfortify)
+set.seed(2023)
+n = 1000
+y = rep(0, n)
+y[1] = 0
+b0 = 0
+b1 = .01
+e = rnorm(n, sd = 1)
+for (t in 2:n)
+{
+  y[t] = b0 + b1*y[t-1]+e[t]
+}
+autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+

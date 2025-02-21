@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MATH 475. Applied Analytics Using SAS.</title>
+<title>Assignment 8: Autoregressive Models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,31 +23,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="home_files/libs/clipboard/clipboard.min.js"></script>
-<script src="home_files/libs/quarto-html/quarto.js"></script>
-<script src="home_files/libs/quarto-html/popper.min.js"></script>
-<script src="home_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="home_files/libs/quarto-html/anchor.min.js"></script>
-<link href="home_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="home_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="home_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="home_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="home_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="assignment8_2025_files/libs/clipboard/clipboard.min.js"></script>
+<script src="assignment8_2025_files/libs/quarto-html/quarto.js"></script>
+<script src="assignment8_2025_files/libs/quarto-html/popper.min.js"></script>
+<script src="assignment8_2025_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="assignment8_2025_files/libs/quarto-html/anchor.min.js"></script>
+<link href="assignment8_2025_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="assignment8_2025_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="assignment8_2025_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="assignment8_2025_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="assignment8_2025_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body>
+<body class="fullcontent">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  
-</div>
+
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MATH 475. Applied Analytics Using SAS.</h1>
+<h1 class="title">Assignment 8: Autoregressive Models</h1>
 </div>
 
 
@@ -64,91 +62,16 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="syllabus.html">Syllabus</a></p>
-<table class="table-striped table-hover table">
-<thead>
-<tr class="header">
-<th>Date</th>
-<th>Section/Topic</th>
-<th>Notes</th>
-<th>Assignments</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Week 1</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>1/28</td>
-<td>Time Series: Moving Average</td>
-<td><a href="slides/1_time_series_smoothing_ma.pdf">Note</a></td>
-<td><a href="assignments/assignment1.html">Assignment 1</a></td>
-</tr>
-<tr class="odd">
-<td>1/30</td>
-<td>Exponential Smoothing</td>
-<td><a href="slides/2_time_series_smoothing_exponential.pdf">Note</a></td>
-<td><a href="assignments/assignment2.html">Assignment 2</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 2</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/4</td>
-<td>Classical Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment3.html">Assignment 3</a></td>
-</tr>
-<tr class="even">
-<td>2/6</td>
-<td>STL Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment4.html">Assignment 4</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 3</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/11</td>
-<td>Exponential Smoothing Forecasting</td>
-<td><a href="slides/5.html">Slides</a></td>
-<td><a href="assignments/assignment5.html">Assignment 5</a></td>
-</tr>
-<tr class="odd">
-<td>2/13</td>
-<td>SAS: Exponential Smoothing Forecasting</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d2ab7f3b-1a90-484f-8261-b283012f335c">SAS Video</a></td>
-<td><a href="assignments/assignment6_2025.html">Assignment 6</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 4</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/18</td>
-<td>White Noise and Random Walk</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=11fe3501-60f8-42ac-bd97-b288008cb96a">Lecture Video</a>, <a href="slides/6_wn_rw2.html">Slides</a></td>
-<td><a href="assignments/assignment7_2025.html">Assignment 7</a></td>
-</tr>
-<tr class="even">
-<td>2/20</td>
-<td>Auto-Regressive Models</td>
-<td><a href="slides/7.html">Slides</a></td>
-<td><a href="assignments/assignment8_2025.html">Assignment 8</a></td>
-</tr>
-</tbody>
-</table>
+<hr>
+<p><strong><em>Submission</em></strong>: Include your codes in an Rmarkdown or Quarto, Knit it to either pdf or Word document. Submit the file to Canvas.</p>
+<hr>
+<p><strong>Questions</strong></p>
+<ol type="1">
+<li><p>Simulate an AR(1) series with positive slope using the <code>arima.sim</code> function. Plot the ACF of the series. Comment on the ACF.</p></li>
+<li><p>Simulate an AR(1) series with negative slope using the <code>arima.sim</code> function. Plot the ACF of the series. Comment on the ACF.</p></li>
+<li><p>Simulate an AR(1) series. Use the <code>arima</code> function to estimate the coefficients of the series. Increase the length of the series to see if that improves the accuracy of the estimation.</p></li>
+<li><p>Simulate an AR(1) series. Plot the ACF of the residual. Does the ACF of the residual look like that of white noise? Plot the series and the estimated series in the same plot with the forecasting of 10 points to the future.</p></li>
+</ol>
 
 </main>
 <!-- /main column -->
