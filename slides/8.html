@@ -4,7 +4,7 @@
     <title>Autoregressive model - AR(p)</title>
     <meta charset="utf-8" />
     <meta name="author" content=" Son Nguyen " />
-    <script src="libs/header-attrs-2.23/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.26/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
@@ -144,6 +144,11 @@ Consider an AR(2) model
 
 `$$PACF(3) =  PACF(4) = ...= 0$$`
 
+- A time series with non-zeros PACF(2) and zeroes PACF(3), PACF(4)... could be an AR(2) series
+
+- A time series with non-zeros PACF(k) and zeroes PACF(k+1), PACF(k+2)... could be an AR(k) series
+
+
 ---
 # Example
 
@@ -178,6 +183,13 @@ pacf(yt)
 ```
 
 &lt;img src="8_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Example
+
+- We notice that PACF(1) is non zeroes and PACF(2), PACF(3)... are zeroes (lie within the blue strip)
+
+- Thus we can use AR(1) to model this series.
 
 ---
 # Example
@@ -220,6 +232,13 @@ pacf(yt)
 ```
 
 &lt;img src="8_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Example
+
+- We notice that PACF(3) is non zeroes and PACF4), PACF(5)... are zeroes (lie within the blue strip)
+
+- Thus we can use AR(3) to model this series.
 
 ---
 # Example

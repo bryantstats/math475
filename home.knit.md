@@ -6,9 +6,8 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-```
+
+
 
 [Syllabus](syllabus.html)
 
@@ -33,5 +32,6 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | 3/4       | Time Series Project      |     |  [Time Series Project](slides/project_ts.html)  | 
 
 : {.striped .hover}
+
 
 

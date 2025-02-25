@@ -152,6 +152,11 @@ $$y_t = \beta_0 + \beta_1y_{t-1}+ \beta_2y_{t-2} + \epsilon$$
 
 $$PACF(3) =  PACF(4) = ...= 0$$
 
+- A time series with non-zeros PACF(2) and zeroes PACF(3), PACF(4)... could be an AR(2) series
+
+- A time series with non-zeros PACF(k) and zeroes PACF(k+1), PACF(k+2)... could be an AR(k) series
+
+
 ---
 # Example
 
@@ -173,6 +178,13 @@ yt = MSFT$MSFT.Open
 yt <- yt[index(yt) > "2023-01-01"]
 pacf(yt)
 ```
+
+---
+# Example
+
+- We notice that PACF(1) is non zeroes and PACF(2), PACF(3)... are zeroes (lie within the blue strip)
+
+- Thus we can use AR(1) to model this series.
 
 ---
 # Example
@@ -206,6 +218,13 @@ d = read.csv('earthquakes.csv')
 yt = ts(d$Quakes, frequency = 1, start = 1916)
 pacf(yt)
 ```
+
+---
+# Example
+
+- We notice that PACF(3) is non zeroes and PACF4), PACF(5)... are zeroes (lie within the blue strip)
+
+- Thus we can use AR(3) to model this series.
 
 ---
 # Example

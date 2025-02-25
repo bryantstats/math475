@@ -1,0 +1,36 @@
+---
+title: "Assignment 9"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Put the codes in an Rmarkdown file and knit it to Word Document.  Submit the Word document to Canvas. *
+
+------------------------------------------------------------------------
+
+![](13.png)
+
+
+### Question 1. Differencing Techniques
+
+Notice: See [this slides](https://bryantstats.github.io/math475/slides/7.html#35) for a similar example. 
+
+-   Plot the ACF for the Microsoft stock series for 2023. Investigate the stationarity of the series.
+
+-   Using the differencing technique to forecast the next value of the stock series.
+
+### Question 2. AR(p)
+
+- Consider the AMD stock from 2022 to present. Use the PACF plot to suggest an AR(p) model to model the stock.  Use the model to make a forecast for the next 5 values.  Plot the forecasting. 
+
+- Redo the above analysis on another stock. 
