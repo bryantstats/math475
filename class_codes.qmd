@@ -9,17 +9,59 @@ editor: visual
 ```{r}
 library(ggfortify)
 set.seed(2023)
-n = 1000
+n = 100000
 y = rep(0, n)
 y[1] = 0
 b0 = 0
-b1 = .01
+b1 = 1.0001
 e = rnorm(n, sd = 1)
 for (t in 2:n)
 {
   y[t] = b0 + b1*y[t-1]+e[t]
 }
 autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+
+
+```{r}
+# install.packages("quantmod")
+library(quantmod)
+library(forecast)
+getSymbols("AAPL")
+yt = AAPL$AAPL.Open
+yt <- yt[index(yt) > "2023-01-01"]
+```
+
+```{r}
+plot(yt)
+```
+
+
+```{r}
+d_AAPL = ts(as.numeric(diff(yt))[-1])
+plot(d_AAPL)
+```
+
+# AR(p) and PACF
+
+```{r}
+yt <- arima.sim(list(order=c(4,0,0), ar=c(.1, .3, .2, .2)), n=10000)
+b0 = 10
+yt <- yt + b0
+plot(yt)
+pacf(yt)
+
+```
+
+
+
+```{r}
+yt <- arima.sim(list(order=c(5,0,0), ar=c(.1, .3, .2, .1, .1)), n=10000)
+b0 = 10
+yt <- yt + b0
+plot(yt)
+pacf(yt)
 
 ```
 
