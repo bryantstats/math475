@@ -28,7 +28,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | 2/20       | Auto-Regressive Models | [Slides](slides/7.html)                                                          | [Assignment 8](assignments/assignment8_2025.html) |
 | **Week 5** |                                   |                                                                        ||
 | 2/25       | AR(p)           |  [Slides](slides/8.html)         |   [Assignment 9](assignments/assignment9_2025.html)                                           |
-| 2/27       | ARIMA and SARIMA          |         |                                             |
+| 2/27       | ARIMA and SARIMA          | [MA(q)](slides/9.html), [ARIMA](slides/10_arima.html)  | [Time Series Project](slides/project_ts.html)                                             |
 | **Week 6** |                                   |                                                                        ||
 | 3/4       | Time Series Project      |     |  [Time Series Project](slides/project_ts.html)  | 
 
