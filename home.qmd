@@ -29,9 +29,10 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | **Week 5** |                                   |                                                                        ||
 | 2/25       | AR(p)           |  [Slides](slides/8.html)         |   [Assignment 9](assignments/assignment9_2025.html)                                           |
 | 2/27       | ARIMA and SARIMA          | [MA(q)](slides/9.html), [ARIMA](slides/10_arima.html)  | [Time Series Project](slides/project_ts.html)                                             |
-| **Week 6** |                                   |                                                                        ||
+| **Week 6** | |||
 | 3/4       | Time Series Project      |     |  [Time Series Project](slides/project_ts.html)  | 
-
+| 3/6       | Project Presentation/Time Series in SAS      |     | [Assignment 10]()   | 
+| **Week 7** | SPRING BREAK |||
 : {.striped .hover}
 
 

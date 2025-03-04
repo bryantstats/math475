@@ -28,7 +28,7 @@ yt = ts(y)
 plot(yt)
 
 # with trend and seasonal
-y = rnorm(100) + c(1:100) + 5*sin(1:100)
+y = 3*rnorm(100) + 1*c(1:100) + 10*sin(1:100)
 
 yt = ts(y)
 plot(yt)
