@@ -6,9 +6,9 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-```
+
+
+
 
 [Syllabus](syllabus.html)
 
@@ -34,5 +34,6 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | 3/6       | Project Presentation/Time Series in SAS      |     | [Assignment 10](assignments/assignment10.html)   | 
 | **Week 7** | SPRING BREAK |||
 : {.striped .hover}
+
 
 
