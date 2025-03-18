@@ -1,0 +1,47 @@
+---
+title: "Tabular Data - Data Wrangling with SAS"
+format: html
+editor: visual
+---
+
+------------------------------------------------------------------------
+
+***Submission***: Record a video of you doing this assignment. Submit the video to Canvas. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+[Data](adult_census.csv)
+
+**Questions**
+
+### Data Visualization
+
+- Create five graphs and comment on the graphs. 
+
+### Data Summary
+
+- Calculate and plot the frequency of values in the `martial.status` variable. (Task: One-way Frequency and Bar Chart)
+
+- Calculate and plot the frequency of values in the `martial.status` variable grouped by variable `income`. (Task: One-way Frequency and Bar Chart)
+
+- Calculate the average working hours (variable: hours.per.week) by `martial status` (Task: Summary Table Wizard)
+
+### Filter and Query Builder
+
+- Calculate the median working hours. Create a variable `hours.per.week2` taking value `long_hours` if the working hours greater than the median and `short_hours` otherwise. 
+
+- Plot the frequency of income grouped by `hours.per.week2`. 
+
+- Calculate and plot the average capital gain by `hours.per.week2`
+
+### Pareto Graph
+
+- Plot the Pareto graph for variable `martial.status`.  
+
+### Rapid Predictive Modeler
+
+- Create a Predictive Modeler to predict the variable `hours.per.week2`.  Report the accuracy of the variable and the variable important ranking (Notice: Accuracy is 1 - Misclassification Rate). What is the most important variable used in predicting `hours.per.week2`.
