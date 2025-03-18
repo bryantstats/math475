@@ -14,15 +14,19 @@ knitr::opts_chunk$set(message = FALSE)
 
 ------------------------------------------------------------------------
 
+In this assignment, we will work with the `adult_census` dataset.  The data can be downloaded below. The information and variables description can be found the link below.
+
 [Data](adult_census.csv)
 
-**Questions**
+[Variables Description](https://archive.ics.uci.edu/dataset/2/adult)
 
-### Data Visualization
+## Questions. 
+
+#### Data Visualization
 
 - Create five graphs and comment on the graphs. 
 
-### Data Summary
+#### Data Summary
 
 - Calculate and plot the frequency of values in the `martial.status` variable. (Task: One-way Frequency and Bar Chart)
 
@@ -30,7 +34,7 @@ knitr::opts_chunk$set(message = FALSE)
 
 - Calculate the average working hours (variable: hours.per.week) by `martial status` (Task: Summary Table Wizard)
 
-### Filter and Query Builder
+#### Filter and Query Builder
 
 - Calculate the median working hours. Create a variable `hours.per.week2` taking value `long_hours` if the working hours greater than the median and `short_hours` otherwise. 
 
@@ -38,10 +42,10 @@ knitr::opts_chunk$set(message = FALSE)
 
 - Calculate and plot the average capital gain by `hours.per.week2`
 
-### Pareto Graph
+#### Pareto Graph
 
-- Plot the Pareto graph for variable `martial.status`.  
+- Plot the Pareto graph for variable `martial.status`. Comments on the plot. 
 
-### Rapid Predictive Modeler
+#### Rapid Predictive Modeler
 
 - Create a Predictive Modeler to predict the variable `hours.per.week2`.  Report the accuracy of the variable and the variable important ranking (Notice: Accuracy is 1 - Misclassification Rate). What is the most important variable used in predicting `hours.per.week2`.
