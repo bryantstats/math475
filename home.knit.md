@@ -35,7 +35,7 @@ editor: visual
 | **Week 7** | SPRING BREAK |||
 | **Week 8** | |||
 | 3/18       | Time Series Project Presentation      |     |    | 
-| 3/20      |  Tabular Data: Data Wrangling      |     | [Assignment 11](assignments/assignment_tabular_1.html), <br> [Hospital Discharge Data](https://drive.google.com/drive/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ?usp=sharing)   | 
+| 3/20      |  Tabular Data: Data Wrangling, <br> [Lecture Video](https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3e3b1e59-51ec-4163-b864-b2a60128f15e)      |     | [Assignment 11](assignments/assignment_tabular_1.html), <br> [Hospital Discharge Data](https://drive.google.com/drive/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ?usp=sharing)   | 
 : {.striped .hover}
 
 
