@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MATH 475. Applied Analytics Using SAS.</title>
+<title>M475 - Tabular Data Projects: RI Hospital Data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,16 +23,16 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="home_files/libs/clipboard/clipboard.min.js"></script>
-<script src="home_files/libs/quarto-html/quarto.js"></script>
-<script src="home_files/libs/quarto-html/popper.min.js"></script>
-<script src="home_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="home_files/libs/quarto-html/anchor.min.js"></script>
-<link href="home_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="home_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="home_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="home_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="home_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="table_data_project_files/libs/clipboard/clipboard.min.js"></script>
+<script src="table_data_project_files/libs/quarto-html/quarto.js"></script>
+<script src="table_data_project_files/libs/quarto-html/popper.min.js"></script>
+<script src="table_data_project_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="table_data_project_files/libs/quarto-html/anchor.min.js"></script>
+<link href="table_data_project_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="table_data_project_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="table_data_project_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="table_data_project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="table_data_project_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -40,14 +40,21 @@ ul.task-list li input[type="checkbox"] {
 <body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-  
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#i.-data-wranggling" id="toc-i.-data-wranggling" class="nav-link active" data-scroll-target="#i.-data-wranggling">I. Data Wranggling</a></li>
+  <li><a href="#ii.-rapid-models" id="toc-ii.-rapid-models" class="nav-link" data-scroll-target="#ii.-rapid-models">II. Rapid Models</a></li>
+  </ul>
+</nav>
 </div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MATH 475. Applied Analytics Using SAS.</h1>
+<h1 class="title">M475 - Tabular Data Projects: RI Hospital Data</h1>
 </div>
 
 
@@ -64,181 +71,57 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="syllabus.html">Syllabus</a></p>
-<table class="table-striped table-hover caption-top table">
-<thead>
-<tr class="header">
-<th>Date</th>
-<th>Section/Topic</th>
-<th>Notes</th>
-<th>Assignments</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Week 1</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>1/28</td>
-<td>Time Series: Moving Average</td>
-<td><a href="slides/1_time_series_smoothing_ma.pdf">Note</a></td>
-<td><a href="assignments/assignment1.html">Assignment 1</a></td>
-</tr>
-<tr class="odd">
-<td>1/30</td>
-<td>Exponential Smoothing</td>
-<td><a href="slides/2_time_series_smoothing_exponential.pdf">Note</a></td>
-<td><a href="assignments/assignment2.html">Assignment 2</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 2</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/4</td>
-<td>Classical Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment3.html">Assignment 3</a></td>
-</tr>
-<tr class="even">
-<td>2/6</td>
-<td>STL Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment4.html">Assignment 4</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 3</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/11</td>
-<td>Exponential Smoothing Forecasting</td>
-<td><a href="slides/5.html">Slides</a></td>
-<td><a href="assignments/assignment5.html">Assignment 5</a></td>
-</tr>
-<tr class="odd">
-<td>2/13</td>
-<td>SAS: Exponential Smoothing Forecasting</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d2ab7f3b-1a90-484f-8261-b283012f335c">SAS Video</a></td>
-<td><a href="assignments/assignment6_2025.html">Assignment 6</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 4</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/18</td>
-<td>White Noise and Random Walk</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=11fe3501-60f8-42ac-bd97-b288008cb96a">Lecture Video</a>, <a href="slides/6_wn_rw2.html">Slides</a></td>
-<td><a href="assignments/assignment7_2025.html">Assignment 7</a></td>
-</tr>
-<tr class="even">
-<td>2/20</td>
-<td>Auto-Regressive Models</td>
-<td><a href="slides/7.html">Slides</a></td>
-<td><a href="assignments/assignment8_2025.html">Assignment 8</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 5</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/25</td>
-<td>AR(p)</td>
-<td><a href="slides/8.html">Slides</a></td>
-<td><a href="assignments/assignment9_2025.html">Assignment 9</a></td>
-</tr>
-<tr class="odd">
-<td>2/27</td>
-<td>ARIMA and SARIMA</td>
-<td><a href="slides/9.html">MA(q)</a>, <a href="slides/10_arima.html">ARIMA</a></td>
-<td><a href="slides/project_ts.html">Time Series Project</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 6</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3/4</td>
-<td>Time Series Project</td>
-<td></td>
-<td><a href="slides/project_ts.html">Time Series Project</a></td>
-</tr>
-<tr class="even">
-<td>3/6</td>
-<td>Project Presentation/Time Series in SAS</td>
-<td></td>
-<td><a href="assignments/assignment10.html">Assignment 10</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 7</strong></td>
-<td>SPRING BREAK</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>Week 8</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3/18</td>
-<td>Time Series Project Presentation</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3/20</td>
-<td>Tabular Data: Data Wrangling, <br> <a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3e3b1e59-51ec-4163-b864-b2a60128f15e">Lecture Video</a></td>
-<td></td>
-<td><a href="assignments/assignment_tabular_1.html">Assignment 11</a>, <br> <a href="https://drive.google.com/drive/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ?usp=sharing">Hospital Discharge Data</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 9</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3/5</td>
-<td>Tabular Data Project</td>
-<td></td>
-<td><a href="table_data_project.html">Tabular Data Project</a></td>
-</tr>
-<tr class="odd">
-<td>3/27</td>
-<td>Tabular Data Project</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>Week 10</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/1</td>
-<td>Tabular Data Project Presentation</td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<hr>
+<p>The project has two parts. Part 1 is a written part where you are asked address all the below questions. Part is the presentation part where you present question 27 to 30 and the modeling part.</p>
+<p>This project work with the Hospital Discharge Dataset. This dataset is provided by Rhode Island Department of Health. Please keep the dataset confidential.</p>
+<p><a href="https://drive.google.com/file/d/13Lq7OJLp-gq_z5qPPp0lZzZxDiB62LR2/view?usp=drive_link">Link to the dataset</a></p>
+<p><a href="https://docs.google.com/document/d/1xh_2YQ4Op1izUHRIgrTPyDXk-8TEavw-/edit#heading=h.gjdgxs">Variable Description</a></p>
+<p><a href="https://drive.google.com/drive/u/2/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ">Other Information</a></p>
+<section id="i.-data-wranggling" class="level2">
+<h2 class="anchored" data-anchor-id="i.-data-wranggling">I. Data Wranggling</h2>
+<p>Do the follows. Support all the answers with plots if possible.</p>
+<ol type="1">
+<li><p>In the Google Drive link, refer to the data description in the file <code>HDD2015-18cy6-20-19.docx</code>, which variable recording the month of admission?, which variable recording the month of discharge?</p></li>
+<li><p>In 2018, Which month admitted the most number of patients? Which month admitted the most number of male patients?</p></li>
+<li><p>In 2018, Which month has the most number of teenage female patients?</p></li>
+<li><p>Which provider has the most number of female patients in October?</p></li>
+<li><p>Is female patients older than male patients, on average?</p></li>
+<li><p>Calculate the average age of patients by months. Which month has the oldest patients on average age?</p></li>
+<li><p>What is the name of the provider that has the highest total charge?</p></li>
+<li><p>What is the name of the provider that has the least total charge for teenage male on average?</p></li>
+<li><p>Create a season (Spring, Summer, Fall, Winter) variable. Calculate the length of stays by season. Which season has the longest length of stays on average?</p></li>
+<li><p>On average, how much a 20 year-old male get charged for staying 1 day in the Fall season in 2018?</p></li>
+<li><p>On average, how much a teenager get charged for staying 1 week in 2018?</p></li>
+<li><p>What age has the highest average total charge for male? and for female?</p></li>
+<li><p>Calculate and plot the total charge on average by length of stays.</p></li>
+<li><p>Calculate and plot the total charge on average by ages.</p></li>
+<li><p>Calculate and plot the length of stays on average by ages.</p></li>
+<li><p>Compare the length of stays of female and male patients</p></li>
+<li><p>Compare the total charges of female and male patients</p></li>
+<li><p>What is the admission type with the longest length of stays on average?</p></li>
+<li><p>Which year has highest total charge on average?</p></li>
+<li><p>Which year has highest length of stays on average?</p></li>
+<li><p>In 2015, Which month has highest length of stays on average?</p></li>
+<li><p>Find the top three diagnosis at admission (<code>diag_adm</code>). Find the top three diagnosis at admission for patients from 7 to 17 years old.</p></li>
+<li><p>what is the top five most popular Principal Diagnosis for female in 2018 (variable: <code>DX1</code>)? Compare and plot the average total charges of these top five.</p></li>
+<li><p>what is the top five most popular Principal Procedure for male in 2018 (variable: <code>PX1</code>)? Compare and plot the average total charges of these top five.</p></li>
+<li><p>In 2018, what are the top five most popular Admitting Diagnosis/Patient State Reason for Visit (variable <code>diag_adm</code>)? Compare the average length of stays and average total charges of these top five.</p></li>
+<li><p>In 2018, what are the top five most popular serivces (variable: <code>SERVICE</code>)? Compare the average length of stays and average total charges of these top five.</p></li>
+</ol>
+<p>Notice: the dataset uses ICD-9-CM (International Classification of Diseases, Ninth Revision, Clinical Modification) which was the official system for assigning codes to diagnoses and procedures in U.S. healthcare. To search for the diagnosis, say “486,” we could google: “ICD-9-CM 486”.</p>
+<ol start="27" type="1">
+<li><p>Test the following conjecture: “Senior people (aged 65 and older) has the average total charge more than non-senior people”.</p></li>
+<li><p>Suggest five hypothesis/conjectures and test the conjectures with the dataset.</p></li>
+<li><p>Explore a new variable that has not been mentioned in the previous question.</p></li>
+<li><p>Write a paragraph to summarize the section and give your comments on the results. You could do some other calculations to support your points.</p></li>
+</ol>
+<hr>
+</section>
+<section id="ii.-rapid-models" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-rapid-models">II. Rapid Models</h2>
+<p>Create a binary variable by cutting a numeric/continuous variable by the median. Decide the input variables to create a rapid model to predict the binary variable. Report the accuracy of the model and the variable important ranking.</p>
+<hr>
+</section>
 
 </main>
 <!-- /main column -->

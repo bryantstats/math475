@@ -1,0 +1,95 @@
+---
+title: "M475 - Tabular Data Projects: RI Hospital Data"
+format: 
+  html:
+    toc: true
+editor: visual
+---
+
+------------------------------------------------------------------------
+
+The project has two parts. Part 1 is a written part where you are asked address all the below questions.  Part is the presentation part where you present question 27 to 30 and the modeling part. 
+
+This project work with the Hospital Discharge Dataset. This dataset is provided by  Rhode Island Department of Health.  Please keep the dataset confidential. 
+
+[Link to the dataset](https://drive.google.com/file/d/13Lq7OJLp-gq_z5qPPp0lZzZxDiB62LR2/view?usp=drive_link)
+
+[Variable Description](https://docs.google.com/document/d/1xh_2YQ4Op1izUHRIgrTPyDXk-8TEavw-/edit#heading=h.gjdgxs)
+
+[Other Information](https://drive.google.com/drive/u/2/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ)
+
+## I. Data Wranggling
+
+Do the follows. Support all the answers with plots if possible. 
+
+1.  In the Google Drive link, refer to the data description in the file `HDD2015-18cy6-20-19.docx`, which variable recording the month of admission?, which variable recording the month of discharge?
+
+2.  In 2018, Which month admitted the most number of patients? Which month admitted the most number of male patients? 
+
+3.  In 2018, Which month has the most number of teenage female patients?
+
+4. Which provider has the most number of female patients in October?
+
+5. Is female patients older than male patients, on average?
+
+6. Calculate the average age of patients by months. Which month has the oldest patients on average age?
+
+7. What is the name of the provider that has the highest total charge?
+
+8. What is the name of the provider that has the least total charge for teenage male on average?
+
+9. Create a season (Spring, Summer, Fall, Winter) variable. Calculate the length of stays by season. Which season has the longest length of stays on average?
+
+10. On average, how much a 20 year-old male get charged for staying 1 day in the Fall season in 2018?
+
+11. On average, how much a teenager get charged for staying 1 week in 2018?
+
+12. What age has the highest average total charge for male? and for female? 
+
+13. Calculate and plot the total charge on average by length of stays. 
+
+14. Calculate and plot the total charge on average by ages. 
+
+15. Calculate and plot the length of stays on average by ages. 
+
+16. Compare the length of stays of female and male patients
+
+17. Compare the total charges of female and male patients
+
+18. What is the admission type with the longest length of stays on average?
+
+19. Which year has highest total charge on average?
+
+20. Which year has highest length of stays on average?
+
+21. In 2015, Which month has highest length of stays on average?
+
+22. Find the top three diagnosis at admission (`diag_adm`). Find the top three diagnosis at admission for patients from 7 to 17 years old.
+
+23. what is the top five most popular  Principal Diagnosis for female in 2018 (variable: `DX1`)? Compare and plot the average total charges of these top five. 
+
+24. what is the top five most popular  Principal Procedure for male in 2018 (variable: `PX1`)? Compare and plot the average total charges of these top five.
+
+25. In 2018, what are the top five most popular  Admitting Diagnosis/Patient State Reason for Visit (variable `diag_adm`)?  Compare the average length of stays and average total charges of these top five. 
+
+26. In 2018, what are the top five most popular  serivces (variable: `SERVICE`)?  Compare the average length of stays and average total charges of these top five. 
+
+Notice: the dataset uses ICD-9-CM (International Classification of Diseases, Ninth Revision, Clinical Modification) which was the official system for assigning codes to diagnoses and procedures in U.S. healthcare.  To search for the diagnosis, say "486," we could google: "ICD-9-CM 486". 
+
+27. Test the following conjecture: "Senior people (aged 65 and older) has the average total charge more than non-senior people". 
+
+28. Suggest five hypothesis/conjectures and test the conjectures with the dataset. 
+
+29. Explore a new variable that has not been mentioned in the previous question. 
+
+30. Write a paragraph to summarize the section and give your comments on the results. You could do some other calculations to support your points.
+
+------------------------------------------------------------------------
+
+## II. Rapid Models
+
+Create a binary variable by cutting a numeric/continuous variable by the median. Decide the input variables to create a rapid model to predict the binary variable. Report the accuracy of the model and the variable important ranking. 
+
+------------------------------------------------------------------------
+
+

@@ -31,11 +31,16 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 | 2/27       | ARIMA and SARIMA          | [MA(q)](slides/9.html), [ARIMA](slides/10_arima.html)  | [Time Series Project](slides/project_ts.html)                                             |
 | **Week 6** | |||
 | 3/4       | Time Series Project      |     |  [Time Series Project](slides/project_ts.html)  | 
-| 3/6       | Project Presentation/Time Series in SAS      |     | [Assignment 10](assignments/assignment10.html)   | 
+| 3/6       | Project Presentation/Time Series in SAS      |     | [Assignment 10](assignments/assignment10.html) | 
 | **Week 7** | SPRING BREAK |||
 | **Week 8** | |||
 | 3/18       | Time Series Project Presentation      |     |    | 
 | 3/20      |  Tabular Data: Data Wrangling, <br> [Lecture Video](https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3e3b1e59-51ec-4163-b864-b2a60128f15e)      |     | [Assignment 11](assignments/assignment_tabular_1.html), <br> [Hospital Discharge Data](https://drive.google.com/drive/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ?usp=sharing)   | 
+| **Week 9** | |||
+| 3/5       | Tabular Data Project      |     |  [Tabular Data Project](table_data_project.html)  | 
+| 3/27       | Tabular Data Project      |     |  | 
+| **Week 10** | |||
+| 4/1       | Tabular Data Project Presentation     |     |    | 
 : {.striped .hover}
 
 
