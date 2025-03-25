@@ -80,7 +80,7 @@ Do the follows. Support all the answers with plots if possible.
 
 28. Suggest five hypothesis/conjectures and test the conjectures with the dataset. 
 
-29. Explore three new variables that have not been mentioned in the previous question. 
+29. Explore three new variables that have not been mentioned in the previous questions. 
 
 30. Write a paragraph to summarize the section and give your comments on the results. You could do some other calculations to support your points.
 
