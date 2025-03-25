@@ -34,7 +34,7 @@ Do the follows. Support all the answers with plots if possible.
 
 6. Calculate the average age of patients by months. Which month has the oldest patients on average age?
 
-7. What is the name of the provider that has the highest total charge?
+7. What is the name of the provider that has the highest total charge (variable: `tot`)?
 
 8. What is the name of the provider that has the least total charge for teenage male on average?
 
