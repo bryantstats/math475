@@ -66,6 +66,8 @@ Do the follows. Support all the answers with plots if possible.
 
 22. Find the top three diagnosis at admission (`diag_adm`). Find the top three diagnosis at admission for patients from 7 to 17 years old.
 
+*Notice: the dataset uses ICD-9-CM (International Classification of Diseases, Ninth Revision, Clinical Modification) which was the official system for assigning codes to diagnoses and procedures in U.S. healthcare.  To search for the diagnosis, say "486," we could google: "ICD-9-CM 486". *
+
 23. what is the top five most popular  Principal Diagnosis for female in 2018 (variable: `DX1`)? Compare and plot the average total charges of these top five. 
 
 24. what is the top five most popular  Principal Procedure for male in 2018 (variable: `PX1`)? Compare and plot the average total charges of these top five.
@@ -73,8 +75,6 @@ Do the follows. Support all the answers with plots if possible.
 25. In 2018, what are the top five most popular  Admitting Diagnosis/Patient State Reason for Visit (variable `diag_adm`)?  Compare the average length of stays and average total charges of these top five. 
 
 26. In 2018, what are the top five most popular  serivces (variable: `SERVICE`)?  Compare the average length of stays and average total charges of these top five. 
-
-Notice: the dataset uses ICD-9-CM (International Classification of Diseases, Ninth Revision, Clinical Modification) which was the official system for assigning codes to diagnoses and procedures in U.S. healthcare.  To search for the diagnosis, say "486," we could google: "ICD-9-CM 486". 
 
 27. Test the following conjecture: "Senior people (aged 65 and older) has the average total charge more than non-senior people". 
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.4.552">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -103,13 +103,13 @@ ul.task-list li input[type="checkbox"] {
 <li><p>Which year has highest length of stays on average?</p></li>
 <li><p>In 2015, Which month has highest length of stays on average?</p></li>
 <li><p>Find the top three diagnosis at admission (<code>diag_adm</code>). Find the top three diagnosis at admission for patients from 7 to 17 years old.</p></li>
+</ol>
+<p><em>Notice: the dataset uses ICD-9-CM (International Classification of Diseases, Ninth Revision, Clinical Modification) which was the official system for assigning codes to diagnoses and procedures in U.S. healthcare. To search for the diagnosis, say “486,” we could google: “ICD-9-CM 486”. </em></p>
+<ol start="23" type="1">
 <li><p>what is the top five most popular Principal Diagnosis for female in 2018 (variable: <code>DX1</code>)? Compare and plot the average total charges of these top five.</p></li>
 <li><p>what is the top five most popular Principal Procedure for male in 2018 (variable: <code>PX1</code>)? Compare and plot the average total charges of these top five.</p></li>
 <li><p>In 2018, what are the top five most popular Admitting Diagnosis/Patient State Reason for Visit (variable <code>diag_adm</code>)? Compare the average length of stays and average total charges of these top five.</p></li>
 <li><p>In 2018, what are the top five most popular serivces (variable: <code>SERVICE</code>)? Compare the average length of stays and average total charges of these top five.</p></li>
-</ol>
-<p>Notice: the dataset uses ICD-9-CM (International Classification of Diseases, Ninth Revision, Clinical Modification) which was the official system for assigning codes to diagnoses and procedures in U.S. healthcare. To search for the diagnosis, say “486,” we could google: “ICD-9-CM 486”.</p>
-<ol start="27" type="1">
 <li><p>Test the following conjecture: “Senior people (aged 65 and older) has the average total charge more than non-senior people”.</p></li>
 <li><p>Suggest five hypothesis/conjectures and test the conjectures with the dataset.</p></li>
 <li><p>Explore a new variable that has not been mentioned in the previous question.</p></li>
@@ -160,7 +160,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const onCopySuccess = function(e) {
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -192,29 +203,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
   });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -222,7 +211,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
