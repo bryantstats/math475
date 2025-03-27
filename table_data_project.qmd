@@ -18,6 +18,10 @@ This project work with the Hospital Discharge Dataset. This dataset is provided 
 
 [Other Information](https://drive.google.com/drive/u/2/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ)
 
+You can watch the below lecture videos for doing tasks in SAS Enterprise Guide for similar calculation. 
+
+[Video](https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3e3b1e59-51ec-4163-b864-b2a60128f15e)
+
 ## I. Data Wranggling
 
 Do the follows. Support all the answers with plots if possible. 
