@@ -1,0 +1,44 @@
+---
+title: "Text Mining 1"
+format: html
+editor: visual
+---
+
+
+```{r}
+library(tidyverse)
+library(tidytext)
+df = read_csv('https://bryantstats.github.io/math475/assignments/netflix_titles.csv')
+```
+```{r}
+# df$description
+text <- c("Bryant University: A private university in Smithfield, Rhode Island! It has two colleges, the College of Arts and Sciences and the College of Business, and is accredited by the New England Commission of Higher Education")
+text_df <- tibble(text = text)
+text_df %>%
+    unnest_tokens(word, text)
+
+```
+
+
+```{r}
+get_stopwords()
+```
+
+
+```{r}
+#f(x)
+
+x = 10
+
+# traditional way
+sin(x)
+
+# pipe operator
+x %>% sin
+
+# traditional way
+
+tan(log(abs(sin(cos(x)))))
+
+```
+

@@ -1,0 +1,204 @@
+---
+title: "Assignment 13 - Visualizing Text Data - Bigrams"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+
+### Questions
+
+1. Working with a text dataset containing Amazon reviews for an iPhone model. 
+
+    [Dataset](Amazon_Unlocked_Mobile2.csv)
+
+Do the follows. 
+
+- Create a list of pairs of words that may contain stopwords and plot the most frequent pairs.
+
+- Create a list of pairs of words that do not contain stopwords and plot the most frequent pairs.
+
+- Visualize the pairs of words (bigrams)
+
+- Plot the context sentiment analysis
+
+You can find sample codes for this question at
+
+[Sample Codes](assignment12_codes.html)
+
+```{r, eval=FALSE, echo=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('Amazon_Unlocked_Mobile2.csv')
+
+df_bigrams <- df %>%
+  unnest_tokens(input = texts, output = bigram, token = "ngrams", n = 2) %>% 
+  filter(!is.na(bigram))
+
+
+df_bigrams %>%
+  count(bigram, sort = TRUE)
+
+
+df_bigrams %>%
+  count(bigram, sort = TRUE) %>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(bigram, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+
+
+bigrams_separated <- df_bigrams %>%
+    separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+    filter(!word1 %in% stop_words$word) %>%
+    filter(!word2 %in% stop_words$word)
+
+# new bigram counts:
+bigram_counts <- bigrams_filtered %>% 
+    count(word1, word2, sort = TRUE)
+bigram_counts
+
+
+bigram_counts$pairs = paste0(bigram_counts$word1, " ", bigram_counts$word2)
+
+bigram_counts %>% 
+  head(10) %>% 
+  ggplot(aes(x = n, y = reorder(pairs, n))) +
+  geom_col() +
+  labs(y = '', x = 'Frequency')
+
+
+
+library(igraph)
+bigram_graph <- bigram_counts %>%
+  filter(n > 50) %>%
+  graph_from_data_frame()
+
+
+
+library(ggraph)
+set.seed(2024)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+
+stop_word2 = tibble(word = c(letters, LETTERS, "oh", 'just'))
+AFINN <- get_sentiments("afinn")
+
+sentiment1 = df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  filter(!is.na(value)) %>% 
+  count(value)
+
+sentiment1 %>% 
+  ggplot(aes(x = value, y = n))+geom_col() 
+
+negation_words <- c("not", "no", "never", "without")
+
+sentiment2 = bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(AFINN, by = c(word2 = "word")) %>%
+  count(word1, word2, value, sort = TRUE) %>% 
+  select(value, n) %>% 
+  group_by(value) %>% 
+  summarise(n = sum(n)) %>% 
+  arrange(value)
+
+
+ggplot()+
+  geom_col(data = sentiment1, aes(x =value, y = n))+
+  geom_col(data = sentiment2, aes(x =value, y = n), fill = 'red')
+
+
+bigrams_separated %>%
+  filter(word1 == "not") %>%
+  count(word1, word2, sort = TRUE)
+
+AFINN <- get_sentiments("afinn")
+
+not_words <- bigrams_separated %>%
+  filter(word1 == "not") %>%
+  inner_join(AFINN, by = c(word2 = "word")) %>%
+  count(word2, value, sort = TRUE)
+
+not_words
+
+library(ggplot2)
+
+not_words %>%
+  mutate(contribution = n * value) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(n * value, word2, fill = n * value > 0)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = "Sentiment value * number of occurrences",
+       y = "Words preceded by \"not\"")
+
+
+negation_words <- c("not", "no", "never", "without")
+
+negated_words <- bigrams_separated %>%
+  filter(word1 %in% negation_words) %>%
+  inner_join(AFINN, by = c(word2 = "word")) %>%
+  count(word1, word2, value, sort = TRUE)
+
+negated_words %>%
+  mutate(contribution = n * value) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(20) %>%
+  mutate(word2 = reorder(word2, contribution)) %>%
+  ggplot(aes(n * value, word2, fill = n * value > 0)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~word1)+
+  labs(x = "Sentiment value * number of occurrences",
+       y = "Words preceded by negation term")
+
+# total sentiment
+total_sentiment = df %>%
+  unnest_tokens(input = texts, output = word) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(stop_word2) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  summarise(sum(value)) %>% 
+  as.numeric()
+
+
+# adjusted_sentiment
+
+negated_words %>% 
+  mutate(sentiment = value*n) %>% 
+  summarise(total_sentiment = sum(sentiment))
+
+```
+
+2. Do Question 1 on your own text dataset. 
+
+
+
