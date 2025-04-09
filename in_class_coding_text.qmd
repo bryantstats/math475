@@ -35,10 +35,42 @@ sin(x)
 
 # pipe operator
 x %>% sin
+```
 
+```{r}
 # traditional way
-
 tan(log(abs(sin(cos(x)))))
+
+# pipe 
+x %>% 
+  cos %>% 
+  sin %>% 
+  abs %>% 
+  log %>% 
+  tan
+
+
+x1 = cos(x)
+x2 = tan(x1)
+
+
+```
+
+# Bigrams
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('https://bryantstats.github.io/math475/assignments/amazon_reviews.csv')
+```
+
+
+```{r}
+# View(df)
+df %>% 
+  group_by(name) %>% 
+  count(sort = TRUE)
 
 ```
 
