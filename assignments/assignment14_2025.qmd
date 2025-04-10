@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ### Questions
 
-1. Calculate the phi-coeeficient between "Bryant" and "Excellent" in the following sentences. 
+1. Calculate by hand the phi-coeeficient between "Bryant" and "Excellent" in the following sentences. 
 
 - Sentence 1: Bryant University is a excellent private university in Smithfield, Rhode Island, United States. 
 
