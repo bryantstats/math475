@@ -1,0 +1,120 @@
+---
+title: "Assignment 14 - Words Pairs and Correlation"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+
+### Questions
+
+1. Working with a text dataset containing Amazon reviews for an iPhone model. 
+
+    [Dataset](Amazon_Unlocked_Mobile2.csv)
+
+Do the follows. 
+
+- Create a list of all possible pairs of words (not only adjacent words) that do not contain stopwords and plot the most frequent pairs.
+
+- Plot the graph of the pairs of words
+
+- Compute the correlations of all the pairs and plot the bar chart of the pairs with the highest correlation
+
+- Plot the graph of the correlation
+
+You can find sample codes for this question at
+
+[Sample Codes](assignment13_codes.html)
+
+```{r, eval=FALSE, echo=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+df <- read_csv('Amazon_Unlocked_Mobile2.csv')
+
+df_section_words = df %>% 
+  mutate(section = c(1:nrow(df))) %>% 
+  unnest_tokens(output = word, input = texts) %>% 
+  filter(!word %in% stop_words$word)
+           
+
+library(widyr)
+
+# count words co-occuring within sections
+word_pairs <- df_section_words %>%
+  pairwise_count(word, section, sort = TRUE)
+
+word_pairs
+
+word_pairs %>% 
+  head(20) %>% 
+  mutate(item = paste0(item1, " ", item2)) %>% 
+  ggplot() + 
+  geom_col(aes(y = fct_rev(fct_reorder(item, -n)), x = n))+
+  labs(y = "", x = 'Frequency')
+
+
+library(igraph)
+pairs_graph <- word_pairs %>%
+  filter(n > 200) %>%
+  graph_from_data_frame()
+
+library(ggraph)
+set.seed(2024)
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(pairs_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+
+
+word_cors <- df_section_words %>%
+  group_by(word) %>%
+  filter(n() >= 20) %>%
+  pairwise_cor(item = word, feature = section, sort = TRUE)
+
+word_cors
+
+word_cors %>% 
+  head(20) %>% 
+  mutate(item = paste0(item1, " ", item2)) %>% 
+  ggplot()+
+  geom_col(aes(y = fct_rev(fct_reorder(item, -correlation)), x = correlation))+
+  labs(y ='')
+
+library(ggraph)
+library(igraph)
+set.seed(2024)
+
+word_cors %>%
+  filter(correlation > .2) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = correlation), show.legend = FALSE) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE) +
+  theme_void()
+
+```
+
+2. Do Question 1 on your own text dataset. 
+
+
+
