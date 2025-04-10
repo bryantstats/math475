@@ -74,3 +74,25 @@ df %>%
 
 ```
 
+
+
+
+Sentence 1
+
+Bryant University is a excellent private university in Smithfield, Rhode Island, United States. 
+
+Sentence 2
+
+Bryant has three excellent colleges, the College of Arts and Sciences, School of Health and Behavioral Sciences, and the College of Business, and is accredited by the New England Commission of Higher Education.
+
+Sentence 3
+
+Bryant University has been at the forefront of providing students with a transformative education. 
+
+Sentence 4
+
+Bryant University is a private institution that was founded in 1863, and has a excellent total undergraduate enrollment of 3,240 (fall 2023). 
+
+Sentence 5
+
+The university in Smithfield, Rhode Island, is known for its strong business, data science, and cybersecurity programs. 
