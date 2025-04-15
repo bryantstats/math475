@@ -1,0 +1,85 @@
+---
+title: "Assignment 15 - tf-idf"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+### Question 1. 
+
+Given the following text dataset. **Calculate by hand** for this question. 
+
+| document   | texts      |
+|:---|:--------------|
+| 1 | I love pets. Cats are renowned for their graceful agility. Cats are awesome!  |
+| 2 | Cats are friendly animals that like to sleep. Which one is more friendly?             |
+| 3 | Dogs and cats are friendly pets that bring joy to many families            |
+| 4 | Dogs are friendly animals that enjoy companionship. Friendly! Friendly!            |
+
+1. Calculate the term frequency (tf) of the term `animals` for each document
+
+2. Calculate the `idf` the term `animals`
+
+3. Calculate the `tf-idf` of the term `animals` for each document.
+
+4. Redo 1-3 with the term `friendly`.   
+
+
+### Question 2.  
+
+Reproduce the results the codes in the sample codes
+
+[Sample Codes](assignment14_codes.html)
+
+
+### Question 3.
+
+Redo the sample codes with differenct selections of documents
+
+### Question 4.  
+
+Working with the Netflix dataset containing descriptions of movies and TV shows on Netflix.
+
+[Dataset](netflix_titles.csv)
+
+Do the follows.
+
+- Define your own documents for the analysis.
+
+- Plot the  term frequency in the documents
+
+- Plot the tf-idf in the documents. 
+
+You can find sample codes for this question at
+
+[Sample Codes](assignment14_codes.html)
+
+```{r, echo=FALSE, eval=FALSE}
+library(tidyverse)
+library(tidytext)
+library(knitr)
+library(kableExtra)
+df <- read_csv('netflix_titles.csv')
+
+df = df %>% 
+  select(title, description) %>% 
+  filter(title %in% titles)
+
+```
+
+### Question 5. 
+
+Redo Question 4 on your own dataset. 
