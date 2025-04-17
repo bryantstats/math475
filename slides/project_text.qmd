@@ -54,29 +54,29 @@ You will be graded on your presentation presented on the final exam day. Specifi
 
 The list of text mining techniques covered are listed below.  
 
-- Word Frequency and Word Cloud of the entire text variables. (Assignment 11)
+- Word Frequency and Word Cloud of the entire text variables. (Assignment 12)
 
-- Word Frequency and Word Cloud by documents (Assignment 11)
+- Word Frequency and Word Cloud by documents (Assignment 12)
 
-- Part of Speech Plots (Assignment 15)
+- Part of Speech Plots (Assignment 16)
 
-- Sentiment Analysis (Assignment 11)
+- Sentiment Analysis (Assignment 12)
 
-- Bigrams Analysis (Assignment 12)
+- Bigrams Analysis (Assignment 13)
 
-- Word Pair and Correlation Analysis (Assignment 13)
+- Word Pair and Correlation Analysis (Assignment 14)
 
--  tf-idf plots (Assignment 14)
+-  tf-idf plots (Assignment 15)
 
-- Text Clustering (Assignment 15)
+- Text Clustering (Assignment 16)
  
-- Topic Modeling (Assignment 16)
+- Topic Modeling (Assignment 17)
 
-- Classification Model (Assignment 17)
+- Classification Model (Assignment 18)
 
-- Concept Links (Assignment 18)
+- Concept Links (Assignment 19)
 
-- Rule Builder (Assignment 18)
+- Rule Builder (Assignment 19)
 
 ## Submission
 
