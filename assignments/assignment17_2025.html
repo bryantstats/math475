@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MATH 475. Applied Analytics Using SAS.</title>
+<title>Assignment 17 - Text Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,16 +23,16 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="home_files/libs/clipboard/clipboard.min.js"></script>
-<script src="home_files/libs/quarto-html/quarto.js"></script>
-<script src="home_files/libs/quarto-html/popper.min.js"></script>
-<script src="home_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="home_files/libs/quarto-html/anchor.min.js"></script>
-<link href="home_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="home_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="home_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="home_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="home_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="assignment17_2025_files/libs/clipboard/clipboard.min.js"></script>
+<script src="assignment17_2025_files/libs/quarto-html/quarto.js"></script>
+<script src="assignment17_2025_files/libs/quarto-html/popper.min.js"></script>
+<script src="assignment17_2025_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="assignment17_2025_files/libs/quarto-html/anchor.min.js"></script>
+<link href="assignment17_2025_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="assignment17_2025_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="assignment17_2025_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="assignment17_2025_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="assignment17_2025_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -41,13 +41,20 @@ ul.task-list li input[type="checkbox"] {
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#instruction" id="toc-instruction" class="nav-link active" data-scroll-target="#instruction">Instruction</a></li>
+  <li><a href="#question." id="toc-question." class="nav-link" data-scroll-target="#question.">Question.</a></li>
+  </ul>
+</nav>
 </div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MATH 475. Applied Analytics Using SAS.</h1>
+<h1 class="title">Assignment 17 - Text Modeling</h1>
 </div>
 
 
@@ -64,259 +71,39 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="syllabus.html">Syllabus</a></p>
-<table class="table-striped table-hover table">
-<thead>
-<tr class="header">
-<th>Date</th>
-<th>Section/Topic</th>
-<th>Notes</th>
-<th>Assignments</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Week 1</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>1/28</td>
-<td>Time Series: Moving Average</td>
-<td><a href="slides/1_time_series_smoothing_ma.pdf">Note</a></td>
-<td><a href="assignments/assignment1.html">Assignment 1</a></td>
-</tr>
-<tr class="odd">
-<td>1/30</td>
-<td>Exponential Smoothing</td>
-<td><a href="slides/2_time_series_smoothing_exponential.pdf">Note</a></td>
-<td><a href="assignments/assignment2.html">Assignment 2</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 2</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/4</td>
-<td>Classical Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment3.html">Assignment 3</a></td>
-</tr>
-<tr class="even">
-<td>2/6</td>
-<td>STL Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment4.html">Assignment 4</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 3</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/11</td>
-<td>Exponential Smoothing Forecasting</td>
-<td><a href="slides/5.html">Slides</a></td>
-<td><a href="assignments/assignment5.html">Assignment 5</a></td>
-</tr>
-<tr class="odd">
-<td>2/13</td>
-<td>SAS: Exponential Smoothing Forecasting</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d2ab7f3b-1a90-484f-8261-b283012f335c">SAS Video</a></td>
-<td><a href="assignments/assignment6_2025.html">Assignment 6</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 4</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/18</td>
-<td>White Noise and Random Walk</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=11fe3501-60f8-42ac-bd97-b288008cb96a">Lecture Video</a>, <a href="slides/6_wn_rw2.html">Slides</a></td>
-<td><a href="assignments/assignment7_2025.html">Assignment 7</a></td>
-</tr>
-<tr class="even">
-<td>2/20</td>
-<td>Auto-Regressive Models</td>
-<td><a href="slides/7.html">Slides</a></td>
-<td><a href="assignments/assignment8_2025.html">Assignment 8</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 5</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/25</td>
-<td>AR(p)</td>
-<td><a href="slides/8.html">Slides</a></td>
-<td><a href="assignments/assignment9_2025.html">Assignment 9</a></td>
-</tr>
-<tr class="odd">
-<td>2/27</td>
-<td>ARIMA and SARIMA</td>
-<td><a href="slides/9.html">MA(q)</a>, <a href="slides/10_arima.html">ARIMA</a></td>
-<td><a href="slides/project_ts.html">Time Series Project</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 6</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3/4</td>
-<td>Time Series Project</td>
-<td></td>
-<td><a href="slides/project_ts.html">Time Series Project</a></td>
-</tr>
-<tr class="even">
-<td>3/6</td>
-<td>Project Presentation/Time Series in SAS</td>
-<td></td>
-<td><a href="assignments/assignment10.html">Assignment 10</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 7</strong></td>
-<td>SPRING BREAK</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>Week 8</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3/18</td>
-<td>Time Series Project Presentation</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3/20</td>
-<td>Tabular Data: Data Wrangling, <br> <a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3e3b1e59-51ec-4163-b864-b2a60128f15e">Lecture Video</a></td>
-<td></td>
-<td><a href="assignments/assignment_tabular_1.html">Assignment 11</a>, <br> <a href="https://drive.google.com/drive/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ?usp=sharing">Hospital Discharge Data</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 9</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3/5</td>
-<td>Tabular Data Project</td>
-<td></td>
-<td><a href="table_data_project.html">Tabular Data Project</a></td>
-</tr>
-<tr class="odd">
-<td>3/27</td>
-<td>Tabular Data Project</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>Week 10</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/1</td>
-<td>Tabular Data Project Presentation</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4/3</td>
-<td>Text Mining</td>
-<td><a href="slides/11_text.html">Slides</a>, <a href="assignments/assignment11_codes.html">Codes</a></td>
-<td><a href="assignments/assignment12_2025.html">Assignment 12</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 11</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4/8</td>
-<td>Text Mining - Bigrams</td>
-<td><a href="assignments/assignment12_codes.html">Codes</a></td>
-<td><a href="assignments/assignment13_2025.html">Assignment 13</a></td>
-</tr>
-<tr class="odd">
-<td>4/10</td>
-<td>Text Mining - Correlations</td>
-<td><a href="assignments/assignment13_codes.html">Codes</a></td>
-<td><a href="assignments/assignment14_2025.html">Assignment 14</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 12</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/15</td>
-<td>Text Mining - tf-idf</td>
-<td><a href="assignments/14_text_tfidf.html">Slides</a>, <a href="assignments/Analyzing%20frequency_%20tf-idf2.pdf">Notes</a>, <a href="assignments/assignment14_codes.html">Codes</a></td>
-<td><a href="assignments/assignment15_2025.html">Assignment 15</a></td>
-</tr>
-<tr class="even">
-<td>4/17</td>
-<td>Text Clustering</td>
-<td><a href="assignments/assignment15_codes2.html">Codes</a></td>
-<td><a href="assignments/assignment16_2025.html">Assignment 16</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 13</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4/16</td>
-<td>Topics Modeling</td>
-<td><a href="assignments/16_topic_modeling.html">Slides</a>, <a href="assignments/assignment16_codes2.html">Codes</a></td>
-<td><a href="assignments/assignment17_2025.html">Assignment 17</a></td>
-</tr>
-<tr class="odd">
-<td>4/18</td>
-<td>Classification with Text Data</td>
-<td><a href="assignments/assignment17_codes2.html">Codes</a></td>
-<td><a href="assignments/assignment18_2025.html">Assignment 18</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 14</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/23</td>
-<td>Text Mining in SAS</td>
-<td></td>
-<td><a href="assignments/assignment19_2025.html">Assignment 19</a></td>
-</tr>
-<tr class="even">
-<td>4/25</td>
-<td>Final Project</td>
-<td></td>
-<td><a href="slides/project_text.html">Final Project</a></td>
-</tr>
-</tbody>
-</table>
+<hr>
+<section id="instruction" class="level3">
+<h3 class="anchored" data-anchor-id="instruction">Instruction</h3>
+<p><em>Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document</em></p>
+<hr>
+<p><a href="assignment16_codes2.html">Sample Codes</a></p>
+</section>
+<section id="question." class="level3">
+<h3 class="anchored" data-anchor-id="question.">Question.</h3>
+<ol type="1">
+<li>Create a text dataset about two different topics and</li>
+</ol>
+<ul>
+<li><p>has a <code>document</code> column taking values from 1 to 5.</p></li>
+<li><p>has a <code>texts</code> column containing text data that has the topics belonging to one of the two chosen topic.</p></li>
+<li><p>has a <code>source</code> column citing the source of the text data.</p></li>
+</ul>
+<p>State your topics.</p>
+<ol start="2" type="1">
+<li>Perform text model on the dataset using LDA with the number of topics being 2.</li>
+</ol>
+<ul>
+<li><p>Plot the bar charts showing the terms with the highest probabilities for each topic</p></li>
+<li><p>Plot the word cloud of the terms for each topic.</p></li>
+<li><p>Does the bar charts and the word clouds identify the two chosen topics?</p></li>
+<li><p>Plot the distribution of topics for each document. Does the plot correctly identify the topic for each document?</p></li>
+</ul>
+<ol start="3" type="1">
+<li><p>Adding more rows and topics to the dataset and comment on the performance of LDA.</p></li>
+<li><p>Changing the number of topics from 2 to 3 and comment on the performance of LDA.</p></li>
+<li><p>Find a text dataset and perform text modeling on the dataset.</p></li>
+</ol>
+</section>
 
 </main>
 <!-- /main column -->

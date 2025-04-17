@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MATH 475. Applied Analytics Using SAS.</title>
+<title>Assignment 18 - Classification Model using Text Data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,19 +20,53 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="home_files/libs/clipboard/clipboard.min.js"></script>
-<script src="home_files/libs/quarto-html/quarto.js"></script>
-<script src="home_files/libs/quarto-html/popper.min.js"></script>
-<script src="home_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="home_files/libs/quarto-html/anchor.min.js"></script>
-<link href="home_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="home_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="home_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="home_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="home_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="assignment18_2025_files/libs/clipboard/clipboard.min.js"></script>
+<script src="assignment18_2025_files/libs/quarto-html/quarto.js"></script>
+<script src="assignment18_2025_files/libs/quarto-html/popper.min.js"></script>
+<script src="assignment18_2025_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="assignment18_2025_files/libs/quarto-html/anchor.min.js"></script>
+<link href="assignment18_2025_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="assignment18_2025_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="assignment18_2025_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="assignment18_2025_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="assignment18_2025_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -41,13 +75,21 @@ ul.task-list li input[type="checkbox"] {
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#instruction" id="toc-instruction" class="nav-link active" data-scroll-target="#instruction">Instruction</a></li>
+  <li><a href="#question-1." id="toc-question-1." class="nav-link" data-scroll-target="#question-1.">Question 1.</a></li>
+  <li><a href="#question-2" id="toc-question-2" class="nav-link" data-scroll-target="#question-2">Question 2</a></li>
+  </ul>
+</nav>
 </div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MATH 475. Applied Analytics Using SAS.</h1>
+<h1 class="title">Assignment 18 - Classification Model using Text Data</h1>
 </div>
 
 
@@ -64,259 +106,40 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><a href="syllabus.html">Syllabus</a></p>
-<table class="table-striped table-hover table">
-<thead>
-<tr class="header">
-<th>Date</th>
-<th>Section/Topic</th>
-<th>Notes</th>
-<th>Assignments</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Week 1</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>1/28</td>
-<td>Time Series: Moving Average</td>
-<td><a href="slides/1_time_series_smoothing_ma.pdf">Note</a></td>
-<td><a href="assignments/assignment1.html">Assignment 1</a></td>
-</tr>
-<tr class="odd">
-<td>1/30</td>
-<td>Exponential Smoothing</td>
-<td><a href="slides/2_time_series_smoothing_exponential.pdf">Note</a></td>
-<td><a href="assignments/assignment2.html">Assignment 2</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 2</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/4</td>
-<td>Classical Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment3.html">Assignment 3</a></td>
-</tr>
-<tr class="even">
-<td>2/6</td>
-<td>STL Decomposition</td>
-<td><a href="slides/4_decomposition_stl_2025.pdf">Note</a></td>
-<td><a href="assignments/assignment4.html">Assignment 4</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 3</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/11</td>
-<td>Exponential Smoothing Forecasting</td>
-<td><a href="slides/5.html">Slides</a></td>
-<td><a href="assignments/assignment5.html">Assignment 5</a></td>
-</tr>
-<tr class="odd">
-<td>2/13</td>
-<td>SAS: Exponential Smoothing Forecasting</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d2ab7f3b-1a90-484f-8261-b283012f335c">SAS Video</a></td>
-<td><a href="assignments/assignment6_2025.html">Assignment 6</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 4</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>2/18</td>
-<td>White Noise and Random Walk</td>
-<td><a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=11fe3501-60f8-42ac-bd97-b288008cb96a">Lecture Video</a>, <a href="slides/6_wn_rw2.html">Slides</a></td>
-<td><a href="assignments/assignment7_2025.html">Assignment 7</a></td>
-</tr>
-<tr class="even">
-<td>2/20</td>
-<td>Auto-Regressive Models</td>
-<td><a href="slides/7.html">Slides</a></td>
-<td><a href="assignments/assignment8_2025.html">Assignment 8</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 5</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>2/25</td>
-<td>AR(p)</td>
-<td><a href="slides/8.html">Slides</a></td>
-<td><a href="assignments/assignment9_2025.html">Assignment 9</a></td>
-</tr>
-<tr class="odd">
-<td>2/27</td>
-<td>ARIMA and SARIMA</td>
-<td><a href="slides/9.html">MA(q)</a>, <a href="slides/10_arima.html">ARIMA</a></td>
-<td><a href="slides/project_ts.html">Time Series Project</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 6</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3/4</td>
-<td>Time Series Project</td>
-<td></td>
-<td><a href="slides/project_ts.html">Time Series Project</a></td>
-</tr>
-<tr class="even">
-<td>3/6</td>
-<td>Project Presentation/Time Series in SAS</td>
-<td></td>
-<td><a href="assignments/assignment10.html">Assignment 10</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 7</strong></td>
-<td>SPRING BREAK</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>Week 8</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3/18</td>
-<td>Time Series Project Presentation</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3/20</td>
-<td>Tabular Data: Data Wrangling, <br> <a href="https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3e3b1e59-51ec-4163-b864-b2a60128f15e">Lecture Video</a></td>
-<td></td>
-<td><a href="assignments/assignment_tabular_1.html">Assignment 11</a>, <br> <a href="https://drive.google.com/drive/folders/15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ?usp=sharing">Hospital Discharge Data</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 9</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>3/5</td>
-<td>Tabular Data Project</td>
-<td></td>
-<td><a href="table_data_project.html">Tabular Data Project</a></td>
-</tr>
-<tr class="odd">
-<td>3/27</td>
-<td>Tabular Data Project</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td><strong>Week 10</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/1</td>
-<td>Tabular Data Project Presentation</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4/3</td>
-<td>Text Mining</td>
-<td><a href="slides/11_text.html">Slides</a>, <a href="assignments/assignment11_codes.html">Codes</a></td>
-<td><a href="assignments/assignment12_2025.html">Assignment 12</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 11</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4/8</td>
-<td>Text Mining - Bigrams</td>
-<td><a href="assignments/assignment12_codes.html">Codes</a></td>
-<td><a href="assignments/assignment13_2025.html">Assignment 13</a></td>
-</tr>
-<tr class="odd">
-<td>4/10</td>
-<td>Text Mining - Correlations</td>
-<td><a href="assignments/assignment13_codes.html">Codes</a></td>
-<td><a href="assignments/assignment14_2025.html">Assignment 14</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 12</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/15</td>
-<td>Text Mining - tf-idf</td>
-<td><a href="assignments/14_text_tfidf.html">Slides</a>, <a href="assignments/Analyzing%20frequency_%20tf-idf2.pdf">Notes</a>, <a href="assignments/assignment14_codes.html">Codes</a></td>
-<td><a href="assignments/assignment15_2025.html">Assignment 15</a></td>
-</tr>
-<tr class="even">
-<td>4/17</td>
-<td>Text Clustering</td>
-<td><a href="assignments/assignment15_codes2.html">Codes</a></td>
-<td><a href="assignments/assignment16_2025.html">Assignment 16</a></td>
-</tr>
-<tr class="odd">
-<td><strong>Week 13</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4/16</td>
-<td>Topics Modeling</td>
-<td><a href="assignments/16_topic_modeling.html">Slides</a>, <a href="assignments/assignment16_codes2.html">Codes</a></td>
-<td><a href="assignments/assignment17_2025.html">Assignment 17</a></td>
-</tr>
-<tr class="odd">
-<td>4/18</td>
-<td>Classification with Text Data</td>
-<td><a href="assignments/assignment17_codes2.html">Codes</a></td>
-<td><a href="assignments/assignment18_2025.html">Assignment 18</a></td>
-</tr>
-<tr class="even">
-<td><strong>Week 14</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>4/23</td>
-<td>Text Mining in SAS</td>
-<td></td>
-<td><a href="assignments/assignment19_2025.html">Assignment 19</a></td>
-</tr>
-<tr class="even">
-<td>4/25</td>
-<td>Final Project</td>
-<td></td>
-<td><a href="slides/project_text.html">Final Project</a></td>
-</tr>
-</tbody>
-</table>
+<hr>
+<section id="instruction" class="level3">
+<h3 class="anchored" data-anchor-id="instruction">Instruction</h3>
+<p><em>Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document</em></p>
+<hr>
+<p><a href="assignment17_codes2.html">Sample Codes</a></p>
+</section>
+<section id="question-1." class="level3">
+<h3 class="anchored" data-anchor-id="question-1.">Question 1.</h3>
+<p>In this question, we will work with the <a href="DataAnalyst3.csv">Data Analyst Jobs</a> dataset</p>
+<p>More information about the data can be found <a href="https://www.kaggle.com/datasets/andrewmvd/data-analyst-jobs">here</a></p>
+<ul>
+<li>Use the following code to create binary variable on rating, called <code>Rating2</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">'DataAnalyst3.csv'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the median rating</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">median</span>(df<span class="sc">$</span>Rating)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a binary rating variable</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Rating2 <span class="ot">=</span> <span class="fu">if_else</span>(df<span class="sc">$</span>Rating <span class="sc">&gt;</span> m, <span class="st">"high"</span>, <span class="st">"low"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>Train and test a model to predict whether the rating of the job is high or low (target variable is <code>Rating2</code>) based on the job descriptions.</p></li>
+<li><p>Adding more predictors to the model to improve the testing accuracy of the model</p></li>
+</ul>
+</section>
+<section id="question-2" class="level3">
+<h3 class="anchored" data-anchor-id="question-2">Question 2</h3>
+<p>Redo Question 1 on your own data (you can decide the target for your model)</p>
+</section>
 
 </main>
 <!-- /main column -->

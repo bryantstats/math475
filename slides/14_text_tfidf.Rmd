@@ -116,7 +116,7 @@ $$idf(t) = \ln \bigg(\frac{\text{Total number of texts}}{\text{Number of texts w
 # tf-idf
 
 
-$$\text{tf-idf }(t) = \text{tf }(t) \cdot \text{tf }(t) $$
+$$\text{tf-idf }(t) = \text{tf }(t) \cdot \text{idf }(t) $$
 
 - The `tf-idf` of the same term may have different values in different documents.  For example the word `love` in Document 1 may have a different value `tf-idf` compared to the word `love` in Document 2. 
 

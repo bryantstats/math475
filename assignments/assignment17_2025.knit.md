@@ -1,0 +1,48 @@
+---
+title: "Assignment 17 - Text Modeling"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+
+
+
+------------------------------------------------------------------------
+
+### Instruction
+
+*Write your codes in Rmarkdown or Quarto then knit it to a Word or pdf document. Submit the Word document*
+
+------------------------------------------------------------------------
+
+[Sample Codes](assignment16_codes2.html)
+
+### Question. 
+
+1. Create a text dataset about two different topics and 
+
+- has a `document` column taking values from 1 to 5. 
+
+- has a `texts` column containing text data that has the topics belonging to one of the two chosen topic. 
+
+- has a `source` column citing the source of the text data.
+
+State your topics. 
+
+2. Perform text model on the dataset using LDA with the number of topics being 2.
+
+- Plot the bar charts showing the terms with the highest probabilities for each topic
+
+- Plot the word cloud of the terms for each topic.
+
+- Does the bar charts and the word clouds identify the two chosen topics?
+
+- Plot the distribution of topics for each document. Does the plot correctly identify the topic for each document?
+
+3. Adding more rows and topics to the dataset and comment on the performance of LDA. 
+
+4. Changing the number of topics from 2 to 3 and comment on the performance of LDA. 
+
+5. Find a text dataset and perform text modeling on the dataset. 
