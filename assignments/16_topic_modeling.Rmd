@@ -37,6 +37,9 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
 # Example 
 
 ![](3.png)
+---
+# Dirichlet distribution
+
 
 ---
 # Latent Dirichlet Allocation (LDA)
@@ -154,12 +157,11 @@ lda_out %>%
 
 ---
 
-Sources
+Reading
 
 - https://personal.utdallas.edu/~nrr150130/cs6347/2015sp/lects/Lecture_17_LDA.pdf
 
-- https://www.youtube.com/watch?v=1_jq_gWFUuQ
-
+- https://www.youtube.com/watch?v=T05t-SqKArY&ab_channel=Serrano.Academy
 
 
 

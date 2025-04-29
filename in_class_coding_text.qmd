@@ -96,3 +96,137 @@ Bryant University is a private institution that was founded in 1863, and has a e
 Sentence 5
 
 The university in Smithfield, Rhode Island, is known for its strong business, data science, and cybersecurity programs. 
+
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(tm)
+library(wordcloud)
+df <- read_csv("topic_model.csv")
+
+```
+```{r}
+# create the DTM
+df_tm <- df %>% 
+  unnest_tokens(output = word, input = texts) %>% 
+  anti_join(get_stopwords()) %>% 
+  anti_join(tibble(word = c(letters, LETTERS, "oh", 'just', 've', as.character(c(1:100)))))
+
+word_freq <- df_tm %>% 
+  group_by(document) %>% count(word, sort = TRUE)
+
+df_dtm <- word_freq %>% 
+  cast_dtm(document = document, term = word, n)
+
+tm::inspect(df_dtm)
+
+library(topicmodels)
+# Perform Topic Modeling
+
+n_topics = 2  # set the number of topics
+
+lda_out <-
+  LDA(df_dtm, k = n_topics, method = 'Gibbs', 
+      control = list(seed = 1111))
+lda_topics <- lda_out %>%
+  tidy(matrix = "beta") 
+
+word_probs <- lda_topics %>%
+  group_by(topic) %>%
+  slice_max(order_by = beta, n = 10) %>%
+  ungroup() %>%
+  mutate(term = fct_reorder(term, beta))
+
+# bar chart
+word_probs %>% 
+  ggplot(aes(beta, term, fill = topic)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ as.factor(topic), scales = "free") +
+  labs(x = "Probability",
+       y = NULL)+
+  scale_y_reordered() 
+
+```
+
+```{r}
+# word cloud
+ library(wordcloud) 
+pal <- brewer.pal(8,"Dark2")
+
+for (i in c(1:n_topics))
+{
+  topic <- lda_topics %>%
+  group_by(topic) %>% 
+  filter(topic==i)
+
+topic %>%
+  with(wordcloud(term, beta, random.order = FALSE, 
+                 max.words = 50, colors=pal))
+}
+
+```
+
+
+```{r}
+# topic distribution for each documents
+lda_documents = lda_out %>%
+  tidy(matrix = "gamma") 
+
+lda_documents %>% 
+  ggplot() +
+  geom_col(aes(x = document, y = gamma, fill = factor(topic)))+
+  labs(fill = 'Topics')
+```
+
+
+
+```{r}
+library(caret)
+library(themis)
+library(textrecipes)
+library(tidyverse)
+library(ranger)
+
+df = read_csv('netflix_titles.csv')
+
+df <- df %>% 
+  select(type, description) %>% 
+  rename(target = type,
+         texts = description) %>% 
+  drop_na()
+
+# Convert text data to numeric variables
+a <- recipe(target ~.,
+       data = df) %>% 
+  step_tokenize(texts) %>% 
+  step_tokenfilter(texts, max_tokens = 110) %>% 
+  step_tfidf(texts) %>% 
+  step_normalize(all_numeric_predictors()) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  step_smote(target) %>% 
+  prep()
+df <- juice(a)
+
+
+# Using Caret for modeling
+set.seed(2021)
+splitIndex <- createDataPartition(df$target, p = .7, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+model <- ranger(target ~ ., data = df_train)
+
+pred <- predict(model, df_test)$predictions
+
+cm <- confusionMatrix(data = pred, reference = df_test$target)
+cm$overall[1]
+
+d = data.frame(pred = pred, obs = df_test$target)
+library(yardstick)
+d %>% conf_mat(pred, obs) %>% autoplot
+
+
+```
+

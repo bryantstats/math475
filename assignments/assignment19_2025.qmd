@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ------------------------------------------------------------------------
 
-[Video Instruction](https://bryant.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=76ff0125-1661-48c3-bde7-b15b0108f5c4)
+[Video Instruction]()
 
 In this assignment we will work with the [Data Analyst Jobs](https://www.kaggle.com/datasets/andrewmvd/data-analyst-jobs). 
 
